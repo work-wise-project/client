@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { IUser } from '../services/userService';
 
 interface User {
-  _id: string;
+  id: string;
 }
 
 interface UserContextType {
@@ -32,9 +32,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   }) => {
     const { user, accessToken, refreshToken } = userData;
     setUserContext({
-      _id: user._id,
+      id: user.id,
     });
-    localStorage.setItem('userId', user._id);
+    localStorage.setItem('userId', user.id);
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
   };

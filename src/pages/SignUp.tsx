@@ -1,10 +1,18 @@
 import { FC, useState } from 'react';
-import { Typography, Link, Box, Container } from '@mui/material';
+import {
+  Typography,
+  Link,
+  Box,
+  Container,
+  Stepper,
+  Step,
+  StepLabel,
+} from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import userService, { IUser } from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
 
-const Login: FC<{
+const SignUp: FC<{
   handleLoginSuccess: (responseLogin: {
     accessToken: string;
     refreshToken: string;
@@ -22,7 +30,7 @@ const Login: FC<{
       return;
     }
     try {
-      const { response } = await userService.googleLogin(credentialResponse);
+      const { response } = await userService.googleRegister(credentialResponse);
       if (response.status === HttpStatusCode.Ok) {
         handleLoginSuccess(response.data);
         setErrorMessage(null);
@@ -42,9 +50,11 @@ const Login: FC<{
     }
   };
 
+  const steps = ['1', '2', '3'];
+
   return (
     <Container
-      maxWidth="xs"
+      maxWidth="lg"
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -55,8 +65,20 @@ const Login: FC<{
     >
       <Box sx={{ textAlign: 'center', mt: 8 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Log In
+          Create account - Google sign in
         </Typography>
+
+        <Stepper
+          alternativeLabel
+          activeStep={0}
+          sx={{ justifyContent: 'center', mt: 3, mb: 3 }}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel></StepLabel>
+            </Step>
+          ))}
+        </Stepper>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
           <GoogleLogin
             onSuccess={googleResponseMessage}
@@ -73,12 +95,12 @@ const Login: FC<{
         )}
       </Box>
       <Box sx={{ width: '100%', textAlign: 'center', mb: 3 }}>
-        <Link href="/signup" variant="body1" sx={{ fontWeight: 'bold' }}>
-          Don’t have an account?
+        <Link href="/login" variant="body1" sx={{ fontWeight: 'bold' }}>
+          Already have an account?
         </Link>
       </Box>
     </Container>
   );
 };
 
-export default Login;
+export default SignUp;

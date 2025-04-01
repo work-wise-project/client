@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import userService, { IUser } from './services/userService';
 import { useUserContext } from './context/UserContext';
 import WelcomePage from './pages/WelcomePage';
+import SignUp from './pages/SignUp';
+import TopBar from './components/TopBar';
 
 const App = () => {
   const { userContext, setUserContext, storeUserSession } = useUserContext();
@@ -38,9 +40,9 @@ const App = () => {
 
         if (response.status === HttpStatusCode.Ok) {
           const {
-            data: { _id },
+            data: { id },
           } = response;
-          setUserContext({ _id });
+          setUserContext({ id });
           setIsLoading(false);
         }
       } catch (error) {
@@ -55,6 +57,7 @@ const App = () => {
 
   return (
     <>
+      <TopBar />
       <CssBaseline enableColorScheme />
       <Container
         maxWidth="lg"
@@ -74,19 +77,9 @@ const App = () => {
         ) : (
           <Routes>
             <Route
-              path="/login"
-              element={
-                userContext?._id ? (
-                  <Navigate to="/" replace />
-                ) : (
-                  <Login handleLoginSuccess={handleLoginSuccess} />
-                )
-              }
-            />
-            <Route
               path="/"
               element={
-                userContext?._id ? (
+                userContext?.id ? (
                   <div>home </div>
                 ) : (
                   <Navigate to="/welcome" replace />
@@ -94,9 +87,29 @@ const App = () => {
               }
             />
             <Route
+              path="/login"
+              element={
+                userContext?.id ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <Login handleLoginSuccess={handleLoginSuccess} />
+                )
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                userContext?.id ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <SignUp handleLoginSuccess={handleLoginSuccess} />
+                )
+              }
+            />
+            <Route
               path="/welcome"
               element={
-                userContext?._id ? <Navigate to="/" replace /> : <WelcomePage />
+                userContext?.id ? <Navigate to="/" replace /> : <WelcomePage />
               }
             />
           </Routes>
