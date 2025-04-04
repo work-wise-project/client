@@ -1,23 +1,12 @@
 import { Box, CircularProgress } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import { ReactNode, useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 import { InterviewAnalysisPage, InterviewPreparationPage, Login, ResumePage, SignUp, WelcomePage } from '../../pages';
 import userService, { IUser } from '../../services/userService';
 import { NavBar } from '../NavBar';
-
-const ProtectedRoute = ({ component }: { component: ReactNode }) => {
-    // const { userContext } = useUserContext();
-
-    // return userContext?.id ? component : <Navigate to="/welcome" replace />;
-    return component;
-};
-const PublicRoute = ({ component }: { component: ReactNode }) => {
-    const { userContext } = useUserContext();
-
-    return userContext?.id ? <Navigate to="/" replace /> : component;
-};
+import { ProtectedRoute, PublicRoute } from '../Routes';
 
 export const App = () => {
     const { setUserContext, storeUserSession } = useUserContext();
