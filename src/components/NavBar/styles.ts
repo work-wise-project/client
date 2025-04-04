@@ -40,16 +40,16 @@ export const pagesListStyle: SxProps = {
     paddingTop: 2,
 };
 
-export const listItemButtonStyle = (palette: Palette, currentPath: string, path: string): SxProps => ({
+export const listItemButtonStyle = (palette: Palette, isActive: boolean): SxProps => ({
     height: '6vh',
     display: 'flex',
     paddingX: 2.5,
-    backgroundColor: path === currentPath ? palette.action.active : '',
+    backgroundColor: isActive ? palette.action.active : '',
 });
 
-export const listItemTextStyle = (palette: Palette, currentPath: string, path: string): SxProps => ({
-    fontWeight: path === currentPath ? 'bold' : 'normal',
-    color: path === currentPath ? palette.primary.main : palette.text.primary,
+export const listItemTextStyle = (palette: Palette, isActive: boolean): SxProps => ({
+    fontWeight: isActive ? 'bold' : 'normal',
+    color: isActive ? palette.primary.main : palette.text.primary,
 });
 
 export const drawerControlContainerStyle: SxProps = {
@@ -63,8 +63,8 @@ export const drawerControlStyle = (palette: Palette): SxProps => ({
     borderRadius: '10%',
 });
 
-export const mainContentStyle = (drawerWidth: string): SxProps => ({
-    marginLeft: drawerWidth,
+export const mainContentStyle = (drawerWidth: string, isNavVisible: boolean): SxProps => ({
+    marginLeft: isNavVisible ? drawerWidth : 0,
     padding: 2,
     transition: 'margin-left 0.3s',
 });

@@ -15,6 +15,8 @@ import {
 } from './styles';
 import { TopBar } from './TopBar';
 
+const PUBLIC_ROUTES = ['/welcome', '/login', '/signup'];
+
 export const NavBar = ({ children }: { children?: ReactNode }) => {
     const { palette } = useTheme();
     const { pathname } = useLocation();
@@ -22,40 +24,43 @@ export const NavBar = ({ children }: { children?: ReactNode }) => {
     const [isOpen, setIsOpen] = useLocalStorage('isNavbarOpen', false);
 
     const drawerWidth = isOpen ? '10vw' : '3.5vw';
+    const isNavbarVisible = !PUBLIC_ROUTES.includes(pathname);
 
     return (
         <>
             <TopBar />
-            <Drawer variant="permanent" sx={drawerStyle(drawerWidth)}>
-                <List sx={pagesListStyle}>
-                    {pages.map(({ text, getIcon, path }, index) => (
-                        <ListItemButton
-                            key={index}
-                            sx={listItemButtonStyle(palette, pathname, path)}
-                            onClick={() => navigate(path)}
+            {isNavbarVisible && (
+                <Drawer variant="permanent" sx={drawerStyle(drawerWidth)}>
+                    <List sx={pagesListStyle}>
+                        {pages.map(({ text, getIcon, path }, index) => (
+                            <ListItemButton
+                                key={index}
+                                sx={listItemButtonStyle(palette, path === pathname)}
+                                onClick={() => navigate(path)}
+                            >
+                                <ListItemIcon>{getIcon(path === pathname ? 'primary' : 'info')}</ListItemIcon>
+                                {isOpen && (
+                                    <ListItemText
+                                        primary={text}
+                                        slotProps={{ primary: { sx: listItemTextStyle(palette, path === pathname) } }}
+                                    />
+                                )}
+                            </ListItemButton>
+                        ))}
+                    </List>
+                    <Box sx={drawerControlContainerStyle}>
+                        <IconButton
+                            size="small"
+                            color="info"
+                            onClick={() => setIsOpen(!isOpen)}
+                            sx={drawerControlStyle(palette)}
                         >
-                            <ListItemIcon>{getIcon(path === pathname ? 'primary' : 'info')}</ListItemIcon>
-                            {isOpen && (
-                                <ListItemText
-                                    primary={text}
-                                    slotProps={{ primary: { sx: listItemTextStyle(palette, pathname, path) } }}
-                                />
-                            )}
-                        </ListItemButton>
-                    ))}
-                </List>
-                <Box sx={drawerControlContainerStyle}>
-                    <IconButton
-                        size="small"
-                        color="info"
-                        onClick={() => setIsOpen(!isOpen)}
-                        sx={drawerControlStyle(palette)}
-                    >
-                        {isOpen ? <ArrowBack fontSize="small" /> : <ArrowForward fontSize="small" />}
-                    </IconButton>
-                </Box>
-            </Drawer>
-            <Box sx={mainContentStyle(drawerWidth)}>{children}</Box>
+                            {isOpen ? <ArrowBack fontSize="small" /> : <ArrowForward fontSize="small" />}
+                        </IconButton>
+                    </Box>
+                </Drawer>
+            )}
+            <Box sx={mainContentStyle(drawerWidth, isNavbarVisible)}>{children}</Box>
         </>
     );
 };
