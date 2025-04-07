@@ -123,8 +123,14 @@ export const SignUp: FC<{
                                 />
                             </Box>
                         </Box>
+                    ) : activeStep === 1 ? (
+                        <ProfessionalProfile setActiveStep={setActiveStep} />
                     ) : (
-                        activeStep === 1 && <ProfessionalProfile />
+                        activeStep === 2 && (
+                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
+                                Create account - Resume upload (optional)
+                            </Typography>
+                        )
                     )}
                 </Box>
                 {errorMessage && (

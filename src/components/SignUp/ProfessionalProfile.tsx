@@ -42,7 +42,7 @@ interface CareerEntry {
     years: string;
 }
 
-const ProfessionalProfile: React.FC = () => {
+const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<React.SetStateAction<number>> }) => {
     const { control } = useForm<any>({
         mode: 'onChange',
         defaultValues: {
@@ -270,7 +270,11 @@ const ProfessionalProfile: React.FC = () => {
                     zIndex: 1000,
                 }}
             >
-                <IconButton aria-label="next step" sx={{ fontSize: 40, ...primaryIconButton }}>
+                <IconButton
+                    aria-label="next step"
+                    sx={{ fontSize: 40, ...primaryIconButton }}
+                    onClick={() => setActiveStep((prev) => prev + 1)}
+                >
                     <ArrowForwardIcon sx={{ fontSize: 40 }} />
                 </IconButton>
             </Box>
