@@ -29,7 +29,7 @@ import { analyzeInterview } from '../../services/interviewService';
 import { fieldActionStyle, fieldLabelStyle, fieldStyle, formContainerStyle, submitButtonStyle } from './styles';
 import { TranscriptFormProps } from './types';
 
-const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) => (
+export const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) => (
     <Typography variant="h6" sx={fieldLabelStyle}>
         {icon}
         {label}
