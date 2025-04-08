@@ -32,5 +32,13 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '16px',
+                    padding: '8px 16px',
+                },
+            },
+        },
     },
 });
