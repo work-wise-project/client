@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, Typography, Paper, Stack } from '@mui/material';
+import { Box, Button, Grid } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SpellcheckIcon from '@mui/icons-material/Spellcheck';
 import InsightsIcon from '@mui/icons-material/Insights';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { styled } from '@mui/material/styles';
 import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
 import { HttpStatusCode } from 'axios';
 import { toast } from 'react-toastify';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import { ResumeView } from '../components/ResumeView/ResumeView';
+import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -23,11 +22,8 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
-
 export const ResumePage: React.FC = () => {
     const [resumeUrl, setResumeUrl] = useState<string | null>(null);
-    const [numPages, setNumPages] = useState<number | null>(null);
     const [resumeAnalysisResult, setResumeAnalysisResult] = useState<IResumeAnalysisResult | null>(null);
     const [grammarCheckResult, setGrammarCheckResult] = useState<string | null>(null);
     const [showAnalyzeResult, setShowAnalyzeResult] = useState(false);
@@ -38,7 +34,6 @@ export const ResumePage: React.FC = () => {
     useEffect(() => {
         return () => {
             setResumeUrl(null);
-            setNumPages(null);
             setResumeAnalysisResult(null);
             setGrammarCheckResult(null);
             setShowAnalyzeResult(false);
@@ -151,25 +146,7 @@ export const ResumePage: React.FC = () => {
 
             <Grid container spacing={3}>
                 <Grid size={{ xs: 5, md: 5 }}>
-                    <Paper
-                        elevation={0}
-                        sx={{ p: 1, minHeight: '70vh', borderRadius: '16px', overflowY: 'auto', maxHeight: '70vh' }}
-                        square={false}
-                    >
-                        {!resumeUrl && (
-                            <Typography variant="body2" color="text.secondary">
-                                No file selected
-                            </Typography>
-                        )}
-
-                        {resumeUrl && resumeUrl.endsWith('.pdf') && (
-                            <Document file={resumeUrl} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
-                                {Array.from(new Array(numPages), (_, i) => (
-                                    <Page key={i + 1} pageNumber={i + 1} />
-                                ))}
-                            </Document>
-                        )}
-                    </Paper>
+                    <ResumeView resumeUrl={resumeUrl} />
                 </Grid>
 
                 <Grid
@@ -209,61 +186,12 @@ export const ResumePage: React.FC = () => {
                 </Grid>
 
                 <Grid size={{ xs: 5, md: 5 }}>
-                    {(showAnalyzeResult || showGrammarCheckResult) && (
-                        <Paper
-                            elevation={0}
-                            sx={{ p: 2, minHeight: '70vh', borderRadius: '16px', overflowY: 'auto', maxHeight: '70vh' }}
-                            square={false}
-                        >
-                            {resumeAnalysisResult && showAnalyzeResult && (
-                                <Stack spacing={1}>
-                                    <Typography variant="h6">Analyze Result</Typography>
-                                    {resumeAnalysisResult.general_review && (
-                                        <Typography variant="body2">
-                                            <strong>General Review:</strong> {resumeAnalysisResult.general_review}
-                                        </Typography>
-                                    )}
-
-                                    {resumeAnalysisResult.strengths && resumeAnalysisResult.strengths.length > 0 && (
-                                        <div>
-                                            <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                                                <strong>Strengths:</strong>
-                                            </Typography>
-                                            <ul style={{ margin: 0, paddingLeft: 16 }}>
-                                                {resumeAnalysisResult.strengths.map((strength, index) => (
-                                                    <li key={index}>
-                                                        <Typography variant="body2">{strength}</Typography>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                    {resumeAnalysisResult.weaknesses && resumeAnalysisResult.weaknesses.length > 0 && (
-                                        <div>
-                                            <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                                                <strong>Weaknesses:</strong>
-                                            </Typography>
-                                            <ul style={{ margin: 0, paddingLeft: 16 }}>
-                                                {resumeAnalysisResult.weaknesses.map((weakness, index) => (
-                                                    <li key={index}>
-                                                        <Typography variant="body2">{weakness}</Typography>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </Stack>
-                            )}
-                            {grammarCheckResult && showGrammarCheckResult && (
-                                <Stack spacing={1}>
-                                    <Typography variant="h6">Grammer Check</Typography>
-                                    <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
-                                        {grammarCheckResult}
-                                    </Typography>
-                                </Stack>
-                            )}
-                        </Paper>
-                    )}
+                    <AnalyzeView
+                        resumeAnalysisResult={resumeAnalysisResult}
+                        showAnalyzeResult={showAnalyzeResult}
+                        showGrammarCheckResult={showGrammarCheckResult}
+                        grammarCheckResult={grammarCheckResult}
+                    />
                 </Grid>
             </Grid>
         </Box>
