@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, Grid, Typography, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, Grid, Typography, Paper, Stack } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SpellcheckIcon from '@mui/icons-material/Spellcheck';
 import InsightsIcon from '@mui/icons-material/Insights';
@@ -7,7 +7,9 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { styled } from '@mui/material/styles';
 import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
 import { HttpStatusCode } from 'axios';
-// import mammoth from 'mammoth';
+import { toast } from 'react-toastify';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -25,9 +27,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.m
 
 export const ResumePage: React.FC = () => {
     const [resumeUrl, setResumeUrl] = useState<string | null>(null);
-    const [docxText, setDocxText] = useState('');
     const [numPages, setNumPages] = useState<number | null>(null);
-    const [resumeAnalyze, setResumeAnalyze] = useState<IResumeAnalysisResult | null>(null);
+    const [resumeAnalysisResult, setResumeAnalysisResult] = useState<IResumeAnalysisResult | null>(null);
+    const [grammarCheckResult, setGrammarCheckResult] = useState<string | null>(null);
+    const [showAnalyzeResult, setShowAnalyzeResult] = useState(false);
+    const [showGrammarCheckResult, setShowGrammarCheckResult] = useState(false);
+    const [loadingAnalyze, setLoadingAnalyze] = useState(false);
+    const [loadingGrammarCheck, setLoadingGrammarCheck] = useState(false);
 
     const uploadFileToServer = async (selectedFile: File) => {
         try {
@@ -40,10 +46,7 @@ export const ResumePage: React.FC = () => {
                 throw new Error('Failed to upload file');
             }
             const { data } = response;
-
-            console.log(data);
-
-            return data.filePath; // URL to the file
+            return data.filePath;
         } catch (error) {
             console.error('Error uploading file:', error);
             throw error;
@@ -55,34 +58,63 @@ export const ResumePage: React.FC = () => {
         if (!selectedFile) return;
 
         try {
-            const ext = selectedFile.name.split('.').pop()?.toLowerCase();
             const fileUrl = await uploadFileToServer(selectedFile);
-            setResumeUrl(fileUrl); // New state for URL
-
-            if (ext === 'docx') {
-                // you can fetch and convert the DOCX later
-                setDocxText(''); // for now
-            }
+            setResumeAnalysisResult(null);
+            setGrammarCheckResult(null);
+            setResumeUrl(fileUrl);
         } catch (error) {
             console.error('Error handling file change:', error);
-            setDocxText('');
-            setResumeUrl(null); // Reset URL if there's an error
+            setResumeUrl(null);
         }
     };
 
     const onAnalyzeClick = async () => {
-        if (!resumeUrl) return;
-
+        if (!resumeUrl) {
+            toast.info('Please upload a resume first');
+            return;
+        }
+        setLoadingAnalyze(true);
         try {
-            const { responseResume } = await resumeService.analyzeResume(resumeUrl);
-            if (responseResume.status !== HttpStatusCode.Ok) {
-                throw new Error('Failed to analyze file');
+            if (!resumeAnalysisResult) {
+                const { responseResume } = await resumeService.analyzeResume(resumeUrl);
+                if (responseResume.status !== HttpStatusCode.Ok) {
+                    throw new Error('Failed to analyze file');
+                }
+                const parsedData = JSON.parse(responseResume.data);
+
+                setResumeAnalysisResult(parsedData);
             }
-            const parsedData = JSON.parse(responseResume.data);
-            console.log(parsedData);
-            // setResumeAnalyze(parsedData); // Assuming data contains the analysis result
+            setShowAnalyzeResult(true);
+            setShowGrammarCheckResult(false);
         } catch (error) {
             console.error('Error analyzing file:', error);
+            toast.error('Failed to analyze file');
+        } finally {
+            setLoadingAnalyze(false);
+        }
+    };
+
+    const onGrammarCheckClicked = async () => {
+        if (!resumeUrl) {
+            toast.info('Please upload a resume first');
+            return;
+        }
+        setLoadingGrammarCheck(true);
+        try {
+            if (!grammarCheckResult) {
+                const { responseCheckGrammar } = await resumeService.checkResumeGrammar(resumeUrl);
+                if (responseCheckGrammar.status !== HttpStatusCode.Ok) {
+                    throw new Error('Failed to check grammar');
+                }
+                setGrammarCheckResult(responseCheckGrammar.data);
+            }
+            setShowAnalyzeResult(false);
+            setShowGrammarCheckResult(true);
+        } catch (error) {
+            console.error('Error checking grammar:', error);
+            toast.error('Failed to check grammar');
+        } finally {
+            setLoadingGrammarCheck(false);
         }
     };
 
@@ -105,7 +137,7 @@ export const ResumePage: React.FC = () => {
                 <Grid size={{ xs: 5, md: 5 }}>
                     <Paper
                         elevation={0}
-                        sx={{ p: 2, minHeight: '70vh', borderRadius: '16px', overflowY: 'auto', maxHeight: '70vh' }}
+                        sx={{ p: 1, minHeight: '70vh', borderRadius: '16px', overflowY: 'auto', maxHeight: '70vh' }}
                         square={false}
                     >
                         {!resumeUrl && (
@@ -115,19 +147,11 @@ export const ResumePage: React.FC = () => {
                         )}
 
                         {resumeUrl && resumeUrl.endsWith('.pdf') && (
-                            <Document
-                                file={resumeUrl}
-                                renderMode="none"
-                                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                            >
+                            <Document file={resumeUrl} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
                                 {Array.from(new Array(numPages), (_, i) => (
                                     <Page key={i + 1} pageNumber={i + 1} />
                                 ))}
                             </Document>
-                        )}
-
-                        {resumeUrl && resumeUrl.endsWith('.docx') && (
-                            <div dangerouslySetInnerHTML={{ __html: docxText }} style={{ fontSize: '0.9rem' }} />
                         )}
                     </Paper>
                 </Grid>
@@ -146,24 +170,82 @@ export const ResumePage: React.FC = () => {
                         variant="contained"
                         fullWidth
                         color="primary"
+                        loading={loadingAnalyze}
+                        loadingPosition="start"
                         startIcon={<InsightsIcon />}
                         onClick={onAnalyzeClick}
+                        disabled={loadingGrammarCheck}
                     >
                         Analyze
                     </Button>
-                    <Button variant="contained" fullWidth color="primary" startIcon={<SpellcheckIcon />}>
-                        Spell Check
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        color="primary"
+                        startIcon={<SpellcheckIcon />}
+                        disabled={loadingAnalyze}
+                        onClick={onGrammarCheckClicked}
+                        loading={loadingGrammarCheck}
+                        loadingPosition="start"
+                    >
+                        Grammar Check
                     </Button>
                 </Grid>
 
                 <Grid size={{ xs: 5, md: 5 }}>
-                    {resumeAnalyze && (
+                    {(showAnalyzeResult || showGrammarCheckResult) && (
                         <Paper
                             elevation={0}
                             sx={{ p: 2, minHeight: '70vh', borderRadius: '16px', overflowY: 'auto', maxHeight: '70vh' }}
                             square={false}
                         >
-                            {resumeAnalyze}
+                            {resumeAnalysisResult && showAnalyzeResult && (
+                                <Stack spacing={1}>
+                                    <Typography variant="h6">Analyze Result</Typography>
+                                    {resumeAnalysisResult.general_review && (
+                                        <Typography variant="body2">
+                                            <strong>General Review:</strong> {resumeAnalysisResult.general_review}
+                                        </Typography>
+                                    )}
+
+                                    {resumeAnalysisResult.strengths && resumeAnalysisResult.strengths.length > 0 && (
+                                        <div>
+                                            <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                                                <strong>Strengths:</strong>
+                                            </Typography>
+                                            <ul style={{ margin: 0, paddingLeft: 16 }}>
+                                                {resumeAnalysisResult.strengths.map((strength, index) => (
+                                                    <li key={index}>
+                                                        <Typography variant="body2">{strength}</Typography>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    {resumeAnalysisResult.weaknesses && resumeAnalysisResult.weaknesses.length > 0 && (
+                                        <div>
+                                            <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                                                <strong>Weaknesses:</strong>
+                                            </Typography>
+                                            <ul style={{ margin: 0, paddingLeft: 16 }}>
+                                                {resumeAnalysisResult.weaknesses.map((weakness, index) => (
+                                                    <li key={index}>
+                                                        <Typography variant="body2">{weakness}</Typography>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </Stack>
+                            )}
+                            {grammarCheckResult && showGrammarCheckResult && (
+                                <Stack spacing={1}>
+                                    <Typography variant="h6">Grammer Check</Typography>
+                                    <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                                        {grammarCheckResult}
+                                    </Typography>
+                                </Stack>
+                            )}
                         </Paper>
                     )}
                 </Grid>

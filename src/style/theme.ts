@@ -19,7 +19,8 @@ export const theme = createTheme({
             secondary: '#C5C8D6',
         },
         action: {
-            disabled: '#D9D9D9',
+            disabledBackground: 'rgba(149, 176, 234, 0.2)',
+            disabled: 'rgba(56, 89, 159, 0.34)',
             active: 'rgba(69, 116, 220, 0.2)',
         },
         divider: '#C5C8D6',
