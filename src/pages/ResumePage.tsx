@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, Typography, Paper, Stack } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SpellcheckIcon from '@mui/icons-material/Spellcheck';
@@ -35,6 +35,24 @@ export const ResumePage: React.FC = () => {
     const [loadingAnalyze, setLoadingAnalyze] = useState(false);
     const [loadingGrammarCheck, setLoadingGrammarCheck] = useState(false);
 
+    useEffect(() => {
+        return () => {
+            setResumeUrl(null);
+            setNumPages(null);
+            setResumeAnalysisResult(null);
+            setGrammarCheckResult(null);
+            setShowAnalyzeResult(false);
+            setShowGrammarCheckResult(false);
+        };
+    }, []);
+
+    useEffect(() => {
+        setGrammarCheckResult(null);
+        setResumeAnalysisResult(null);
+        setShowAnalyzeResult(false);
+        setShowGrammarCheckResult(false);
+    }, [resumeUrl]);
+
     const uploadFileToServer = async (selectedFile: File) => {
         try {
             const formData = new FormData();
@@ -59,8 +77,6 @@ export const ResumePage: React.FC = () => {
 
         try {
             const fileUrl = await uploadFileToServer(selectedFile);
-            setResumeAnalysisResult(null);
-            setGrammarCheckResult(null);
             setResumeUrl(fileUrl);
         } catch (error) {
             console.error('Error handling file change:', error);
