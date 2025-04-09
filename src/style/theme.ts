@@ -1,6 +1,9 @@
 import { createTheme } from '@mui/material/styles';
+// @ts-ignore
+import '@fontsource/rubik';
 
 export const theme = createTheme({
+    typography: { fontFamily: 'Rubik' },
     palette: {
         background: {
             default: '#EEEFF1',
@@ -38,6 +41,15 @@ export const theme = createTheme({
                 root: {
                     borderRadius: '16px',
                     padding: '8px 16px',
+                },
+            },
+        },
+        MuiCssBaseline: {
+            styleOverrides: {
+                '*': {
+                    '&::-webkit-scrollbar': { width: '7px', height: '10px' },
+                    '&::-webkit-scrollbar-thumb': { backgroundColor: '#C5C8D6', borderRadius: '10px' },
+                    '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#898C95' },
                 },
             },
         },
