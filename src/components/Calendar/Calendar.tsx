@@ -1,24 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { CalendarGlobalStyles, Dot } from './styles';
 import { InterviewDialog } from './InterviewDialog';
+import { InterviewsSchedule } from '../../types';
+import { dateFormatter } from './types';
+import { getScheduledInterviews } from '../../services/interviewService';
+import { useUserContext } from '../../context/UserContext';
 import 'react-calendar/dist/Calendar.css';
 
-const events: Record<string, { time: string; company: string }[]> = {
-    '2025-04-23': [
-        { time: '12:30', company: 'Facebook' },
-        { time: '15:00', company: 'Google' },
-        { time: '20:45', company: 'Amazon' },
-    ],
-};
-
 export const CalendarComponent = () => {
+    const { userContext } = useUserContext();
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [isInterviewDialogVisible, setIsInterviewDialogVisible] = useState(false);
+    const [scheduledInterviews, setScheduledInterviews] = useState<InterviewsSchedule | null>(null);
+
+    useEffect(() => {
+        const fetchScheduledInterviews = async () => {
+            try {
+                const interviews = userContext?.id ? await getScheduledInterviews(userContext.id) : null;
+                setScheduledInterviews(interviews);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        };
+
+        fetchScheduledInterviews();
+    }, []);
 
     const handleDateClick = (date: Date) => {
-        const key = date.toISOString().split('T')[0];
-        if (events[key]) {
+        const key = dateFormatter(date);
+        if (scheduledInterviews?.has(key)) {
             setSelectedDate(date);
             setIsInterviewDialogVisible(true);
         }
@@ -35,8 +46,8 @@ export const CalendarComponent = () => {
                 locale="en-US"
                 onClickDay={handleDateClick}
                 tileContent={({ date }) => {
-                    const key = date.toISOString().split('T')[0];
-                    return events[key] ? <Dot /> : null;
+                    const key = dateFormatter(date);
+                    return scheduledInterviews?.has(key) ? <Dot /> : null;
                 }}
                 tileClassName={({ date }) => (date.toDateString() === new Date().toDateString() ? 'current-day' : '')}
                 value={null}
@@ -46,7 +57,7 @@ export const CalendarComponent = () => {
                 open={isInterviewDialogVisible}
                 handleClose={closeInterviewDialog}
                 selectedDate={selectedDate}
-                interviews={events}
+                interviews={scheduledInterviews}
             />
         </>
     );
