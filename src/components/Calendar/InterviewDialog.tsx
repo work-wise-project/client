@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Menu, MenuItem } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { listItemStyled } from './styles';
-import { InterviewDialogProps } from './types';
+import { InterviewDialogProps, dateFormatter } from './types';
 
 export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }: InterviewDialogProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -31,7 +31,8 @@ export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }:
                 </DialogTitle>
                 <List>
                     {selectedDate &&
-                        interviews[selectedDate.toISOString().split('T')[0]]?.map((event, index) => (
+                        interviews &&
+                        interviews.get(dateFormatter(selectedDate))?.map((event, index) => (
                             <ListItem
                                 key={index}
                                 sx={listItemStyled}
