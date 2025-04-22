@@ -102,6 +102,5 @@ export const listItemStyled: SxProps = {
     padding: 2,
     marginBottom: 2,
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
 };

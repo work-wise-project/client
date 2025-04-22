@@ -46,7 +46,7 @@ export const CalendarComponent = () => {
                 open={isInterviewDialogVisible}
                 handleClose={closeInterviewDialog}
                 selectedDate={selectedDate}
-                events={events}
+                interviews={events}
             />
         </>
     );
