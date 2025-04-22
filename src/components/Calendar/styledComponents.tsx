@@ -1,5 +1,5 @@
 import { GlobalStyles, alpha } from '@mui/material';
-import { styled, SxProps } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 export const CalendarGlobalStyles = () => (
     <GlobalStyles
@@ -95,12 +95,3 @@ export const Dot = styled('div')(({ theme }) => ({
     marginTop: 9,
     marginInline: 'auto',
 }));
-
-export const listItemStyled: SxProps = {
-    border: '1px solid #ccc',
-    borderRadius: 2,
-    padding: 2,
-    marginBottom: 2,
-    display: 'flex',
-    alignItems: 'center',
-};

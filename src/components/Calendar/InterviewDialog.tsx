@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Menu, MenuItem } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { listItemStyled } from './styles';
+import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, dateFormatter } from './types';
 
 export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }: InterviewDialogProps) => {
@@ -49,27 +49,14 @@ export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }:
                                 <ListItemText
                                     primary={event.company}
                                     secondary={event.time}
-                                    slotProps={{ secondary: { fontWeight: '500', color: 'textPrimary' } }}
+                                    slotProps={listItemTextStyled}
                                 />
                             </ListItem>
                         ))}
                 </List>
             </Box>
 
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleCloseMenu}
-                slotProps={{
-                    paper: {
-                        sx: {
-                            borderRadius: 2,
-                            minWidth: 150,
-                            boxShadow: 3,
-                        },
-                    },
-                }}
-            >
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} slotProps={menuStyled}>
                 <MenuItem onClick={() => handleAction('Analysis')}>Analysis</MenuItem>
                 <MenuItem onClick={() => handleAction('Preparation')}>Preparation</MenuItem>
                 <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>

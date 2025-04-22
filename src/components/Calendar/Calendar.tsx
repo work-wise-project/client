@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
-import { CalendarGlobalStyles, Dot } from './styles';
+import { CalendarGlobalStyles, Dot } from './styledComponents';
 import { InterviewDialog } from './InterviewDialog';
 import { InterviewsSchedule } from '../../types';
 import { dateFormatter } from './types';
