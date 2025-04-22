@@ -34,7 +34,7 @@ export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }:
                         interviews &&
                         interviews.get(dateFormatter(selectedDate))?.map((event, index) => (
                             <ListItem
-                                key={index}
+                                key={event.id}
                                 sx={listItemStyled}
                                 secondaryAction={
                                     <IconButton
