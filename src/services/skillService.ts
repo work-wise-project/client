@@ -1,11 +1,5 @@
 import { apiClient } from './apiClient';
 
-export interface ISkill {
-    id: string;
-    name: string;
-    isDeleted: boolean;
-}
-
 const getAllSkills = async () => {
     const abortController = new AbortController();
 

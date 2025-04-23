@@ -4,12 +4,8 @@ import {
     Container,
     Typography,
     TextField,
-    Select,
-    MenuItem,
     IconButton,
     FormControl,
-    InputLabel,
-    InputAdornment,
     Autocomplete,
     AutocompleteProps,
     AutocompleteRenderInputParams,
@@ -22,52 +18,83 @@ import SchoolIcon from '@mui/icons-material/School';
 import WorkIcon from '@mui/icons-material/Work';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import { FieldLabel } from '../TranscriptForm/TranscriptForm';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+
 import { Controller, FieldError, useFieldArray, useForm } from 'react-hook-form';
 import { fieldActionStyle, fieldStyle } from '../TranscriptForm/styles';
-// import { skillsTypeOptions, SkillType } from '../../constants';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { primaryIconButton } from './styles';
-import skillService, { ISkill } from '../../services/skillService';
+import skillService from '../../services/skillService';
 import { HttpStatusCode } from 'axios';
+import userService from '../../services/userService';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ISkill, UserCareer, UserEducation, UserSkill } from '../../types';
 
-interface EducationEntry {
-    institute: string;
-    years: string;
-}
+const yearSchema = z.coerce
+    .number({
+        required_error: 'Years of experience is required',
+        invalid_type_error: 'Must be a number',
+    })
+    .min(0, { message: 'Years of experience cannot be negative' })
+    .max(50, { message: 'Years of experience seems too high' });
 
-interface CareerEntry {
-    company: string;
-    years: string;
-}
+const educationEntrySchema = z.object({
+    institute: z.string().min(1, { message: 'Institute is required' }),
+    years: yearSchema,
+});
 
-const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<React.SetStateAction<number>> }) => {
-    const { control } = useForm<any>({
+const careerEntrySchema = z.object({
+    company: z.string().min(1, { message: 'Company is required' }),
+    years: yearSchema,
+});
+
+const skillEntrySchema = z.object({
+    id: z.number(),
+    name: z.string().min(1, { message: 'Skill name is required' }),
+    is_deleted: z.boolean(),
+});
+
+const formSchema = z.object({
+    education: z.array(educationEntrySchema),
+    career: z.array(careerEntrySchema),
+    skills: z.array(skillEntrySchema),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
+
+const ProfessionalProfile = ({
+    setActiveStep,
+    currentUserId,
+}: {
+    setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+    currentUserId: string;
+}) => {
+    const { control, getValues } = useForm<FormSchema>({
+        resolver: zodResolver(formSchema),
         mode: 'onChange',
         defaultValues: {
-            educations: [{ institute: '', years: '' }],
-            careers: [{ company: '', years: '' }],
+            education: [{ institute: '', years: 0 }],
+            career: [{ company: '', years: 0 }],
             skills: [],
         },
     });
 
     const {
-        fields: educations,
+        fields: education,
         append: appendEducation,
         remove: removeEducation,
     } = useFieldArray({
         control,
-        name: 'educations',
+        name: 'education',
     });
 
     const {
-        fields: careers,
+        fields: career,
         append: appendCareer,
         remove: removeCareer,
     } = useFieldArray({
         control,
-        name: 'careers',
+        name: 'career',
     });
 
     const [skillsTypeOptions, setSkillsTypeOptions] = useState<Array<ISkill>>([]);
@@ -80,7 +107,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
         helperText: error?.message,
     });
     const skillProps = (error?: FieldError): AutocompleteProps<ISkill, true, false, false> => ({
-        options: skillsTypeOptions.filter(({ id }) => id !== 'text'),
+        options: skillsTypeOptions,
         getOptionLabel: ({ name }) => name,
         getOptionKey: ({ id }) => id,
         isOptionEqualToValue: (option, value) => option.id === value.id,
@@ -107,12 +134,36 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
         fetchSkills();
     }, []);
 
+    const saveUserProfessionalProfile = async () => {
+        const formData = getValues();
+
+        const formattedEducation = formData.education.filter(
+            (edu: UserEducation) => edu.institute !== '' && edu.years >= 0
+        );
+
+        const formattedCareer = formData.career.filter(
+            (career: UserCareer) => career.company !== '' && career.years >= 0
+        );
+
+        const formattedSkills = formData.skills.map((skill: UserSkill) => ({
+            ...skill,
+            skill_id: skill.id,
+        }));
+
+        const { response } = await userService.updateUser(currentUserId, {
+            education: formattedEducation,
+            career: formattedCareer,
+            skills: formattedSkills,
+        });
+
+        if (response.status === HttpStatusCode.Ok) {
+            setActiveStep((prev) => prev + 1);
+        }
+    };
+
     return (
         <Container>
             <Box sx={{ my: 4 }}>
-                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
-                    Create account - Professional profile
-                </Typography>
                 <Box
                     sx={{
                         display: 'flex',
@@ -139,7 +190,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2, mt: 3 }}>
                     <Box sx={{ flex: 1, minWidth: '400px' }}>
                         <FieldLabel icon={<SchoolIcon />} label="Education" />
-                        {educations.map((field, index) => (
+                        {education.map((field, index) => (
                             <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
                                 <Controller
                                     name={`education.${index}.institute`}
@@ -171,6 +222,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                                                 placeholder="Years of experience"
                                                 error={!!error}
                                                 sx={{ borderRadius: '10px', backgroundColor: 'white' }}
+                                                onChange={(e) => field.onChange(Number(e.target.value))}
                                             />
                                             {error && (
                                                 <Typography variant="body2" color="error">
@@ -181,14 +233,14 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                                     )}
                                 />
                                 <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-                                    {educations.length !== 1 && (
+                                    {education.length !== 1 && (
                                         <IconButton onClick={() => removeEducation(index)} sx={primaryIconButton}>
                                             <RemoveCircleOutlineIcon />
                                         </IconButton>
                                     )}
-                                    {index === educations.length - 1 && (
+                                    {index === education.length - 1 && (
                                         <IconButton
-                                            onClick={() => appendEducation({ institute: '', years: '' })}
+                                            onClick={() => appendEducation({ institute: '', years: 0 })}
                                             sx={primaryIconButton}
                                         >
                                             <AddCircleOutlineIcon />
@@ -200,7 +252,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                     </Box>
                     <Box sx={{ flex: 1, minWidth: '400px' }}>
                         <FieldLabel icon={<WorkIcon />} label="Career" />
-                        {careers.map((field, index) => (
+                        {career.map((field, index) => (
                             <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
                                 <Controller
                                     name={`career.${index}.company`}
@@ -233,6 +285,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                                                 placeholder="Years of experience"
                                                 error={!!error}
                                                 sx={{ borderRadius: '10px', backgroundColor: 'white' }}
+                                                onChange={(e) => field.onChange(Number(e.target.value))}
                                             />
                                             {error && (
                                                 <Typography variant="body2" color="error">
@@ -243,14 +296,14 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                                     )}
                                 />
                                 <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-                                    {careers.length !== 1 && (
+                                    {career.length !== 1 && (
                                         <IconButton onClick={() => removeCareer(index)} sx={primaryIconButton}>
                                             <RemoveCircleOutlineIcon />
                                         </IconButton>
                                     )}
-                                    {index === careers.length - 1 && (
+                                    {index === career.length - 1 && (
                                         <IconButton
-                                            onClick={() => appendCareer({ institute: '', years: '' })}
+                                            onClick={() => appendCareer({ company: '', years: 0 })}
                                             sx={primaryIconButton}
                                         >
                                             <AddCircleOutlineIcon />
@@ -273,7 +326,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                 <IconButton
                     aria-label="next step"
                     sx={{ fontSize: 40, ...primaryIconButton }}
-                    onClick={() => setActiveStep((prev) => prev + 1)}
+                    onClick={saveUserProfessionalProfile}
                 >
                     <ArrowForwardIcon sx={{ fontSize: 40 }} />
                 </IconButton>

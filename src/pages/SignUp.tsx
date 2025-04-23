@@ -1,9 +1,10 @@
-import { FC, useState } from 'react';
-import { Typography, Link, Box, Container, Stepper, Step, StepLabel, StepIconProps, styled } from '@mui/material';
+import { useState } from 'react';
+import { Typography, Link, Box, Container, Stepper, Step, StepLabel, StepIconProps } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import userService, { IUser } from '../services/userService';
+import userService from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
+import { useUserContext } from '../context/UserContext';
 
 const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
     const bgColor = active || completed ? '#1976d2' : '#ccc'; // Blue if active/completed
@@ -29,10 +30,11 @@ const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) =>
     );
 };
 
-export const SignUp: FC<{
-    handleLoginSuccess: (responseLogin: { accessToken: string; refreshToken: string; user: IUser }) => void;
-}> = ({ handleLoginSuccess }) => {
+export const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+    const { setLocalStorage } = useUserContext();
+
     const [activeStep, setActiveStep] = useState<number>(0);
     const googleResponseMessage = async (credentialResponse: CredentialResponse) => {
         setErrorMessage(null);
@@ -43,7 +45,8 @@ export const SignUp: FC<{
         try {
             const { response } = await userService.googleRegister(credentialResponse);
             if (response.status === HttpStatusCode.Ok) {
-                // handleLoginSuccess(response.data);
+                setLocalStorage(response.data);
+                setCurrentUserId(response.data.user.id);
                 setActiveStep((prev) => prev + 1);
                 setErrorMessage(null);
             } else {
@@ -62,6 +65,13 @@ export const SignUp: FC<{
     };
 
     const steps = ['1', '2', '3'];
+
+    const getStepTitle = () =>
+        activeStep === 0
+            ? 'Create account - Google sign in'
+            : activeStep === 1
+            ? 'Create account - Professional profile'
+            : 'Create account - Resume upload (optional)';
 
     return (
         <Container
@@ -101,6 +111,9 @@ export const SignUp: FC<{
                         flexDirection: 'column',
                     }}
                 >
+                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
+                        {getStepTitle()}
+                    </Typography>
                     {activeStep === 0 ? (
                         <Box
                             sx={{
@@ -110,9 +123,6 @@ export const SignUp: FC<{
                                 flexDirection: 'column',
                             }}
                         >
-                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
-                                Create account - Google sign in
-                            </Typography>
                             <Box sx={{ width: 220, mt: 5 }}>
                                 <GoogleLogin
                                     onSuccess={googleResponseMessage}
@@ -124,13 +134,11 @@ export const SignUp: FC<{
                             </Box>
                         </Box>
                     ) : activeStep === 1 ? (
-                        <ProfessionalProfile setActiveStep={setActiveStep} />
-                    ) : (
-                        activeStep === 2 && (
-                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
-                                Create account - Resume upload (optional)
-                            </Typography>
+                        currentUserId && (
+                            <ProfessionalProfile setActiveStep={setActiveStep} currentUserId={currentUserId} />
                         )
+                    ) : (
+                        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}></Typography>
                     )}
                 </Box>
                 {errorMessage && (
