@@ -1,4 +1,4 @@
-import { Transcript } from '../types';
+import { Transcript, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
 
 export const analyzeInterview = async (file: File, fileType: 'audio' | 'text') => {
@@ -16,4 +16,31 @@ export const analyzeInterview = async (file: File, fileType: 'audio' | 'text') =
     });
 
     return { transcript, abort };
+};
+
+export const getScheduledInterviews = async (userId: string): Promise<InterviewsSchedule> => {
+    // const { data } = await apiClient.get(
+    //     `/interviews/${userId}`,
+    // );
+
+    const events: InterviewsSchedule = new Map([
+        [
+            '2025-04-23',
+            [
+                { id: '123', time: '12:30', company: 'Facebook' },
+                { id: '1234', time: '15:00', company: 'Google' },
+                { id: '1235', time: '20:45', company: 'Amazon' },
+            ],
+        ],
+        [
+            '2025-04-27',
+            [
+                { id: '123', time: '12:30', company: 'Facebook' },
+                { id: '1234', time: '15:00', company: 'Google' },
+                { id: '1235', time: '20:45', company: 'Amazon' },
+            ],
+        ],
+    ]);
+
+    return events;
 };
