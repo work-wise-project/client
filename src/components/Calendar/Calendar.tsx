@@ -47,7 +47,7 @@ export const CalendarComponent = () => {
                 onClickDay={handleDateClick}
                 tileContent={({ date }) => {
                     const key = dateFormatter(date);
-                    return scheduledInterviews?.has(key) ? <Dot /> : null;
+                    return scheduledInterviews?.has(key) && <Dot />;
                 }}
                 tileClassName={({ date }) => (date.toDateString() === new Date().toDateString() ? 'current-day' : '')}
                 value={null}
