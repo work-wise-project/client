@@ -67,4 +67,5 @@ export const mainContentStyle = (drawerWidth: string, isNavVisible: boolean): Sx
     marginLeft: isNavVisible ? drawerWidth : 0,
     padding: 2,
     transition: 'margin-left 0.3s',
+    height: '90vh',
 });

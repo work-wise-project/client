@@ -1,4 +1,4 @@
-import { ArticleOutlined, AssistantOutlined, GraphicEqOutlined, HomeOutlined } from '@mui/icons-material';
+import { ArticleOutlined, AssistantOutlined, AutoAwesome, HomeOutlined } from '@mui/icons-material';
 import { IconProps } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -21,7 +21,7 @@ export const pages: PageConfig[] = [
     },
     {
         text: 'Interview analysis',
-        getIcon: (color) => <GraphicEqOutlined color={color} />,
+        getIcon: (color) => <AutoAwesome color={color} />,
         path: '/interviewAnalysis',
     },
     {

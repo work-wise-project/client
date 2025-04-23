@@ -3,7 +3,15 @@ import { HttpStatusCode } from 'axios';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
-import { InterviewAnalysisPage, InterviewPreparationPage, Login, ResumePage, SignUp, WelcomePage } from '../../pages';
+import {
+    InterviewAnalysisPage,
+    InterviewPreparationPage,
+    Login,
+    ResumePage,
+    SignUp,
+    WelcomePage,
+    HomePage,
+} from '../../pages';
 import userService, { IUser } from '../../services/userService';
 import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
@@ -58,7 +66,7 @@ export const App = () => {
                         </Box>
                     ) : (
                         <Routes>
-                            <Route path="/" element={<ProtectedRoute component={<div>Home</div>} />} />
+                            <Route path="/" element={<ProtectedRoute component={<HomePage />} />} />
                             <Route
                                 path="/login"
                                 element={<PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />}
