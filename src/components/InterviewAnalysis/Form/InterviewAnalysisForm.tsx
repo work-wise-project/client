@@ -20,14 +20,14 @@ import {
     TextFieldProps,
     Typography,
 } from '@mui/material';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Controller, FieldError, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
-import { ALLOWED_FILE_TYPES, FileType, fileTypeOptions } from '../../constants';
-import { analyzeInterview } from '../../services/interviewService';
+import { ALLOWED_FILE_TYPES, FileType, fileTypeOptions } from '../../../constants';
+import { analyzeInterview } from '../../../services/interviewService';
 import { fieldActionStyle, fieldLabelStyle, fieldStyle, formContainerStyle, submitButtonStyle } from './styles';
-import { TranscriptFormProps } from './types';
+import { InterviewAnalysisFormProps } from './types';
 
 const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) => (
     <Typography variant="h6" sx={fieldLabelStyle}>
@@ -55,11 +55,12 @@ const formSchema = z
     });
 type FormSchema = z.infer<typeof formSchema>;
 
-export const TranscriptForm = ({ onSubmit: outerOnSubmit, setIsLoading }: TranscriptFormProps) => {
+export const InterviewAnalysisForm = ({ onSubmit: outerOnSubmit }: InterviewAnalysisFormProps) => {
     const { control, formState, handleSubmit, reset, watch, resetField } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         mode: 'onChange',
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         resetField('file');
@@ -68,8 +69,8 @@ export const TranscriptForm = ({ onSubmit: outerOnSubmit, setIsLoading }: Transc
     const onSubmit = async ({ fileType, file }: FormSchema) => {
         setIsLoading(true);
         try {
-            const { transcript } = await analyzeInterview(file, fileType.id);
-            outerOnSubmit(transcript);
+            const { analysis } = await analyzeInterview(file, fileType.id);
+            outerOnSubmit(analysis);
             reset();
         } catch (error) {
             toast.error('Error analyzing interview. Please try again later.');
@@ -120,6 +121,8 @@ export const TranscriptForm = ({ onSubmit: outerOnSubmit, setIsLoading }: Transc
         sx: submitButtonStyle,
         endIcon: <PlayArrowOutlined />,
         onClick: handleSubmit(onSubmit),
+        loading: isLoading,
+        loadingPosition: 'end',
     };
 
     return (

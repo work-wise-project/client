@@ -1,23 +1,15 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import { useState } from 'react';
-import { TranscriptForm } from '../components/TranscriptForm';
-import { TranscriptView } from '../components/TranscriptView';
-import { Transcript } from '../types';
+import { InterviewAnalysisForm, InterviewAnalysisView } from '../components/InterviewAnalysis';
+import { InterviewAnalysis } from '../types';
 
 export const InterviewAnalysisPage = () => {
-    const [transcript, setTranscript] = useState<Transcript>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [analysis, setAnalysis] = useState<InterviewAnalysis | null>(null);
 
     return (
         <Box>
-            <TranscriptForm onSubmit={setTranscript} setIsLoading={setIsLoading} />
-            {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                transcript.length > 0 && <TranscriptView transcript={transcript} />
-            )}
+            <InterviewAnalysisForm onSubmit={setAnalysis} />
+            {analysis && <InterviewAnalysisView {...analysis} />}
         </Box>
     );
 };

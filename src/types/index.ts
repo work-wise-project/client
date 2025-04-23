@@ -1,1 +1,1 @@
-export type { Transcript, TranscriptLine } from './transcript';
+export type { InterviewAnalysis } from './interviewAnalysis';
