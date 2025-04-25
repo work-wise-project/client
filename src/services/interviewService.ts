@@ -1,7 +1,7 @@
 import { InterviewAnalysis, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
 
-export const analyzeInterview = async (file: File, fileType: 'audio' | 'text') => {
+export const analyzeInterview = async (interviewId: string, file: File, fileType: 'audio' | 'text') => {
     const { abort, signal } = new AbortController();
 
     const formData = new FormData();
@@ -10,10 +10,20 @@ export const analyzeInterview = async (file: File, fileType: 'audio' | 'text') =
 
     const {
         data: { analysis },
-    } = await apiClient.post<{ analysis: InterviewAnalysis }>('/interviews/analysis', formData, {
+    } = await apiClient.post<{ analysis: InterviewAnalysis }>(`/interviews/analysis/${interviewId}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         signal,
     });
+
+    return { analysis, abort };
+};
+
+export const getInterviewAnalysis = async (interviewId: string) => {
+    const { abort, signal } = new AbortController();
+
+    const {
+        data: { analysis },
+    } = await apiClient.get<{ analysis: InterviewAnalysis }>(`/interviews/analysis/${interviewId}`, { signal });
 
     return { analysis, abort };
 };

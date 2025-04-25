@@ -13,7 +13,8 @@ const PointList = ({ points, icon }: { points: string[]; icon: ReactNode }) => (
         ))}
     </List>
 );
-export const InterviewAnalysisView = ({ points_to_improve, points_to_preserve }: InterviewAnalysis) => (
+
+export const InterviewAnalysisView = ({ points_to_improve, points_to_preserve }: InterviewAnalysis['analysis']) => (
     <Grid container spacing={3}>
         <Grid size={6}>
             <Card variant="outlined">

@@ -27,8 +27,10 @@ export const fieldActionStyle: SxProps = {
 
 export const submitButtonStyle: SxProps = {
     width: '7%',
+    height: '4.5vh',
+    paddingX: 2,
+    marginTop: 4.75,
     textTransform: 'none',
-    alignSelf: 'flex-end',
     borderRadius: '10px',
     fontSize: '1.05rem',
 };
