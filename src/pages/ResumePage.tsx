@@ -9,6 +9,7 @@ import { HttpStatusCode } from 'axios';
 import { toast } from 'react-toastify';
 import { ResumeView } from '../components/ResumeView/ResumeView';
 import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
+import { useUserContext } from '../context/UserContext';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -30,7 +31,7 @@ export const ResumePage: React.FC = () => {
     const [showGrammarCheckResult, setShowGrammarCheckResult] = useState(false);
     const [loadingAnalyze, setLoadingAnalyze] = useState(false);
     const [loadingGrammarCheck, setLoadingGrammarCheck] = useState(false);
-
+    const { userContext } = useUserContext();
     useEffect(() => {
         return () => {
             setResumeUrl(null);
@@ -50,18 +51,23 @@ export const ResumePage: React.FC = () => {
 
     const uploadFileToServer = async (selectedFile: File) => {
         try {
-            const formData = new FormData();
-            formData.append('resume', selectedFile);
+            if (userContext?.id) {
+                const formData = new FormData();
+                formData.append('resume', selectedFile);
 
-            const { response } = await resumeService.uploadResume(formData);
+                const { response } = await resumeService.uploadResume(userContext.id, formData);
 
-            if (response.status != HttpStatusCode.Ok) {
-                throw new Error('Failed to upload file');
+                if (response.status != HttpStatusCode.Ok) {
+                    throw new Error('Failed to upload file');
+                }
+                const { data } = response;
+                return data.filePath;
+            } else {
+                toast.error('Failed to upload file');
             }
-            const { data } = response;
-            return data.filePath;
         } catch (error) {
-            console.error('Error uploading file:', error);
+            toast.error('Failed to upload file');
+
             throw error;
         }
     };

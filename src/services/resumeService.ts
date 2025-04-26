@@ -6,10 +6,10 @@ export interface IResumeAnalysisResult {
     weaknesses: string[];
 }
 
-const uploadResume = async (formData: FormData) => {
+const uploadResume = async (userId: string, formData: FormData) => {
     const abortController = new AbortController();
 
-    const response = await apiClient.post('/resume/upload-resume', formData, {
+    const response = await apiClient.post(`/resume/${userId}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },

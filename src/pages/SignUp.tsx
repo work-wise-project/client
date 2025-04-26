@@ -4,6 +4,7 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import userService from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
+import ResumeUpload from '../components/SignUp/ResumeUpload';
 import { useUserContext } from '../context/UserContext';
 
 const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
@@ -138,7 +139,7 @@ export const SignUp = () => {
                             <ProfessionalProfile setActiveStep={setActiveStep} currentUserId={currentUserId} />
                         )
                     ) : (
-                        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}></Typography>
+                        currentUserId && <ResumeUpload currentUserId={currentUserId} />
                     )}
                 </Box>
                 {errorMessage && (
