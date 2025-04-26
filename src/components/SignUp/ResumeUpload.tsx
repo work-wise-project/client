@@ -9,6 +9,7 @@ import resumeService from '../../services/resumeService';
 import { useNavigate } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
 import { primaryIconButton } from './styles';
+import { useUserContext } from '../../context/UserContext';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -25,6 +26,7 @@ const VisuallyHiddenInput = styled('input')({
 const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
     const [fileName, setFileName] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { setUserContext } = useUserContext();
 
     const uploadFileToServer = async (selectedFile: File) => {
         try {
@@ -48,7 +50,6 @@ const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
     };
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.files);
         const selectedFile = event.target.files?.[0];
         if (!selectedFile) return;
 
@@ -60,8 +61,8 @@ const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
     };
 
     const handleNext = () => {
-        console.log('Next clicked');
         navigate('/');
+        setUserContext({ id: currentUserId });
     };
 
     return (
