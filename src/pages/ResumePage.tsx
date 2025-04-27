@@ -31,24 +31,28 @@ export const ResumePage: React.FC = () => {
     const [showGrammarCheckResult, setShowGrammarCheckResult] = useState(false);
     const [loadingAnalyze, setLoadingAnalyze] = useState(false);
     const [loadingGrammarCheck, setLoadingGrammarCheck] = useState(false);
+    const [loadingResume, setLoadingResume] = useState(false);
     const { userContext } = useUserContext();
 
-    useEffect(() => {
-        const checkAndLoadResume = async () => {
-            if (userContext?.id) {
-                try {
-                    const { response } = await resumeService.getResumeIfExist(userContext.id);
-                    if (response.data) {
-                        setResumeText(response.data);
-                    } else {
-                        console.log('No resume found for user');
-                    }
-                } catch (error) {
-                    console.error('Error loading existing resume:', error);
+    const checkAndLoadResume = async () => {
+        if (userContext?.id) {
+            try {
+                setLoadingResume(true);
+                const { response } = await resumeService.getResumeIfExist(userContext.id);
+                if (response.data) {
+                    setResumeText(response.data);
+                } else {
+                    console.log('No resume found for user');
                 }
+            } catch (error) {
+                console.error('Error loading existing resume:', error);
+            } finally {
+                setLoadingResume(false);
             }
-        };
+        }
+    };
 
+    useEffect(() => {
         checkAndLoadResume();
 
         return () => {
@@ -97,15 +101,7 @@ export const ResumePage: React.FC = () => {
         try {
             await uploadFileToServer(selectedFile);
             event.target.value = '';
-            if (userContext?.id) {
-                const { response } = await resumeService.getResumeIfExist(userContext.id);
-                if (response.data) {
-                    setResumeText(response.data); // Update the resume text state
-                } else {
-                    console.log('No resume found for user');
-                    setResumeText(null); // In case no resume is found
-                }
-            }
+            await checkAndLoadResume();
         } catch (error) {
             console.error('Error handling file change:', error);
             setResumeText(null);
@@ -187,7 +183,7 @@ export const ResumePage: React.FC = () => {
 
             <Grid container spacing={3}>
                 <Grid size={{ xs: 5, md: 5 }}>
-                    <ResumeView resumeText={resumeText} />
+                    <ResumeView resumeText={resumeText} loading={loadingResume} />
                 </Grid>
 
                 <Grid
