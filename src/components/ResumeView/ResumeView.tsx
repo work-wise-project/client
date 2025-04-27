@@ -9,7 +9,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.m
 
 export const ResumeView = ({ resumeUrl }: ResumeViewTypes) => {
     const [numPages, setNumPages] = useState<number | null>(null);
-
     return (
         <>
             <Paper

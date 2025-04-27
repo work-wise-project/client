@@ -19,15 +19,15 @@ const uploadResume = async (userId: string, formData: FormData) => {
     return { response, abort: () => abortController.abort() };
 };
 
-const analyzeResume = async (fileUrl: string) => {
+const analyzeResume = async (userId: string) => {
     const abortController = new AbortController();
-    const responseResume = await apiClient.post('/resume/analyze-resume', { fileUrl });
+    const responseResume = await apiClient.post(`/resume/analyze-resume/${userId}`);
     return { responseResume, abort: () => abortController.abort() };
 };
 
-const checkResumeGrammar = async (fileUrl: string) => {
+const checkResumeGrammar = async (userId: string) => {
     const abortController = new AbortController();
-    const responseCheckGrammar = await apiClient.post('/resume/check-grammar', { fileUrl });
+    const responseCheckGrammar = await apiClient.post(`/resume/check-grammar/${userId}`);
     return { responseCheckGrammar, abort: () => abortController.abort() };
 };
 

@@ -60,10 +60,10 @@ export const ResumePage: React.FC = () => {
                 if (response.status != HttpStatusCode.Ok) {
                     throw new Error('Failed to upload file');
                 }
-                const { data } = response;
-                return data.filePath;
+
+                return response.data;
             } else {
-                toast.error('Failed to upload file');
+                toast.error('No user conected');
             }
         } catch (error) {
             toast.error('Failed to upload file');
@@ -92,17 +92,21 @@ export const ResumePage: React.FC = () => {
         }
         setLoadingAnalyze(true);
         try {
-            if (!resumeAnalysisResult) {
-                const { responseResume } = await resumeService.analyzeResume(resumeUrl);
-                if (responseResume.status !== HttpStatusCode.Ok) {
-                    throw new Error('Failed to analyze file');
-                }
-                const parsedData = JSON.parse(responseResume.data);
+            if (userContext?.id) {
+                if (!resumeAnalysisResult) {
+                    const { responseResume } = await resumeService.analyzeResume(userContext.id);
+                    if (responseResume.status !== HttpStatusCode.Ok) {
+                        throw new Error('Failed to analyze file');
+                    }
+                    const parsedData = JSON.parse(responseResume.data);
 
-                setResumeAnalysisResult(parsedData);
+                    setResumeAnalysisResult(parsedData);
+                }
+                setShowAnalyzeResult(true);
+                setShowGrammarCheckResult(false);
+            } else {
+                toast.error('No user conected');
             }
-            setShowAnalyzeResult(true);
-            setShowGrammarCheckResult(false);
         } catch (error) {
             console.error('Error analyzing file:', error);
             toast.error('Failed to analyze file');
@@ -118,15 +122,19 @@ export const ResumePage: React.FC = () => {
         }
         setLoadingGrammarCheck(true);
         try {
-            if (!grammarCheckResult) {
-                const { responseCheckGrammar } = await resumeService.checkResumeGrammar(resumeUrl);
-                if (responseCheckGrammar.status !== HttpStatusCode.Ok) {
-                    throw new Error('Failed to check grammar');
+            if (userContext?.id) {
+                if (!grammarCheckResult) {
+                    const { responseCheckGrammar } = await resumeService.checkResumeGrammar(userContext.id);
+                    if (responseCheckGrammar.status !== HttpStatusCode.Ok) {
+                        throw new Error('Failed to check grammar');
+                    }
+                    setGrammarCheckResult(responseCheckGrammar.data);
                 }
-                setGrammarCheckResult(responseCheckGrammar.data);
+                setShowAnalyzeResult(false);
+                setShowGrammarCheckResult(true);
+            } else {
+                toast.error('No user conected');
             }
-            setShowAnalyzeResult(false);
-            setShowGrammarCheckResult(true);
         } catch (error) {
             console.error('Error checking grammar:', error);
             toast.error('Failed to check grammar');
