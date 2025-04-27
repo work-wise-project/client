@@ -1,3 +1,4 @@
+import { InterviewData } from '../components/Interview/types';
 import { Transcript, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
 
@@ -16,6 +17,12 @@ export const analyzeInterview = async (file: File, fileType: 'audio' | 'text') =
     });
 
     return { transcript, abort };
+};
+
+export const createInterview = async (interview: InterviewData) => {
+    const { data } = await apiClient.post('/datamanager/proxy/interviews', interview);
+
+    return data;
 };
 
 export const getScheduledInterviews = async (userId: string): Promise<InterviewsSchedule> => {
