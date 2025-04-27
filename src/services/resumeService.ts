@@ -5,6 +5,15 @@ export interface IResumeAnalysisResult {
     strengths: string[];
     weaknesses: string[];
 }
+const getResumeIfExist = async (userId: string) => {
+    const abortController = new AbortController();
+
+    const response = await apiClient.get(`/resume/${userId}`, {
+        signal: abortController.signal,
+    });
+
+    return { response, abort: () => abortController.abort() };
+};
 
 const uploadResume = async (userId: string, formData: FormData) => {
     const abortController = new AbortController();
@@ -35,4 +44,5 @@ export default {
     uploadResume,
     analyzeResume,
     checkResumeGrammar,
+    getResumeIfExist,
 };

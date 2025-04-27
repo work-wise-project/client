@@ -1,3 +1,3 @@
 export type ResumeViewTypes = {
-    resumeUrl: string | null;
+    resumeText: string | null;
 };

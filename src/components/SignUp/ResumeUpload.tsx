@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Box, Button, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import { FieldLabel } from '../TranscriptForm/TranscriptForm';
@@ -10,18 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
 import { primaryIconButton } from './styles';
 import { useUserContext } from '../../context/UserContext';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
+import { VisuallyHiddenInput } from '../../pages/ResumePage';
 
 const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
     const [fileName, setFileName] = useState<string | null>(null);
@@ -55,6 +43,7 @@ const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
 
         try {
             await uploadFileToServer(selectedFile);
+            event.target.value = '';
         } catch (error) {
             console.error('Error handling file change:', error);
         }

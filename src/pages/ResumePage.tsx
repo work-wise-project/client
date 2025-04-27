@@ -11,7 +11,7 @@ import { ResumeView } from '../components/ResumeView/ResumeView';
 import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
 import { useUserContext } from '../context/UserContext';
 
-const VisuallyHiddenInput = styled('input')({
+export const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
     height: 1,
@@ -24,7 +24,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export const ResumePage: React.FC = () => {
-    const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+    const [resumeText, setResumeText] = useState<string | null>(null);
     const [resumeAnalysisResult, setResumeAnalysisResult] = useState<IResumeAnalysisResult | null>(null);
     const [grammarCheckResult, setGrammarCheckResult] = useState<string | null>(null);
     const [showAnalyzeResult, setShowAnalyzeResult] = useState(false);
@@ -32,22 +32,40 @@ export const ResumePage: React.FC = () => {
     const [loadingAnalyze, setLoadingAnalyze] = useState(false);
     const [loadingGrammarCheck, setLoadingGrammarCheck] = useState(false);
     const { userContext } = useUserContext();
+
     useEffect(() => {
+        const checkAndLoadResume = async () => {
+            if (userContext?.id) {
+                try {
+                    const { response } = await resumeService.getResumeIfExist(userContext.id);
+                    if (response.data) {
+                        setResumeText(response.data);
+                    } else {
+                        console.log('No resume found for user');
+                    }
+                } catch (error) {
+                    console.error('Error loading existing resume:', error);
+                }
+            }
+        };
+
+        checkAndLoadResume();
+
         return () => {
-            setResumeUrl(null);
+            setResumeText(null);
             setResumeAnalysisResult(null);
             setGrammarCheckResult(null);
             setShowAnalyzeResult(false);
             setShowGrammarCheckResult(false);
         };
-    }, []);
+    }, [userContext?.id]);
 
     useEffect(() => {
         setGrammarCheckResult(null);
         setResumeAnalysisResult(null);
         setShowAnalyzeResult(false);
         setShowGrammarCheckResult(false);
-    }, [resumeUrl]);
+    }, [resumeText]);
 
     const uploadFileToServer = async (selectedFile: File) => {
         try {
@@ -77,16 +95,25 @@ export const ResumePage: React.FC = () => {
         if (!selectedFile) return;
 
         try {
-            const fileUrl = await uploadFileToServer(selectedFile);
-            setResumeUrl(fileUrl);
+            await uploadFileToServer(selectedFile);
+            event.target.value = '';
+            if (userContext?.id) {
+                const { response } = await resumeService.getResumeIfExist(userContext.id);
+                if (response.data) {
+                    setResumeText(response.data); // Update the resume text state
+                } else {
+                    console.log('No resume found for user');
+                    setResumeText(null); // In case no resume is found
+                }
+            }
         } catch (error) {
             console.error('Error handling file change:', error);
-            setResumeUrl(null);
+            setResumeText(null);
         }
     };
 
     const onAnalyzeClick = async () => {
-        if (!resumeUrl) {
+        if (!resumeText) {
             toast.info('Please upload a resume first');
             return;
         }
@@ -116,7 +143,7 @@ export const ResumePage: React.FC = () => {
     };
 
     const onGrammarCheckClicked = async () => {
-        if (!resumeUrl) {
+        if (!resumeText) {
             toast.info('Please upload a resume first');
             return;
         }
@@ -154,13 +181,13 @@ export const ResumePage: React.FC = () => {
                     startIcon={<CloudUploadIcon />}
                 >
                     Upload Your Resume
-                    <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+                    <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
                 </Button>
             </Box>
 
             <Grid container spacing={3}>
                 <Grid size={{ xs: 5, md: 5 }}>
-                    <ResumeView resumeUrl={resumeUrl} />
+                    <ResumeView resumeText={resumeText} />
                 </Grid>
 
                 <Grid
