@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
-import { FieldLabel } from '../TranscriptForm/TranscriptForm';
+import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { HttpStatusCode } from 'axios';
 import resumeService from '../../services/resumeService';
 import { useNavigate } from 'react-router-dom';

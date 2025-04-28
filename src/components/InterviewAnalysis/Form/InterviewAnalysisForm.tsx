@@ -20,14 +20,12 @@ import {
     TextFieldProps,
     Typography,
 } from '@mui/material';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Controller, FieldError, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { z } from 'zod';
-import { ALLOWED_FILE_TYPES, FileType, fileTypeOptions } from '../../constants';
-import { analyzeInterview } from '../../services/interviewService';
+import { FileType, fileTypeOptions } from '../../../constants';
+import { FormSchema, formSchema } from './formSchema';
 import { fieldActionStyle, fieldLabelStyle, fieldStyle, formContainerStyle, submitButtonStyle } from './styles';
-import { TranscriptFormProps } from './types';
+import { InterviewAnalysisFormProps } from './types';
 
 export const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) => (
     <Typography variant="h6" sx={fieldLabelStyle}>
@@ -36,46 +34,30 @@ export const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) 
     </Typography>
 );
 
-const formSchema = z
-    .object({
-        fileType: z.union([
-            z.object({ id: z.literal('audio'), name: z.literal('Audio') }, { message: 'File type is required' }),
-            z.object({ id: z.literal('text'), name: z.literal('Text') }),
-        ]),
-        file: z.instanceof(File, { message: 'File is required' }),
-    })
-    .superRefine(({ file, fileType: { id: fileType } }, context) => {
-        if (!ALLOWED_FILE_TYPES[fileType].includes(file.type)) {
-            context.addIssue({
-                path: ['file'],
-                message: `Only ${fileType} files are allowed`,
-                code: z.ZodIssueCode.custom,
-            });
-        }
-    });
-type FormSchema = z.infer<typeof formSchema>;
-
-export const TranscriptForm = ({ onSubmit: outerOnSubmit, setIsLoading }: TranscriptFormProps) => {
+export const InterviewAnalysisForm = ({ onSubmit, analysis }: InterviewAnalysisFormProps) => {
     const { control, formState, handleSubmit, reset, watch, resetField } = useForm<FormSchema>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(formSchema(analysis?.file_name, analysis?.file_type)),
         mode: 'onChange',
     });
+    const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        if (analysis) {
+            const type = analysis.file_type === 'audio' ? 'audio/mp3' : 'text/plain';
+            reset({
+                fileType: fileTypeOptions.find(({ id }) => id === analysis.file_type) as FormSchema['fileType'],
+                file: analysis.file_name ? new File([], analysis.file_name, { type }) : undefined,
+            });
+        }
+    }, [analysis, reset]);
     useEffect(() => {
         resetField('file');
     }, [watch('fileType'), resetField]);
 
-    const onSubmit = async ({ fileType, file }: FormSchema) => {
+    const onFormSubmit = async ({ fileType, file }: FormSchema) => {
         setIsLoading(true);
-        try {
-            const { transcript } = await analyzeInterview(file, fileType.id);
-            outerOnSubmit(transcript);
-            reset();
-        } catch (error) {
-            toast.error('Error analyzing interview. Please try again later.');
-        } finally {
-            setIsLoading(false);
-        }
+        await onSubmit(fileType.id, file);
+        setIsLoading(false);
     };
 
     const fileTypeTextFieldProps = (params: AutocompleteRenderInputParams, error?: FieldError): TextFieldProps => ({
@@ -119,7 +101,9 @@ export const TranscriptForm = ({ onSubmit: outerOnSubmit, setIsLoading }: Transc
         disabled: !formState.isValid,
         sx: submitButtonStyle,
         endIcon: <PlayArrowOutlined />,
-        onClick: handleSubmit(onSubmit),
+        onClick: handleSubmit(onFormSubmit),
+        loading: isLoading,
+        loadingPosition: 'end',
     };
 
     return (

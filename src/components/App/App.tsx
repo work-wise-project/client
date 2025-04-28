@@ -1,16 +1,16 @@
 import { Box, CircularProgress } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useEffect, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 import {
+    HomePage,
     InterviewAnalysisPage,
     InterviewPreparationPage,
     Login,
     ResumePage,
     SignUp,
     WelcomePage,
-    HomePage,
 } from '../../pages';
 import userService from '../../services/userService';
 import { NavBar } from '../NavBar';
@@ -75,10 +75,10 @@ export const App = () => {
                             <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
                             <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
                             <Route path="/resume" element={<ProtectedRoute component={<ResumePage />} />} />
-                            <Route
-                                path="/interviewAnalysis"
-                                element={<ProtectedRoute component={<InterviewAnalysisPage />} />}
-                            />
+                            <Route path="/interviewAnalysis" element={<ProtectedRoute component={<Outlet />} />}>
+                                {/* <Route index element={<InterviewChooser />} /> */}
+                                <Route path=":interviewId" element={<InterviewAnalysisPage />} />
+                            </Route>
                             <Route
                                 path="/interviewPreparation"
                                 element={<ProtectedRoute component={<InterviewPreparationPage />} />}

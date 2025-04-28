@@ -1,4 +1,4 @@
-export type { Transcript, TranscriptLine } from './transcript';
+export type { InterviewAnalysis } from './interviewAnalysis';
 export type { UserCareer } from './UserCareer';
 export type { UserSkill } from './UserSkill';
 export type { UserEducation } from './UserEducation';

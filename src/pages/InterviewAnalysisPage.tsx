@@ -1,23 +1,39 @@
-import { Box, CircularProgress } from '@mui/material';
-import { useState } from 'react';
-import { TranscriptForm } from '../components/TranscriptForm';
-import { TranscriptView } from '../components/TranscriptView';
-import { Transcript } from '../types';
+import { Box } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { InterviewAnalysisForm, InterviewAnalysisView } from '../components/InterviewAnalysis';
+import { analyzeInterview, getInterviewAnalysis } from '../services/interviewService';
+import { InterviewAnalysis } from '../types';
 
 export const InterviewAnalysisPage = () => {
-    const [transcript, setTranscript] = useState<Transcript>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const { interviewId } = useParams();
+    if (!interviewId) {
+        navigate('/interviewAnalysis');
+        return <></>;
+    }
+
+    const [analysis, setAnalysis] = useState<InterviewAnalysis | null>(null);
+
+    useEffect(() => {
+        (async () => {
+            setAnalysis((await getInterviewAnalysis(interviewId)).analysis);
+        })();
+    }, [setAnalysis]);
+
+    const onSubmit = async (fileType: InterviewAnalysis['file_type'], file: File) => {
+        try {
+            setAnalysis((await analyzeInterview(interviewId, file, fileType)).analysis);
+        } catch (error) {
+            toast.error('Error analyzing interview. Please try again later.');
+        }
+    };
 
     return (
         <Box>
-            <TranscriptForm onSubmit={setTranscript} setIsLoading={setIsLoading} />
-            {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                transcript.length > 0 && <TranscriptView transcript={transcript} />
-            )}
+            <InterviewAnalysisForm onSubmit={onSubmit} analysis={analysis} />
+            {analysis && <InterviewAnalysisView {...analysis.analysis} />}
         </Box>
     );
 };

@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Box,
-    Container,
-    Typography,
-    TextField,
-    IconButton,
-    FormControl,
-    Autocomplete,
-    AutocompleteProps,
-    AutocompleteRenderInputParams,
-    TextFieldProps,
-    OutlinedInput,
-} from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PsychologyIcon from '@mui/icons-material/Psychology';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import SchoolIcon from '@mui/icons-material/School';
 import WorkIcon from '@mui/icons-material/Work';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import { FieldLabel } from '../TranscriptForm/TranscriptForm';
+import {
+    Autocomplete,
+    AutocompleteProps,
+    AutocompleteRenderInputParams,
+    Box,
+    Container,
+    FormControl,
+    IconButton,
+    OutlinedInput,
+    TextField,
+    TextFieldProps,
+    Typography,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
-import { Controller, FieldError, useFieldArray, useForm } from 'react-hook-form';
-import { fieldActionStyle, fieldStyle } from '../TranscriptForm/styles';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { primaryIconButton } from './styles';
-import skillService from '../../services/skillService';
-import { HttpStatusCode } from 'axios';
-import userService from '../../services/userService';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { HttpStatusCode } from 'axios';
+import { Controller, FieldError, useFieldArray, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import skillService from '../../services/skillService';
+import userService from '../../services/userService';
 import { ISkill, UserCareer, UserEducation, UserSkill } from '../../types';
+import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
+import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
+import { primaryIconButton } from './styles';
 
 const yearSchema = z.coerce
     .number({
