@@ -1,14 +1,41 @@
-import { FC, useState } from 'react';
-import { Typography, Link, Box, Container, Stepper, Step, StepLabel } from '@mui/material';
+import { useState } from 'react';
+import { Typography, Link, Box, Container, Stepper, Step, StepLabel, StepIconProps } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import userService, { IUser } from '../services/userService';
+import userService from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
+import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
+import { useUserContext } from '../context/UserContext';
 
-export const SignUp: FC<{
-    handleLoginSuccess: (responseLogin: { accessToken: string; refreshToken: string; user: IUser }) => void;
-}> = ({ handleLoginSuccess }) => {
+const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
+    const bgColor = active || completed ? '#1976d2' : '#ccc'; // Blue if active/completed
+    const textColor = active || completed ? '#fff' : '#000'; // White number or black if inactive
+
+    return (
+        <div
+            style={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                backgroundColor: bgColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: textColor,
+                fontWeight: 'bold',
+                fontSize: '1.3rem',
+            }}
+        >
+            {icon}
+        </div>
+    );
+};
+
+export const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+    const { setLocalStorage } = useUserContext();
 
+    const [activeStep, setActiveStep] = useState<number>(0);
     const googleResponseMessage = async (credentialResponse: CredentialResponse) => {
         setErrorMessage(null);
         if (!credentialResponse?.credential) {
@@ -18,7 +45,9 @@ export const SignUp: FC<{
         try {
             const { response } = await userService.googleRegister(credentialResponse);
             if (response.status === HttpStatusCode.Ok) {
-                handleLoginSuccess(response.data);
+                setLocalStorage(response.data);
+                setCurrentUserId(response.data.user.id);
+                setActiveStep((prev) => prev + 1);
                 setErrorMessage(null);
             } else {
                 setErrorMessage('Google login failed. Please try again.');
@@ -37,6 +66,13 @@ export const SignUp: FC<{
 
     const steps = ['1', '2', '3'];
 
+    const getStepTitle = () =>
+        activeStep === 0
+            ? 'Create account - Google sign in'
+            : activeStep === 1
+            ? 'Create account - Professional profile'
+            : 'Create account - Resume upload (optional)';
+
     return (
         <Container
             maxWidth="lg"
@@ -48,26 +84,62 @@ export const SignUp: FC<{
                 alignItems: 'center',
             }}
         >
-            <Box sx={{ textAlign: 'center', mt: 8 }}>
-                <Typography variant="h4" fontWeight="bold" gutterBottom>
-                    Create account - Google sign in
-                </Typography>
+            <Box sx={{ textAlign: 'center' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: '100%',
+                        mb: 2,
+                    }}
+                >
+                    <Stepper activeStep={activeStep} sx={{ width: 500 }}>
+                        {steps.map((label) => (
+                            <Step key={label}>
+                                <StepLabel StepIconComponent={CustomStepIcon} />
+                            </Step>
+                        ))}
+                    </Stepper>
+                </Box>
 
-                <Stepper alternativeLabel activeStep={0} sx={{ justifyContent: 'center', mt: 3, mb: 3 }}>
-                    {steps.map((label) => (
-                        <Step key={label}>
-                            <StepLabel></StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-                    <GoogleLogin
-                        onSuccess={googleResponseMessage}
-                        onError={() => setErrorMessage('Google login failed.')}
-                        theme="outline"
-                        size="large"
-                        shape="pill"
-                    />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        mt: 2,
+                        flexDirection: 'column',
+                    }}
+                >
+                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
+                        {getStepTitle()}
+                    </Typography>
+                    {activeStep === 0 ? (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <Box sx={{ width: 220, mt: 5 }}>
+                                <GoogleLogin
+                                    onSuccess={googleResponseMessage}
+                                    onError={() => setErrorMessage('Google login failed.')}
+                                    theme="outline"
+                                    size="large"
+                                    shape="pill"
+                                />
+                            </Box>
+                        </Box>
+                    ) : activeStep === 1 ? (
+                        currentUserId && (
+                            <ProfessionalProfile setActiveStep={setActiveStep} currentUserId={currentUserId} />
+                        )
+                    ) : (
+                        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}></Typography>
+                    )}
                 </Box>
                 {errorMessage && (
                     <Typography color="error" sx={{ mt: 1 }}>

@@ -1,8 +1,9 @@
 import { FC, useState } from 'react';
 import { Typography, Link, Box, Container } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import userService, { IUser } from '../services/userService';
+import userService from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
+import { IUser } from '../types';
 
 export const Login: FC<{
     handleLoginSuccess: (responseLogin: { accessToken: string; refreshToken: string; user: IUser }) => void;
