@@ -9,8 +9,9 @@ import { HttpStatusCode } from 'axios';
 import { toast } from 'react-toastify';
 import { ResumeView } from '../components/ResumeView/ResumeView';
 import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
+import { useUserContext } from '../context/UserContext';
 
-const VisuallyHiddenInput = styled('input')({
+export const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
     height: 1,
@@ -23,45 +24,72 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export const ResumePage: React.FC = () => {
-    const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+    const [resumeText, setResumeText] = useState<string | null>(null);
     const [resumeAnalysisResult, setResumeAnalysisResult] = useState<IResumeAnalysisResult | null>(null);
     const [grammarCheckResult, setGrammarCheckResult] = useState<string | null>(null);
     const [showAnalyzeResult, setShowAnalyzeResult] = useState(false);
     const [showGrammarCheckResult, setShowGrammarCheckResult] = useState(false);
     const [loadingAnalyze, setLoadingAnalyze] = useState(false);
     const [loadingGrammarCheck, setLoadingGrammarCheck] = useState(false);
+    const [loadingResume, setLoadingResume] = useState(false);
+    const { userContext } = useUserContext();
+
+    const checkAndLoadResume = async () => {
+        if (userContext?.id) {
+            try {
+                setLoadingResume(true);
+                const { response } = await resumeService.getResumeIfExist(userContext.id);
+                if (response.data) {
+                    setResumeText(response.data);
+                } else {
+                    console.log('No resume found for user');
+                }
+            } catch (error) {
+                console.error('Error loading existing resume:', error);
+            } finally {
+                setLoadingResume(false);
+            }
+        }
+    };
 
     useEffect(() => {
+        checkAndLoadResume();
+
         return () => {
-            setResumeUrl(null);
+            setResumeText(null);
             setResumeAnalysisResult(null);
             setGrammarCheckResult(null);
             setShowAnalyzeResult(false);
             setShowGrammarCheckResult(false);
         };
-    }, []);
+    }, [userContext?.id]);
 
     useEffect(() => {
         setGrammarCheckResult(null);
         setResumeAnalysisResult(null);
         setShowAnalyzeResult(false);
         setShowGrammarCheckResult(false);
-    }, [resumeUrl]);
+    }, [resumeText]);
 
     const uploadFileToServer = async (selectedFile: File) => {
         try {
-            const formData = new FormData();
-            formData.append('resume', selectedFile);
+            if (userContext?.id) {
+                const formData = new FormData();
+                formData.append('resume', selectedFile);
 
-            const { response } = await resumeService.uploadResume(formData);
+                const { response } = await resumeService.uploadResume(userContext.id, formData);
 
-            if (response.status != HttpStatusCode.Ok) {
-                throw new Error('Failed to upload file');
+                if (response.status != HttpStatusCode.Ok) {
+                    throw new Error('Failed to upload file');
+                }
+
+                return response.data;
+            } else {
+                toast.error('No user conected');
             }
-            const { data } = response;
-            return data.filePath;
         } catch (error) {
-            console.error('Error uploading file:', error);
+            toast.error('Failed to upload file');
+
             throw error;
         }
     };
@@ -71,32 +99,37 @@ export const ResumePage: React.FC = () => {
         if (!selectedFile) return;
 
         try {
-            const fileUrl = await uploadFileToServer(selectedFile);
-            setResumeUrl(fileUrl);
+            await uploadFileToServer(selectedFile);
+            event.target.value = '';
+            await checkAndLoadResume();
         } catch (error) {
             console.error('Error handling file change:', error);
-            setResumeUrl(null);
+            setResumeText(null);
         }
     };
 
     const onAnalyzeClick = async () => {
-        if (!resumeUrl) {
+        if (!resumeText) {
             toast.info('Please upload a resume first');
             return;
         }
         setLoadingAnalyze(true);
         try {
-            if (!resumeAnalysisResult) {
-                const { responseResume } = await resumeService.analyzeResume(resumeUrl);
-                if (responseResume.status !== HttpStatusCode.Ok) {
-                    throw new Error('Failed to analyze file');
-                }
-                const parsedData = JSON.parse(responseResume.data);
+            if (userContext?.id) {
+                if (!resumeAnalysisResult) {
+                    const { responseResume } = await resumeService.analyzeResume(userContext.id);
+                    if (responseResume.status !== HttpStatusCode.Ok) {
+                        throw new Error('Failed to analyze file');
+                    }
+                    const parsedData = JSON.parse(responseResume.data);
 
-                setResumeAnalysisResult(parsedData);
+                    setResumeAnalysisResult(parsedData);
+                }
+                setShowAnalyzeResult(true);
+                setShowGrammarCheckResult(false);
+            } else {
+                toast.error('No user conected');
             }
-            setShowAnalyzeResult(true);
-            setShowGrammarCheckResult(false);
         } catch (error) {
             console.error('Error analyzing file:', error);
             toast.error('Failed to analyze file');
@@ -106,21 +139,25 @@ export const ResumePage: React.FC = () => {
     };
 
     const onGrammarCheckClicked = async () => {
-        if (!resumeUrl) {
+        if (!resumeText) {
             toast.info('Please upload a resume first');
             return;
         }
         setLoadingGrammarCheck(true);
         try {
-            if (!grammarCheckResult) {
-                const { responseCheckGrammar } = await resumeService.checkResumeGrammar(resumeUrl);
-                if (responseCheckGrammar.status !== HttpStatusCode.Ok) {
-                    throw new Error('Failed to check grammar');
+            if (userContext?.id) {
+                if (!grammarCheckResult) {
+                    const { responseCheckGrammar } = await resumeService.checkResumeGrammar(userContext.id);
+                    if (responseCheckGrammar.status !== HttpStatusCode.Ok) {
+                        throw new Error('Failed to check grammar');
+                    }
+                    setGrammarCheckResult(responseCheckGrammar.data);
                 }
-                setGrammarCheckResult(responseCheckGrammar.data);
+                setShowAnalyzeResult(false);
+                setShowGrammarCheckResult(true);
+            } else {
+                toast.error('No user conected');
             }
-            setShowAnalyzeResult(false);
-            setShowGrammarCheckResult(true);
         } catch (error) {
             console.error('Error checking grammar:', error);
             toast.error('Failed to check grammar');
@@ -140,13 +177,13 @@ export const ResumePage: React.FC = () => {
                     startIcon={<CloudUploadIcon />}
                 >
                     Upload Your Resume
-                    <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+                    <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
                 </Button>
             </Box>
 
             <Grid container spacing={3}>
                 <Grid size={{ xs: 5, md: 5 }}>
-                    <ResumeView resumeUrl={resumeUrl} />
+                    <ResumeView resumeText={resumeText} loading={loadingResume} />
                 </Grid>
 
                 <Grid
