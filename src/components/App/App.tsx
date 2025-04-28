@@ -12,9 +12,10 @@ import {
     SignUp,
     WelcomePage,
 } from '../../pages';
-import userService, { IUser } from '../../services/userService';
+import userService from '../../services/userService';
 import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
+import { IUser } from '../../types';
 
 export const App = () => {
     const { setUserContext, storeUserSession } = useUserContext();
