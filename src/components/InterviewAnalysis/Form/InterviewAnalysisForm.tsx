@@ -27,7 +27,7 @@ import { FormSchema, formSchema } from './formSchema';
 import { fieldActionStyle, fieldLabelStyle, fieldStyle, formContainerStyle, submitButtonStyle } from './styles';
 import { InterviewAnalysisFormProps } from './types';
 
-const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) => (
+export const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) => (
     <Typography variant="h6" sx={fieldLabelStyle}>
         {icon}
         {label}

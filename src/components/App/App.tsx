@@ -71,10 +71,7 @@ export const App = () => {
                                 path="/login"
                                 element={<PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />}
                             />
-                            <Route
-                                path="/signup"
-                                element={<PublicRoute component={<SignUp handleLoginSuccess={handleLoginSuccess} />} />}
-                            />
+                            <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
                             <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
                             <Route path="/resume" element={<ProtectedRoute component={<ResumePage />} />} />
                             <Route path="/interviewAnalysis" element={<ProtectedRoute component={<Outlet />} />}>
