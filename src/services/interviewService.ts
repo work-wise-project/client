@@ -1,6 +1,6 @@
+import { InterviewData } from '../components/Interview/types';
 import { InterviewAnalysis, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
-
 export const analyzeInterview = async (interviewId: string, file: File, fileType: 'audio' | 'text') => {
     const { abort, signal } = new AbortController();
 
@@ -26,6 +26,12 @@ export const getInterviewAnalysis = async (interviewId: string) => {
     } = await apiClient.get<{ analysis: InterviewAnalysis }>(`/interviews/analysis/${interviewId}`, { signal });
 
     return { analysis, abort };
+};
+
+export const createInterview = async (interview: InterviewData) => {
+    const { data } = await apiClient.post('/datamanager/proxy/interviews', interview);
+
+    return data;
 };
 
 export const getScheduledInterviews = async (userId: string): Promise<InterviewsSchedule> => {
