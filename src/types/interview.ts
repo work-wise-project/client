@@ -1,7 +1,9 @@
 export type Interview = {
     id: string;
-    time: string;
-    company: string;
+    user: string;
+    date: string;
+    title: string;
+    job_link: string;
 };
 
 export type InterviewsSchedule = Map<string, Interview[]>;

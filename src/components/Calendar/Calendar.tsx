@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { CalendarGlobalStyles, Dot } from './styledComponents';
 import { InterviewDialog } from './InterviewDialog';
 import { InterviewsSchedule } from '../../types';
 import { dateFormatter } from './types';
-import { createInterview, getScheduledInterviews } from '../../services/interviewService';
+import { createInterview, deleteInterview, getScheduledInterviews } from '../../services/interviewService';
 import { useUserContext } from '../../context/UserContext';
 import 'react-calendar/dist/Calendar.css';
 import { AddInterviewButton } from '../Interview/AddInterviewButton';
@@ -33,7 +33,23 @@ export const CalendarComponent = () => {
     }, []);
 
     const handleAddInterview = async (newInterview: InterviewData) => {
-        await createInterview(newInterview);
+        const interviewResponse = await createInterview(newInterview);
+        const key = dateFormatter(new Date(newInterview.date));
+        setScheduledInterviews((prev) => {
+            if (prev) {
+                const updatedInterviews = new Map(prev);
+                if (
+                    updatedInterviews.has(key) &&
+                    !updatedInterviews.get(key)?.find((i) => i.id === interviewResponse.id)
+                ) {
+                    updatedInterviews.get(key)?.push(interviewResponse);
+                } else {
+                    updatedInterviews.set(key, [interviewResponse]);
+                }
+                return updatedInterviews;
+            }
+            return null;
+        });
     };
 
     const handleDateClick = (date: Date) => {
@@ -47,6 +63,27 @@ export const CalendarComponent = () => {
     const closeInterviewDialog = () => {
         setIsInterviewDialogVisible(false);
     };
+
+    const handleDeleteInterview = useCallback(async (interviewId: string) => {
+        console.log('Deleting interview with ID:', interviewId);
+        await deleteInterview(interviewId);
+
+        setScheduledInterviews((prev) => {
+            if (prev) {
+                const updatedInterviews = new Map(prev);
+                updatedInterviews.forEach((interviews, date) => {
+                    const filteredInterviews = interviews.filter((interview) => interview.id !== interviewId);
+                    if (filteredInterviews.length > 0) {
+                        updatedInterviews.set(date, filteredInterviews);
+                    } else {
+                        updatedInterviews.delete(date);
+                    }
+                });
+                return updatedInterviews;
+            }
+            return null;
+        });
+    }, []);
 
     return (
         <>
@@ -70,6 +107,7 @@ export const CalendarComponent = () => {
                 handleClose={closeInterviewDialog}
                 selectedDate={selectedDate}
                 interviews={scheduledInterviews}
+                deleteInterview={handleDeleteInterview}
             />
             {showModal && <AddInterviewModal onClose={() => setShowModal(false)} onAdd={handleAddInterview} />}
         </>

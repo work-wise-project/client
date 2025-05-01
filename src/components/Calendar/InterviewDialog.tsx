@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Menu, MenuItem } from '@mui/material';
+import moment from 'moment';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, dateFormatter } from './types';
 
-export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }: InterviewDialogProps) => {
+export const InterviewDialog = ({
+    open,
+    handleClose,
+    selectedDate,
+    interviews,
+    deleteInterview,
+}: InterviewDialogProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedInterview, setSelectedInterview] = useState<string | null>(null);
 
@@ -18,10 +25,30 @@ export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }:
         setSelectedInterview(null);
     };
 
-    const handleAction = (action: string) => {
-        console.log(`${action} for ${selectedInterview}`);
-        handleCloseMenu();
-    };
+    const handleAction = useCallback(
+        async (action: string) => {
+            if (!selectedInterview) {
+                alert('No interview selected');
+                return;
+            }
+            switch (action) {
+                case 'Analysis':
+                    // Handle analysis action
+                    break;
+                case 'Preparation':
+                    // Handle preparation action
+                    break;
+                case 'Delete':
+                    handleCloseMenu();
+                    await deleteInterview(selectedInterview);
+                    break;
+                default:
+                    alert('Invalid action');
+            }
+            handleCloseMenu();
+        },
+        [selectedInterview]
+    );
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -32,27 +59,30 @@ export const InterviewDialog = ({ open, handleClose, selectedDate, interviews }:
                 <List>
                     {selectedDate &&
                         interviews &&
-                        interviews.get(dateFormatter(selectedDate))?.map((event, index) => (
-                            <ListItem
-                                key={event.id}
-                                sx={listItemStyled}
-                                secondaryAction={
-                                    <IconButton
-                                        edge="end"
-                                        onClick={(e) => handleExpandClick(e, event.company)}
-                                        aria-label="more"
-                                    >
-                                        <ArrowForwardIosIcon color="secondary" />
-                                    </IconButton>
-                                }
-                            >
-                                <ListItemText
-                                    primary={event.company}
-                                    secondary={event.time}
-                                    slotProps={listItemTextStyled}
-                                />
-                            </ListItem>
-                        ))}
+                        interviews
+                            .get(dateFormatter(selectedDate))
+                            ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                            .map((event, _index) => (
+                                <ListItem
+                                    key={event.id}
+                                    sx={listItemStyled}
+                                    secondaryAction={
+                                        <IconButton
+                                            edge="end"
+                                            onClick={(e) => handleExpandClick(e, event.id)}
+                                            aria-label="more"
+                                        >
+                                            <ArrowForwardIosIcon color="secondary" />
+                                        </IconButton>
+                                    }
+                                >
+                                    <ListItemText
+                                        primary={event.title}
+                                        secondary={moment(event.date).format('HH:mm')}
+                                        slotProps={listItemTextStyled}
+                                    />
+                                </ListItem>
+                            ))}
                 </List>
             </Box>
 

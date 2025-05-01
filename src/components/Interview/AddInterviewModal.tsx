@@ -71,7 +71,7 @@ export default function AddInterviewModal({ onClose, onAdd }: AddInterviewModalP
                     label="Date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    type="date"
+                    type="datetime-local"
                     fullWidth
                     required
                     InputLabelProps={{ shrink: true }}
