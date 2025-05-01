@@ -39,7 +39,6 @@ export const InterviewDialog = ({
                     // Handle preparation action
                     break;
                 case 'Delete':
-                    handleCloseMenu();
                     await deleteInterview(selectedInterview);
                     break;
                 default:

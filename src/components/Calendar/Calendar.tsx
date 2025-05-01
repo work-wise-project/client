@@ -65,7 +65,6 @@ export const CalendarComponent = () => {
     };
 
     const handleDeleteInterview = useCallback(async (interviewId: string) => {
-        console.log('Deleting interview with ID:', interviewId);
         await deleteInterview(interviewId);
 
         setScheduledInterviews((prev) => {
@@ -77,6 +76,7 @@ export const CalendarComponent = () => {
                         updatedInterviews.set(date, filteredInterviews);
                     } else {
                         updatedInterviews.delete(date);
+                        closeInterviewDialog();
                     }
                 });
                 return updatedInterviews;
