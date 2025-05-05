@@ -1,5 +1,5 @@
 import { InterviewData } from '../components/Interview/types';
-import { InterviewAnalysis, InterviewsSchedule } from '../types';
+import { Interview, InterviewAnalysis, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
 export const analyzeInterview = async (interviewId: string, file: File, fileType: 'audio' | 'text') => {
     const { abort, signal } = new AbortController();
@@ -28,35 +28,18 @@ export const getInterviewAnalysis = async (interviewId: string) => {
     return { analysis, abort };
 };
 
-export const createInterview = async (interview: InterviewData) => {
+export const createInterview = async (interview: InterviewData): Promise<Interview> => {
     const { data } = await apiClient.post('/datamanager/proxy/interviews', interview);
 
     return data;
 };
 
 export const getScheduledInterviews = async (userId: string): Promise<InterviewsSchedule> => {
-    // const { data } = await apiClient.get(
-    //     `/interviews/${userId}`,
-    // );
+    const { data } = await apiClient.get(`datamanager/proxy/interviews/${userId}/schedule`);
 
-    const events: InterviewsSchedule = new Map([
-        [
-            '2025-04-23',
-            [
-                { id: '123', time: '12:30', company: 'Facebook' },
-                { id: '1234', time: '15:00', company: 'Google' },
-                { id: '1235', time: '20:45', company: 'Amazon' },
-            ],
-        ],
-        [
-            '2025-04-27',
-            [
-                { id: '123', time: '12:30', company: 'Facebook' },
-                { id: '1234', time: '15:00', company: 'Google' },
-                { id: '1235', time: '20:45', company: 'Amazon' },
-            ],
-        ],
-    ]);
+    return new Map(Object.entries(data));
+};
 
-    return events;
+export const deleteInterview = async (interviewId: string) => {
+    await apiClient.delete(`/datamanager/proxy/interviews/${interviewId}`);
 };
