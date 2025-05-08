@@ -1,36 +1,93 @@
-import { CheckCircle, WarningAmber } from '@mui/icons-material';
-import { Card, CardContent, CardHeader, Grid, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { ReactNode } from 'react';
-import { InterviewAnalysis } from '../../../types';
+import { CheckCircleOutline, FormatListBulleted, GraphicEq, WarningAmber } from '@mui/icons-material';
+import {
+    Box,
+    Card,
+    CardContent,
+    CardHeader,
+    CardMedia,
+    Grid,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Typography,
+} from '@mui/material';
+import { ReactNode, useState } from 'react';
+import { CollapsableCard } from '../../CollapsableCard';
+import { InterviewAnalysisViewProps } from './types';
 
-const PointList = ({ points, icon }: { points: string[]; icon: ReactNode }) => (
-    <List>
-        {points.map((point, index) => (
-            <ListItem key={index}>
-                <ListItemIcon>{icon}</ListItemIcon>
-                <ListItemText primary={point} />
-            </ListItem>
-        ))}
-    </List>
+const PointList = ({ points, icon, text }: { points: string[]; icon: ReactNode; text: string }) => (
+    <Card variant="outlined">
+        <CardHeader
+            title={
+                <Typography variant="h5" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {icon}
+                    {text}
+                </Typography>
+            }
+        />
+        <CardContent>
+            <List>
+                {points.map((point, index) => (
+                    <ListItem key={index}>
+                        <ListItemIcon>{icon}</ListItemIcon>
+                        <ListItemText primary={point} />
+                    </ListItem>
+                ))}
+            </List>
+        </CardContent>
+    </Card>
 );
 
-export const InterviewAnalysisView = ({ points_to_improve, points_to_preserve }: InterviewAnalysis['analysis']) => (
-    <Grid container spacing={3}>
-        <Grid size={6}>
-            <Card variant="outlined">
-                <CardHeader title="✅ Points to Preserve" slotProps={{ title: { color: 'success' } }} />
-                <CardContent>
-                    <PointList points={points_to_preserve} icon={<CheckCircle color="success" />} />
-                </CardContent>
-            </Card>
-        </Grid>
-        <Grid size={6}>
-            <Card variant="outlined">
-                <CardHeader title="⚠️ Points to Improve" slotProps={{ title: { color: 'warning' } }} />
-                <CardContent>
-                    <PointList points={points_to_improve} icon={<WarningAmber color="warning" />} />
-                </CardContent>
-            </Card>
-        </Grid>
-    </Grid>
-);
+export const InterviewAnalysisView = ({
+    points_to_improve,
+    points_to_preserve,
+    fileUrl,
+}: InterviewAnalysisViewProps) => {
+    const [showAudio, setShowAudio] = useState(false);
+    const [showPoints, setShowPoints] = useState(true);
+
+    return (
+        <Box sx={{ maxHeight: '75vh', overflowY: 'auto' }}>
+            <CollapsableCard
+                isExpanded={showAudio}
+                setIsExpanded={setShowAudio}
+                titleIcon={<GraphicEq />}
+                titleText="Interview Audio"
+                cardStyle={{ marginBottom: 3 }}
+                cardContent={
+                    <CardMedia sx={{ padding: 2 }}>
+                        <audio controls>
+                            <source src={fileUrl} type="audio/wav" />
+                            <Typography variant="body2">Your browser doesn't support the audio element</Typography>
+                        </audio>
+                    </CardMedia>
+                }
+            />
+            <CollapsableCard
+                isExpanded={showPoints}
+                setIsExpanded={setShowPoints}
+                titleIcon={<FormatListBulleted />}
+                titleText="Points"
+                cardContent={
+                    <Grid container spacing={3} sx={{ padding: 2 }}>
+                        <Grid size={6}>
+                            <PointList
+                                points={points_to_preserve}
+                                icon={<CheckCircleOutline color="success" />}
+                                text="Points to Preserve"
+                            />
+                        </Grid>
+                        <Grid size={6}>
+                            <PointList
+                                points={points_to_improve}
+                                icon={<WarningAmber color="warning" />}
+                                text="Points to Improve"
+                            />
+                        </Grid>
+                    </Grid>
+                }
+            />
+        </Box>
+    );
+};
