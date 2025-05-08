@@ -9,6 +9,6 @@ export type InterviewAnalysis = {
 };
 
 export type InterviewAudioFile = {
-    fileBuffer: Buffer<ArrayBufferLike>;
+    fileBuffer: string;
     mimeType: string | undefined;
 };

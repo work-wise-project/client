@@ -6,9 +6,10 @@ import { InterviewAnalysisForm, InterviewAnalysisView } from '../components/Inte
 import { analyzeInterview, getInterviewAnalysis } from '../services/interviewService';
 import { InterviewAnalysis, InterviewAudioFile } from '../types';
 
-const createFileUrl = ({ fileBuffer, mimeType = 'audio/wav' }: InterviewAudioFile, fileName: string) => {
-    const blob = new Blob([fileBuffer], { type: mimeType });
-    const file = new File([blob], fileName, { type: mimeType });
+const createFileUrl = ({ fileBuffer, mimeType = 'audio/wav' }: InterviewAudioFile) => {
+    const binary = atob(fileBuffer);
+    const buffer = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    const file = new Blob([buffer], { type: mimeType });
 
     return URL.createObjectURL(file);
 };
@@ -29,10 +30,8 @@ export const InterviewAnalysisPage = () => {
         (async () => {
             setIsLoading(true);
             const { analysis, file } = await getInterviewAnalysis(interviewId);
-            if (!!analysis) {
-                setAnalysis(analysis);
-                setFileUrl(createFileUrl(file, analysis.file_name));
-            }
+            setAnalysis(analysis);
+            setFileUrl(createFileUrl(file));
             setIsLoading(false);
         })();
     }, [setAnalysis]);
