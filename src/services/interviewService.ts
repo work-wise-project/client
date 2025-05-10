@@ -1,6 +1,7 @@
 import { InterviewData } from '../components/Interview/types';
-import { Interview, InterviewAnalysis, InterviewsSchedule } from '../types';
+import { Interview, InterviewAnalysis, InterviewAudioFile, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
+
 export const analyzeInterview = async (interviewId: string, file: File, fileType: 'audio' | 'text') => {
     const { abort, signal } = new AbortController();
 
@@ -22,10 +23,13 @@ export const getInterviewAnalysis = async (interviewId: string) => {
     const { abort, signal } = new AbortController();
 
     const {
-        data: { analysis },
-    } = await apiClient.get<{ analysis: InterviewAnalysis }>(`/interviews/analysis/${interviewId}`, { signal });
+        data: { analysis, file },
+    } = await apiClient.get<{ analysis: InterviewAnalysis; file: InterviewAudioFile }>(
+        `/interviews/analysis/${interviewId}`,
+        { signal }
+    );
 
-    return { analysis, abort };
+    return { analysis, file, abort };
 };
 
 export const createInterview = async (interview: InterviewData): Promise<Interview> => {

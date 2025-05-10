@@ -7,3 +7,8 @@ export type InterviewAnalysis = {
         points_to_preserve: string[];
     };
 };
+
+export type InterviewAudioFile = {
+    fileBuffer: string;
+    mimeType: string | undefined;
+};
