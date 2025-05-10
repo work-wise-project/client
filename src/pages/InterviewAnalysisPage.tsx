@@ -1,10 +1,18 @@
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { InterviewAnalysisForm, InterviewAnalysisView } from '../components/InterviewAnalysis';
 import { analyzeInterview, getInterviewAnalysis } from '../services/interviewService';
-import { InterviewAnalysis } from '../types';
+import { InterviewAnalysis, InterviewAudioFile } from '../types';
+
+const createFileUrl = ({ fileBuffer, mimeType = 'audio/wav' }: InterviewAudioFile) => {
+    const binary = atob(fileBuffer);
+    const buffer = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    const file = new Blob([buffer], { type: mimeType });
+
+    return URL.createObjectURL(file);
+};
 
 export const InterviewAnalysisPage = () => {
     const navigate = useNavigate();
@@ -15,16 +23,30 @@ export const InterviewAnalysisPage = () => {
     }
 
     const [analysis, setAnalysis] = useState<InterviewAnalysis | null>(null);
+    const [fileUrl, setFileUrl] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        (async () => {
-            setAnalysis((await getInterviewAnalysis(interviewId)).analysis);
-        })();
-    }, [setAnalysis]);
+        const fetchAnalysis = async () => {
+            try {
+                setIsLoading(true);
+                const { analysis, file } = await getInterviewAnalysis(interviewId);
+                setAnalysis(analysis);
+                setFileUrl(createFileUrl(file));
+            } catch (error) {
+                console.error('Failed to fetch interview analysis:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchAnalysis();
+    }, [interviewId, setAnalysis]);
 
     const onSubmit = async (fileType: InterviewAnalysis['file_type'], file: File) => {
         try {
             setAnalysis((await analyzeInterview(interviewId, file, fileType)).analysis);
+            setFileUrl(URL.createObjectURL(file));
         } catch (error) {
             toast.error('Error analyzing interview. Please try again later.');
         }
@@ -33,7 +55,12 @@ export const InterviewAnalysisPage = () => {
     return (
         <Box>
             <InterviewAnalysisForm onSubmit={onSubmit} analysis={analysis} />
-            {analysis && <InterviewAnalysisView {...analysis.analysis} />}
+            {isLoading && (
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <CircularProgress />
+                </Box>
+            )}
+            {fileUrl && analysis && <InterviewAnalysisView {...analysis.analysis} fileUrl={fileUrl} />}
         </Box>
     );
 };
