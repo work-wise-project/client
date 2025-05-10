@@ -4,14 +4,11 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, formatDate, formatTime } from './types';
 import { useNavigate } from 'react-router-dom';
+import { useInterviewsContext } from '../../context/InterviewsContext';
 
-export const InterviewDialog = ({
-    open,
-    handleClose,
-    selectedDate,
-    interviews,
-    deleteInterview,
-}: InterviewDialogProps) => {
+export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDialogProps) => {
+    const { scheduledInterviews, removeInterview } = useInterviewsContext();
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedInterview, setSelectedInterview] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -39,7 +36,7 @@ export const InterviewDialog = ({
                     // Handle preparation action
                     break;
                 case 'Delete':
-                    await deleteInterview(selectedInterview);
+                    await removeInterview(selectedInterview);
                     break;
                 default:
                     alert('Invalid action');
@@ -57,8 +54,8 @@ export const InterviewDialog = ({
                 </DialogTitle>
                 <List>
                     {selectedDate &&
-                        interviews &&
-                        interviews
+                        scheduledInterviews &&
+                        scheduledInterviews
                             .get(formatDate(selectedDate))
                             ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                             .map((event) => (

@@ -1,13 +1,14 @@
 import { Box, Button, Modal, SxProps, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { InterviewData } from './types';
+import { useInterviewsContext } from '../../context/InterviewsContext';
 
 interface AddInterviewModalProps {
     onClose: () => void;
-    onAdd: (interview: InterviewData) => void;
 }
 
-export default function AddInterviewModal({ onClose, onAdd }: AddInterviewModalProps) {
+export const AddInterviewModal = ({ onClose }: AddInterviewModalProps) => {
+    const { addInterview } = useInterviewsContext();
+
     const [title, setTitle] = useState('');
     const [jobLink, setJobLink] = useState('');
     const [date, setDate] = useState('');
@@ -15,7 +16,7 @@ export default function AddInterviewModal({ onClose, onAdd }: AddInterviewModalP
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (title && jobLink && date) {
-            onAdd({ title, jobLink, date: new Date(date).toISOString() });
+            addInterview({ title, jobLink, date: new Date(date).toISOString() });
             onClose();
         }
     };
@@ -83,4 +84,4 @@ export default function AddInterviewModal({ onClose, onAdd }: AddInterviewModalP
             </Box>
         </Modal>
     );
-}
+};

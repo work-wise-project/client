@@ -6,11 +6,11 @@ import { formatDate } from './types';
 import 'react-calendar/dist/Calendar.css';
 import { AddInterviewButton } from '../Interview/AddInterviewButton';
 import { Box } from '@mui/material';
-import AddInterviewModal from '../Interview/AddInterviewModal';
+import { AddInterviewModal } from '../Interview/AddInterviewModal';
 import { useInterviewsContext } from '../../context/InterviewsContext';
 
 export const CalendarComponent = () => {
-    const { scheduledInterviews, addInterview, removeInterview } = useInterviewsContext();
+    const { scheduledInterviews } = useInterviewsContext();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [isInterviewDialogVisible, setIsInterviewDialogVisible] = useState(false);
@@ -48,10 +48,8 @@ export const CalendarComponent = () => {
                 open={isInterviewDialogVisible}
                 handleClose={closeInterviewDialog}
                 selectedDate={selectedDate}
-                interviews={scheduledInterviews}
-                deleteInterview={removeInterview}
             />
-            {showModal && <AddInterviewModal onClose={() => setShowModal(false)} onAdd={addInterview} />}
+            {showModal && <AddInterviewModal onClose={() => setShowModal(false)} />}
         </>
     );
 };

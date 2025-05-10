@@ -36,6 +36,7 @@ const InterviewChooser = () => {
                                     minHeight: 150,
                                     borderRadius: 2,
                                     boxShadow: 3,
+                                    cursor: 'pointer',
                                 }}
                                 onClick={() => navigate(interview.id)}
                             >
