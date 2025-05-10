@@ -32,21 +32,27 @@ export const NavBar = ({ children }: { children?: ReactNode }) => {
             {isNavbarVisible && (
                 <Drawer variant="permanent" sx={drawerStyle(drawerWidth)}>
                     <List sx={pagesListStyle}>
-                        {pages.map(({ text, getIcon, path }, index) => (
-                            <ListItemButton
-                                key={index}
-                                sx={listItemButtonStyle(palette, path === pathname)}
-                                onClick={() => navigate(path)}
-                            >
-                                <ListItemIcon>{getIcon(path === pathname ? 'primary' : 'info')}</ListItemIcon>
-                                {isOpen && (
-                                    <ListItemText
-                                        primary={text}
-                                        slotProps={{ primary: { sx: listItemTextStyle(palette, path === pathname) } }}
-                                    />
-                                )}
-                            </ListItemButton>
-                        ))}
+                        {pages.map(({ text, getIcon, path }, index) => {
+                            const isActive = path === '/' ? pathname === '/' : pathname.startsWith(path);
+
+                            return (
+                                <ListItemButton
+                                    key={index}
+                                    sx={listItemButtonStyle(palette, isActive)}
+                                    onClick={() => navigate(path)}
+                                >
+                                    <ListItemIcon>{getIcon(isActive ? 'primary' : 'info')}</ListItemIcon>
+                                    {isOpen && (
+                                        <ListItemText
+                                            primary={text}
+                                            slotProps={{
+                                                primary: { sx: listItemTextStyle(palette, isActive) },
+                                            }}
+                                        />
+                                    )}
+                                </ListItemButton>
+                            );
+                        })}
                     </List>
                     <Box sx={drawerControlContainerStyle}>
                         <IconButton

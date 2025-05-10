@@ -22,8 +22,7 @@ export const pages: PageConfig[] = [
     {
         text: 'Interview analysis',
         getIcon: (color) => <AutoAwesome color={color} />,
-        // placeholder path for testing - until we'll have a InterviewChooser page
-        path: '/interviewAnalysis/5c89f7d9-4af8-4b69-8751-2c9f4c6eab84',
+        path: '/interviewAnalysis',
     },
     {
         text: 'Interview preparation',

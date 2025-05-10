@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useEffect, useState } from 'react';
-import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 import {
     HomePage,
@@ -17,6 +17,8 @@ import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
 import { IUser } from '../../types';
 import { InterviewsProvider } from '../../context/InterviewsContext';
+import InterviewChooser from '../Interview/InterviewChooser';
+import { Outlet } from '@mui/icons-material';
 
 export const App = () => {
     const { setUserContext, storeUserSession } = useUserContext();
@@ -79,9 +81,14 @@ export const App = () => {
                                 <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
                                 <Route path="/resume" element={<ProtectedRoute component={<ResumePage />} />} />
                                 <Route path="/" element={<ProtectedRoute component={<HomePage />} />} />
-                                <Route path="/interviewAnalysis" element={<ProtectedRoute component={<Outlet />} />}>
-                                    <Route path=":interviewId" element={<InterviewAnalysisPage />} />
-                                </Route>
+                                <Route
+                                    path="/interviewAnalysis"
+                                    element={<ProtectedRoute component={<InterviewChooser />} />}
+                                ></Route>
+                                <Route
+                                    path="/interviewAnalysis/:interviewId"
+                                    element={<ProtectedRoute component={<InterviewAnalysisPage />} />}
+                                />
                                 <Route
                                     path="/interviewPreparation"
                                     element={<ProtectedRoute component={<InterviewPreparationPage />} />}

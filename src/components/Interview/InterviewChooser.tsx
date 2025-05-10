@@ -1,13 +1,14 @@
-import React from 'react';
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import { Navigation, Pagination } from 'swiper/modules';
 import { useInterviewsContext } from '../../context/InterviewsContext';
 import { formatTime } from '../Calendar/types';
+import { useNavigate } from 'react-router-dom';
 
-const InterviewChooser = ({ onSelect }: { onSelect: React.Dispatch<React.SetStateAction<string | null>> }) => {
+const InterviewChooser = () => {
     const { scheduledInterviews } = useInterviewsContext();
+    const navigate = useNavigate();
 
     return (
         <Box display="flex" flexDirection="column" alignItems="center" py={6} bgcolor="#f0f0f3">
@@ -36,7 +37,7 @@ const InterviewChooser = ({ onSelect }: { onSelect: React.Dispatch<React.SetStat
                                     borderRadius: 2,
                                     boxShadow: 3,
                                 }}
-                                onClick={() => onSelect(interview.id)}
+                                onClick={() => navigate(interview.id)}
                             >
                                 <CardContent sx={{ textAlign: 'center' }}>
                                     <Typography variant="subtitle1">{interview.title}</Typography>

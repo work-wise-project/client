@@ -3,6 +3,7 @@ import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Men
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, formatDate, formatTime } from './types';
+import { useNavigate } from 'react-router-dom';
 
 export const InterviewDialog = ({
     open,
@@ -13,7 +14,7 @@ export const InterviewDialog = ({
 }: InterviewDialogProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedInterview, setSelectedInterview] = useState<string | null>(null);
-
+    const navigate = useNavigate();
     const handleExpandClick = (event: React.MouseEvent<HTMLButtonElement>, interviewId: string) => {
         setAnchorEl(event.currentTarget);
         setSelectedInterview(interviewId);
@@ -32,7 +33,7 @@ export const InterviewDialog = ({
             }
             switch (action) {
                 case 'Analysis':
-                    // Handle analysis action
+                    navigate(`interviewAnalysis/${selectedInterview}`);
                     break;
                 case 'Preparation':
                     // Handle preparation action
@@ -52,7 +53,7 @@ export const InterviewDialog = ({
         <Dialog open={open} onClose={handleClose}>
             <Box sx={{ p: 2, minWidth: 300 }}>
                 <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                    interviews – {selectedDate?.toLocaleDateString('en-GB')}
+                    interviews – {selectedDate && formatDate(selectedDate)}
                 </DialogTitle>
                 <List>
                     {selectedDate &&
