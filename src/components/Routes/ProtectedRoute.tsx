@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 
-export const ProtectedRoute = ({ component }: { component: ReactNode }) => {
+export const ProtectedRoute = () => {
     const { userContext } = useUserContext();
 
-    return userContext?.id ? component : <Navigate to="/welcome" replace />;
+    return userContext?.id ? <Outlet /> : <Navigate to="/welcome" replace />;
 };

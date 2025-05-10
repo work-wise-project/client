@@ -1,20 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Menu, MenuItem } from '@mui/material';
-import moment from 'moment';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
-import { InterviewDialogProps, dateFormatter } from './types';
+import { InterviewDialogProps, formatDate, formatTime } from './types';
+import { useNavigate } from 'react-router-dom';
+import { useInterviewsContext } from '../../context/InterviewsContext';
 
-export const InterviewDialog = ({
-    open,
-    handleClose,
-    selectedDate,
-    interviews,
-    deleteInterview,
-}: InterviewDialogProps) => {
+export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDialogProps) => {
+    const { scheduledInterviews, removeInterview } = useInterviewsContext();
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedInterview, setSelectedInterview] = useState<string | null>(null);
-
+    const navigate = useNavigate();
     const handleExpandClick = (event: React.MouseEvent<HTMLButtonElement>, interviewId: string) => {
         setAnchorEl(event.currentTarget);
         setSelectedInterview(interviewId);
@@ -33,13 +30,13 @@ export const InterviewDialog = ({
             }
             switch (action) {
                 case 'Analysis':
-                    // Handle analysis action
+                    navigate(`interviewAnalysis/${selectedInterview}`);
                     break;
                 case 'Preparation':
                     // Handle preparation action
                     break;
                 case 'Delete':
-                    await deleteInterview(selectedInterview);
+                    await removeInterview(selectedInterview);
                     break;
                 default:
                     alert('Invalid action');
@@ -53,15 +50,15 @@ export const InterviewDialog = ({
         <Dialog open={open} onClose={handleClose}>
             <Box sx={{ p: 2, minWidth: 300 }}>
                 <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                    interviews – {selectedDate?.toLocaleDateString('en-GB')}
+                    interviews – {selectedDate && formatDate(selectedDate)}
                 </DialogTitle>
                 <List>
                     {selectedDate &&
-                        interviews &&
-                        interviews
-                            .get(dateFormatter(selectedDate))
+                        scheduledInterviews &&
+                        scheduledInterviews
+                            .get(formatDate(selectedDate))
                             ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                            .map((event, _index) => (
+                            .map((event) => (
                                 <ListItem
                                     key={event.id}
                                     sx={listItemStyled}
@@ -77,7 +74,7 @@ export const InterviewDialog = ({
                                 >
                                     <ListItemText
                                         primary={event.title}
-                                        secondary={moment(event.date).format('HH:mm')}
+                                        secondary={formatTime(event.date)}
                                         slotProps={listItemTextStyled}
                                     />
                                 </ListItem>

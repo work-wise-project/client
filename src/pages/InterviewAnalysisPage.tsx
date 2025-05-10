@@ -27,14 +27,21 @@ export const InterviewAnalysisPage = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        (async () => {
-            setIsLoading(true);
-            const { analysis, file } = await getInterviewAnalysis(interviewId);
-            setAnalysis(analysis);
-            setFileUrl(createFileUrl(file));
-            setIsLoading(false);
-        })();
-    }, [setAnalysis]);
+        const fetchAnalysis = async () => {
+            try {
+                setIsLoading(true);
+                const { analysis, file } = await getInterviewAnalysis(interviewId);
+                setAnalysis(analysis);
+                setFileUrl(createFileUrl(file));
+            } catch (error) {
+                console.error('Failed to fetch interview analysis:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchAnalysis();
+    }, [interviewId, setAnalysis]);
 
     const onSubmit = async (fileType: InterviewAnalysis['file_type'], file: File) => {
         try {
