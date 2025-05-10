@@ -16,6 +16,7 @@ import userService from '../../services/userService';
 import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
 import { IUser } from '../../types';
+import { InterviewsProvider } from '../../context/InterviewsContext';
 
 export const App = () => {
     const { setUserContext, storeUserSession } = useUserContext();
@@ -66,24 +67,27 @@ export const App = () => {
                             <CircularProgress />
                         </Box>
                     ) : (
-                        <Routes>
-                            <Route path="/" element={<ProtectedRoute component={<HomePage />} />} />
-                            <Route
-                                path="/login"
-                                element={<PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />}
-                            />
-                            <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
-                            <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
-                            <Route path="/resume" element={<ProtectedRoute component={<ResumePage />} />} />
-                            <Route path="/interviewAnalysis" element={<ProtectedRoute component={<Outlet />} />}>
-                                {/* <Route index element={<InterviewChooser />} /> */}
-                                <Route path=":interviewId" element={<InterviewAnalysisPage />} />
-                            </Route>
-                            <Route
-                                path="/interviewPreparation"
-                                element={<ProtectedRoute component={<InterviewPreparationPage />} />}
-                            />
-                        </Routes>
+                        <InterviewsProvider>
+                            <Routes>
+                                <Route
+                                    path="/login"
+                                    element={
+                                        <PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />
+                                    }
+                                />
+                                <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
+                                <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
+                                <Route path="/resume" element={<ProtectedRoute component={<ResumePage />} />} />
+                                <Route path="/" element={<ProtectedRoute component={<HomePage />} />} />
+                                <Route path="/interviewAnalysis" element={<ProtectedRoute component={<Outlet />} />}>
+                                    <Route path=":interviewId" element={<InterviewAnalysisPage />} />
+                                </Route>
+                                <Route
+                                    path="/interviewPreparation"
+                                    element={<ProtectedRoute component={<InterviewPreparationPage />} />}
+                                />
+                            </Routes>
+                        </InterviewsProvider>
                     )}
                 </Box>
             </NavBar>

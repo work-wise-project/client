@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Menu, MenuItem } from '@mui/material';
-import moment from 'moment';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
-import { InterviewDialogProps, dateFormatter } from './types';
+import { InterviewDialogProps, formatDate, formatTime } from './types';
 
 export const InterviewDialog = ({
     open,
@@ -59,9 +58,9 @@ export const InterviewDialog = ({
                     {selectedDate &&
                         interviews &&
                         interviews
-                            .get(dateFormatter(selectedDate))
+                            .get(formatDate(selectedDate))
                             ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                            .map((event, _index) => (
+                            .map((event) => (
                                 <ListItem
                                     key={event.id}
                                     sx={listItemStyled}
@@ -77,7 +76,7 @@ export const InterviewDialog = ({
                                 >
                                     <ListItemText
                                         primary={event.title}
-                                        secondary={moment(event.date).format('HH:mm')}
+                                        secondary={formatTime(event.date)}
                                         slotProps={listItemTextStyled}
                                     />
                                 </ListItem>

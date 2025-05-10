@@ -9,6 +9,10 @@ export type InterviewDialogProps = {
     deleteInterview: (interviewId: string) => Promise<void>;
 };
 
-export const dateFormatter = (date: Date) => {
+export const formatDate = (date: Date) => {
     return moment(date).format('DD/MM/YYYY');
+};
+
+export const formatTime = (date: string) => {
+    return moment(date).format('HH:mm');
 };
