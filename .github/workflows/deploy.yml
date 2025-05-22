@@ -23,7 +23,7 @@ jobs:
 
       - name: Build and Push Images
         run: |
-          docker build --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }} --build-arg VITE_BACKEND_URL=${{ vars.VITE_BACKEND_URL }} -t ${{ vars.DOCKER_USERNAME }}/work-wise-client ./
+          docker build --build-arg HTTPS_CERT=${{ secrets.HTTPS_CERT }} --build-arg HTTPS_KEY=${{ secrets.HTTPS_KEY }} --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }} --build-arg VITE_BACKEND_URL=${{ vars.VITE_BACKEND_URL }} -t ${{ vars.DOCKER_USERNAME }}/work-wise-client ./
           docker push ${{ vars.DOCKER_USERNAME }}/work-wise-client
   deploy:
     runs-on: ubuntu-latest
