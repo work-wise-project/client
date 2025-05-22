@@ -1,0 +1,3 @@
+workwise.cs.colman.ac.il {
+  reverse_proxy client:80
+}

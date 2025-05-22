@@ -1,0 +1,21 @@
+FROM node:22.11.0-slim
+
+ARG VITE_BACKEND_URL
+ARG VITE_GOOGLE_CLIENT_ID
+
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+
+WORKDIR /client
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 80
+
+CMD ["npm", "run", "preview"]
