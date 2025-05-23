@@ -10,8 +10,9 @@ import { Send } from '@mui/icons-material';
 import { primaryIconButton } from './styles';
 import { useUserContext } from '../../context/UserContext';
 import { VisuallyHiddenInput } from '../../pages/ResumePage';
+import { IUser } from '../../types';
 
-const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
+const ResumeUpload = ({ currentUser }: { currentUser: IUser }) => {
     const [fileName, setFileName] = useState<string | null>(null);
     const navigate = useNavigate();
     const { setUserContext } = useUserContext();
@@ -21,7 +22,7 @@ const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
             const formData = new FormData();
             formData.append('resume', selectedFile);
 
-            const { response } = await resumeService.uploadResume(currentUserId, formData);
+            const { response } = await resumeService.uploadResume(currentUser.id, formData);
 
             if (response.status != HttpStatusCode.Ok) {
                 throw new Error('Failed to upload file');
@@ -51,7 +52,7 @@ const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
 
     const handleNext = () => {
         navigate('/');
-        setUserContext({ id: currentUserId });
+        setUserContext(currentUser);
     };
 
     return (

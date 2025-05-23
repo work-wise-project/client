@@ -18,6 +18,7 @@ import { ProtectedRoute, PublicRoute } from '../Routes';
 import { IUser } from '../../types';
 import { InterviewsProvider } from '../../context/InterviewsContext';
 import InterviewChooser from '../Interview/InterviewChooser';
+import { ProfilePage } from '../../pages/ProfilePage';
 
 export const App = () => {
     const { setUserContext, storeUserSession } = useUserContext();
@@ -45,10 +46,8 @@ export const App = () => {
                 const { response } = await userService.getUserById(storedUserId);
 
                 if (response.status === HttpStatusCode.Ok) {
-                    const {
-                        data: { id },
-                    } = response;
-                    setUserContext({ id });
+                    const { data: user } = response;
+                    setUserContext(user);
                     setIsLoading(false);
                 }
             } catch (error) {
@@ -79,12 +78,12 @@ export const App = () => {
                                 <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
                                 <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
                                 <Route element={<ProtectedRoute />}>
-                                    <Route path="/resume" element={<ResumePage />} />
                                     <Route path="/" element={<HomePage />} />
                                     <Route path="/resume" element={<ResumePage />} />
                                     <Route path="/interviewAnalysis" element={<InterviewChooser />} />
                                     <Route path="/interviewAnalysis/:interviewId" element={<InterviewAnalysisPage />} />
                                     <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
+                                    <Route path="/profile" element={<ProfilePage />} />
                                 </Route>
                             </Routes>
                         </InterviewsProvider>
