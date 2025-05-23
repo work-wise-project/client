@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import userService from '../../services/userService';
 import { IUser, UserCareer, UserEducation, UserSkill } from '../../types';
-import UserQualificationsForm from './UserQualificationsForm';
+import UserQualificationsForm from '../Profile/UserQualificationsForm';
 import { primaryIconButton } from './styles';
 import { toast } from 'react-toastify';
 

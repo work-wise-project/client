@@ -21,7 +21,7 @@ import skillService from '../../services/skillService';
 import { ISkill } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
-import { primaryIconButton } from './styles';
+import { primaryIconButton } from '../SignUp/styles';
 import { HttpStatusCode } from 'axios';
 
 const UserQualificationsForm = () => {

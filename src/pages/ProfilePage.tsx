@@ -1,6 +1,6 @@
 import { Box, Button, Container } from '@mui/material';
 import { FC, useMemo } from 'react';
-import UserQualificationsForm from '../components/SignUp/UserQualificationsForm';
+import UserQualificationsForm from '../components/Profile/UserQualificationsForm';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,7 +11,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import { toast } from 'react-toastify';
 import { HttpStatusCode } from 'axios';
 
-// Validation schemas for years and form fields
 const yearSchema = z.coerce
     .number({
         required_error: 'Years of experience is required',
