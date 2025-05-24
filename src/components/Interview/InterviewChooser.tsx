@@ -8,26 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { theme } from '../../style';
 import InterviewSelectSVG from '../../assets/PeopleInterviewSelect.svg?react';
 
-import { useTheme, useMediaQuery } from '@mui/material';
-
 const InterviewChooser = () => {
-    // const theme = useTheme();
-    // const isXs = useMediaQuery(theme.breakpoints.only('xs'));
-    // const isSm = useMediaQuery(theme.breakpoints.only('sm'));
-    // const isMd = useMediaQuery(theme.breakpoints.only('md'));
-    // const isLg = useMediaQuery(theme.breakpoints.only('lg'));
-    // const isXl = useMediaQuery(theme.breakpoints.only('xl'));
-
-    // return (
-    //     <div>
-    //         {isXs && <p>Current: xs</p>}
-    //         {isSm && <p>Current: sm</p>}
-    //         {isMd && <p>Current: md</p>}
-    //         {isLg && <p>Current: lg</p>}
-    //         {isXl && <p>Current: xl</p>}
-    //     </div>
-    // );
-
     const { scheduledInterviews } = useInterviewsContext();
     const navigate = useNavigate();
 
@@ -65,7 +46,7 @@ const InterviewChooser = () => {
                                     boxShadow: 3,
                                     cursor: 'pointer',
                                 }}
-                                onClick={() => navigate(interview.id)}
+                                onClick={() => navigate(`${interview.id}/${interview.title}`)}
                             >
                                 <CardContent
                                     sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', gap: 2 }}
