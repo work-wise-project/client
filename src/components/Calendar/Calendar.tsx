@@ -5,9 +5,10 @@ import { InterviewDialog } from './InterviewDialog';
 import { formatDate } from './types';
 import 'react-calendar/dist/Calendar.css';
 import { AddInterviewButton } from '../Interview/AddInterviewButton';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { AddInterviewModal } from '../Interview/AddInterviewModal';
 import { useInterviewsContext } from '../../context/InterviewsContext';
+import { theme } from '../../style';
 
 export const CalendarComponent = () => {
     const { scheduledInterviews } = useInterviewsContext();
@@ -29,7 +30,17 @@ export const CalendarComponent = () => {
 
     return (
         <>
-            <Box sx={{ mb: 4, marginInlineStart: '10vw', mt: 5 }}>
+            <Typography
+                variant="h3"
+                sx={{
+                    textAlign: 'center',
+                    fontSize: { md: '1.5rem', lg: '3rem' },
+                    color: theme.palette.secondary.main,
+                }}
+            >
+                Scheduled Interviews
+            </Typography>
+            <Box sx={{ mb: 4, marginInlineStart: '10vw', mt: { md: 5, lg: 10 } }}>
                 <AddInterviewButton onClick={() => setShowModal(true)} />
             </Box>
             <CalendarGlobalStyles />
