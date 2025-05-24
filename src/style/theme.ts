@@ -6,7 +6,7 @@ export const theme = createTheme({
     typography: { fontFamily: 'Rubik' },
     palette: {
         primary: {
-            main: '#27548A',
+            main: '#003049',
         },
         secondary: {
             main: '#DDA853',

@@ -167,8 +167,8 @@ export const ResumePage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
-            <Box display="flex" justifyContent="flex-start" mb={2}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', mt: { lg: 2 } }}>
+            <Box display="flex" justifyContent="flex-start" mb={3}>
                 <Button
                     component="label"
                     role={undefined}
@@ -204,7 +204,7 @@ export const ResumePage: React.FC = () => {
                         loadingPosition="start"
                         startIcon={<InsightsIcon />}
                         onClick={onAnalyzeClick}
-                        disabled={loadingGrammarCheck}
+                        disabled={loadingGrammarCheck || !resumeText}
                     >
                         Analyze
                     </Button>
@@ -213,7 +213,7 @@ export const ResumePage: React.FC = () => {
                         fullWidth
                         color="primary"
                         startIcon={<SpellcheckIcon />}
-                        disabled={loadingAnalyze}
+                        disabled={loadingAnalyze || !resumeText}
                         onClick={onGrammarCheckClicked}
                         loading={loadingGrammarCheck}
                         loadingPosition="start"

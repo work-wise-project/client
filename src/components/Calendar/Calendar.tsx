@@ -34,13 +34,13 @@ export const CalendarComponent = () => {
                 variant="h3"
                 sx={{
                     textAlign: 'center',
-                    fontSize: { md: '1.5rem', lg: '3rem' },
+                    fontSize: { lg: '1.5rem', xl: '3rem' },
                     color: theme.palette.secondary.main,
                 }}
             >
                 Scheduled Interviews
             </Typography>
-            <Box sx={{ mb: 4, marginInlineStart: '10vw', mt: { md: 5, lg: 10 } }}>
+            <Box sx={{ mb: 4, marginInlineStart: '10vw', mt: { lg: 5, xl: 10 } }}>
                 <AddInterviewButton onClick={() => setShowModal(true)} />
             </Box>
             <CalendarGlobalStyles />

@@ -68,7 +68,7 @@ export const AnalyzeView = ({
                         direction="column"
                         justifyContent="center"
                         alignItems="center"
-                        sx={{ height: '100%', marginTop: { lg: '10vh', md: '0vh' } }}
+                        sx={{ height: '100%', marginTop: { lg: '0vh', xl: '10vh' } }}
                     >
                         <ResumeAnalyzeSVG style={{ width: '100%', maxWidth: 500 }} />
                         <Typography variant="body2" color="textSecondary">
