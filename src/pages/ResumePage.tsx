@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid } from '@mui/material';
-import SpellcheckIcon from '@mui/icons-material/Spellcheck';
 import InsightsIcon from '@mui/icons-material/Insights';
-import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
+import SpellcheckIcon from '@mui/icons-material/Spellcheck';
+import { Box, Button, Grid } from '@mui/material';
 import { HttpStatusCode } from 'axios';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { ResumeView } from '../components/ResumeView/ResumeView';
-import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
-import { useUserContext } from '../context/UserContext';
 import ResumeUploadButton from '../components/Profile/ResumeUploadButton';
+import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
+import { ResumeView } from '../components/ResumeView/ResumeView';
+import { useUserContext } from '../context/UserContext';
+import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
 
 export const ResumePage: React.FC = () => {
     const [resumeText, setResumeText] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export const ResumePage: React.FC = () => {
                 setLoadingResume(true);
                 const { response } = await resumeService.getResumeIfExist(userContext.id);
                 if (response.data) {
-                    setResumeText(response.data);
+                    setResumeText(response.data.textContent);
                 } else {
                     console.log('No resume found for user');
                 }
@@ -120,7 +120,6 @@ export const ResumePage: React.FC = () => {
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
             <Box display="flex" justifyContent="flex-start" mb={2}>
                 <ResumeUploadButton
-                    buttonLabel="Update Your Resume"
                     onUploadSuccess={async () => {
                         await checkAndLoadResume();
                     }}

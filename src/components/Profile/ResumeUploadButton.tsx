@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { Button } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Box, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { HttpStatusCode } from 'axios';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useUserContext } from '../../context/UserContext';
 import resumeService from '../../services/resumeService';
-import { styled } from '@mui/material/styles';
 
 interface ResumeUploadButtonProps {
-    userId?: string;
-    onUploadSuccess?: (filePath: string) => void;
+    onUploadSuccess?: () => void;
     buttonLabel?: string;
-    showFileName?: boolean;
+    isSaved?: boolean;
 }
 
 export const VisuallyHiddenInput = styled('input')({
@@ -26,55 +25,76 @@ export const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
-    userId,
-    onUploadSuccess,
-    buttonLabel = 'Upload Your Resume',
-    showFileName,
-}) => {
+const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({ onUploadSuccess, buttonLabel, isSaved }) => {
     const { userContext } = useUserContext();
     const [fileName, setFileName] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [typeResume, setTypeResume] = useState<boolean>(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    const uploadFileToServer = async (selectedFile: File) => {
-        const userIdResume = userId || userContext?.id;
-        if (!userIdResume) {
+    const checkAndLoadResume = async () => {
+        if (userContext?.id) {
+            try {
+                const { response } = await resumeService.getResumeIfExist(userContext.id);
+                if (response.data) {
+                    setTypeResume(response.data.contentType);
+                } else {
+                    console.log('No resume found for user');
+                }
+            } catch (error) {
+                console.error('Error loading existing resume:', error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        checkAndLoadResume();
+    }, [userContext?.id]);
+
+    const uploadFileToServer = async (file: File) => {
+        if (!userContext?.id) {
             toast.error('No user connected');
             return;
         }
         try {
             setLoading(true);
             const formData = new FormData();
-            formData.append('resume', selectedFile);
+            formData.append('resume', file);
 
-            const { response } = await resumeService.uploadResume(userIdResume, formData);
+            const { response } = await resumeService.uploadResume(userContext.id, formData);
 
             if (response.status !== HttpStatusCode.Ok) {
                 throw new Error('Failed to upload file');
             }
 
-            setFileName(selectedFile.name);
-            onUploadSuccess?.(response.data.filePath);
             toast.success('Resume uploaded successfully');
+            setSelectedFile(null);
+            setFileName(null);
+
+            onUploadSuccess?.();
         } catch (error) {
             toast.error('Failed to upload file');
-            setFileName(null);
             throw error;
         } finally {
             setLoading(false);
         }
     };
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = event.target.files?.[0];
-        if (!selectedFile) return;
+    useEffect(() => {
+        checkAndLoadResume();
+    }, [userContext?.id]);
 
-        try {
-            await uploadFileToServer(selectedFile);
-            event.target.value = '';
-        } catch (error) {
-            console.error('Error handling file change:', error);
+    useEffect(() => {
+        if (isSaved && selectedFile) {
+            uploadFileToServer(selectedFile);
         }
+    }, [isSaved]);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        setSelectedFile(file);
+        setFileName(file.name);
     };
 
     return (
@@ -89,12 +109,20 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
                 borderColor: '#E5E7EB',
                 textTransform: 'none',
                 justifyContent: 'space-between',
-                color: '#9CA3AF',
                 backgroundColor: 'white',
                 width: '250px',
             }}
         >
-            {showFileName && fileName ? fileName : buttonLabel}
+            <Box
+                style={{
+                    color:
+                        (buttonLabel && fileName !== buttonLabel) || (!buttonLabel && fileName) || typeResume
+                            ? 'blue'
+                            : '#4574DC',
+                }}
+            >
+                {!fileName && !typeResume ? 'Upload Your Resume' : fileName ? fileName : `resume.${typeResume}`}
+            </Box>
             <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
         </Button>
     );

@@ -6,7 +6,6 @@ import { AxiosError, HttpStatusCode } from 'axios';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
 import ResumeUpload from '../components/SignUp/ResumeUpload';
 import { useUserContext } from '../context/UserContext';
-import { IUser } from '../types';
 
 const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
     const bgColor = active || completed ? '#1976d2' : '#ccc'; // Blue if active/completed
@@ -34,8 +33,7 @@ const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) =>
 
 export const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-    const { setLocalStorage } = useUserContext();
+    const { storeUserSession } = useUserContext();
 
     const [activeStep, setActiveStep] = useState<number>(0);
     const googleResponseMessage = async (credentialResponse: CredentialResponse) => {
@@ -47,8 +45,7 @@ export const SignUp = () => {
         try {
             const { response } = await userService.googleRegister(credentialResponse);
             if (response.status === HttpStatusCode.Ok) {
-                setLocalStorage(response.data);
-                setCurrentUser(response.data.user);
+                storeUserSession(response.data);
                 setActiveStep((prev) => prev + 1);
                 setErrorMessage(null);
             } else {
@@ -136,11 +133,9 @@ export const SignUp = () => {
                             </Box>
                         </Box>
                     ) : activeStep === 1 ? (
-                        currentUser?.id && (
-                            <ProfessionalProfile setActiveStep={setActiveStep} currentUser={currentUser} />
-                        )
+                        <ProfessionalProfile setActiveStep={setActiveStep} />
                     ) : (
-                        currentUser?.id && <ResumeUpload currentUser={currentUser} />
+                        <ResumeUpload />
                     )}
                 </Box>
                 {errorMessage && (

@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IUser } from '../types';
 
 interface UserContextType {
-    userContext: IUser | null;
-    setUserContext: (user: IUser | null) => void;
+    userContext: Partial<IUser> | null;
+    setUserContext: React.Dispatch<React.SetStateAction<Partial<IUser> | null>>;
     storeUserSession: (userData: { accessToken: string; refreshToken: string; user: IUser }) => void;
     clearUserSession: () => void;
     setLocalStorage: (userData: { accessToken: string; refreshToken: string; user: IUser }) => void;
@@ -13,7 +13,7 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [userContext, setUserContext] = useState<IUser | null>(null);
+    const [userContext, setUserContext] = useState<Partial<IUser> | null>(null);
     const navigate = useNavigate();
 
     const setLocalStorage = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {

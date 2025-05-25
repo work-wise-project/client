@@ -1,15 +1,16 @@
-import React from 'react';
-import { Container, Box, IconButton, Button } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { HttpStatusCode } from 'axios';
-import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Box, Button, Container, IconButton } from '@mui/material';
+import { HttpStatusCode } from 'axios';
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
+import { useUserContext } from '../../context/UserContext';
 import userService from '../../services/userService';
-import { IUser, UserCareer, UserEducation, UserSkill } from '../../types';
+import { UserCareer, UserEducation, UserSkill } from '../../types';
 import UserQualificationsForm from '../Profile/UserQualificationsForm';
 import { primaryIconButton } from './styles';
-import { toast } from 'react-toastify';
 
 const yearSchema = z.coerce
     .number({
@@ -20,12 +21,12 @@ const yearSchema = z.coerce
     .max(50, { message: 'Years of experience seems too high' });
 
 const educationEntrySchema = z.object({
-    institute: z.string().min(1, { message: 'Institute is required' }),
+    institute: z.string(),
     years: yearSchema,
 });
 
 const careerEntrySchema = z.object({
-    company: z.string().min(1, { message: 'Company is required' }),
+    company: z.string(),
     years: yearSchema,
 });
 
@@ -43,13 +44,9 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-const ProfessionalProfile = ({
-    setActiveStep,
-    currentUser,
-}: {
-    setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-    currentUser: IUser;
-}) => {
+const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<React.SetStateAction<number>> }) => {
+    const { userContext, setUserContext } = useUserContext();
+
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         mode: 'onChange',
@@ -61,33 +58,41 @@ const ProfessionalProfile = ({
     });
 
     const onSubmit = async (data: FormSchema) => {
-        const formattedEducation = data.education.filter(
-            (edu: UserEducation) => edu.institute.trim() !== '' && edu.years >= 0
-        );
+        if (userContext?.id) {
+            const formattedEducation = data.education.filter(
+                (edu: UserEducation) => edu.institute.trim() !== '' && edu.years >= 0
+            );
 
-        const formattedCareer = data.career.filter(
-            (career: UserCareer) => career.company.trim() !== '' && career.years >= 0
-        );
+            const formattedCareer = data.career.filter(
+                (career: UserCareer) => career.company.trim() !== '' && career.years >= 0
+            );
 
-        const formattedSkills = data.skills.map((skill: UserSkill) => ({
-            ...skill,
-            skill_id: skill.id,
-        }));
+            const formattedSkills = data.skills.map((skill: UserSkill) => ({
+                ...skill,
+                skill_id: skill.id,
+            }));
 
-        try {
-            const { response } = await userService.updateUser(currentUser.id, {
-                education: formattedEducation,
-                career: formattedCareer,
-                skills: formattedSkills,
-            });
+            try {
+                const { response } = await userService.updateUser(userContext.id, {
+                    education: formattedEducation,
+                    career: formattedCareer,
+                    skills: formattedSkills,
+                });
 
-            if (response.status === HttpStatusCode.Ok) {
-                setActiveStep((prev) => prev + 1);
-            } else {
+                if (response.status === HttpStatusCode.Ok) {
+                    setActiveStep((prev) => prev + 1);
+                    setUserContext((prev) => ({
+                        ...prev,
+                        education: formattedEducation,
+                        career: formattedCareer,
+                        skills: formattedSkills,
+                    }));
+                } else {
+                    toast.error('Failed to update user profile');
+                }
+            } catch {
                 toast.error('Failed to update user profile');
             }
-        } catch {
-            toast.error('Failed to update user profile');
         }
     };
 

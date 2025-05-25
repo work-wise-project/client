@@ -1,28 +1,24 @@
-import { Box, IconButton } from '@mui/material';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
+import { Box, IconButton } from '@mui/material';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 
-import { useNavigate } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
-import { primaryIconButton } from './styles';
-import { useUserContext } from '../../context/UserContext';
-import { IUser } from '../../types';
+import { useNavigate } from 'react-router-dom';
 import ResumeUploadButton from '../Profile/ResumeUploadButton';
+import { primaryIconButton } from './styles';
 
-const ResumeUpload = ({ currentUser }: { currentUser: IUser }) => {
+const ResumeUpload = () => {
     const navigate = useNavigate();
-    const { setUserContext } = useUserContext();
 
     const handleNext = () => {
         navigate('/');
-        setUserContext(currentUser);
     };
 
     return (
         <Box sx={{ flex: 1, mt: 3 }}>
             <FieldLabel icon={<ArticleOutlined />} label="Resume" />
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
-                <ResumeUploadButton userId={currentUser.id} showFileName={true} />
+                <ResumeUploadButton />
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>

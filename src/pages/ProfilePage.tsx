@@ -1,15 +1,19 @@
-import { Box, Button, Container } from '@mui/material';
-import { FC, useMemo } from 'react';
-import UserQualificationsForm from '../components/Profile/UserQualificationsForm';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ArticleOutlined } from '@mui/icons-material';
+import SaveIcon from '@mui/icons-material/Save';
+import { Box, Button, Container } from '@mui/material';
+import { HttpStatusCode } from 'axios';
+import { FC, useMemo, useState } from 'react';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
+
+import { FieldLabel } from '../components/InterviewAnalysis/Form/InterviewAnalysisForm';
+import ResumeUploadButton from '../components/Profile/ResumeUploadButton';
+import UserQualificationsForm from '../components/Profile/UserQualificationsForm';
+import { useUserContext } from '../context/UserContext';
 import userService from '../services/userService';
 import { UserCareer, UserEducation, UserSkill } from '../types';
-import { useUserContext } from '../context/UserContext';
-import SaveIcon from '@mui/icons-material/Save';
-import { toast } from 'react-toastify';
-import { HttpStatusCode } from 'axios';
 
 const yearSchema = z.coerce
     .number({
@@ -20,13 +24,13 @@ const yearSchema = z.coerce
     .max(50, { message: 'Years of experience seems too high' });
 
 const educationEntrySchema = z.object({
-    institute: z.string().min(1, { message: 'Institute is required' }),
+    institute: z.string(),
     years: yearSchema,
     is_deleted: z.boolean().optional(),
 });
 
 const careerEntrySchema = z.object({
-    company: z.string().min(1, { message: 'Company is required' }),
+    company: z.string(),
     years: yearSchema,
     is_deleted: z.boolean().optional(),
 });
@@ -61,6 +65,9 @@ export const ProfilePage: FC = () => {
     const isSameEducation = (a: UserEducation, b: UserEducation) => a.institute === b.institute && a.years === b.years;
     const isSameCareer = (a: UserCareer, b: UserCareer) => a.company === b.company && a.years === b.years;
     const isSameSkill = (a: UserSkill, b: UserSkill) => a.id === b.id && a.name === b.name;
+
+    const [isResumeChanged, setIsResumeChanged] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
 
     const watchedValues = useWatch({ control: form.control }) as FormSchema;
 
@@ -103,9 +110,10 @@ export const ProfilePage: FC = () => {
             addedOrEditedCareer.length > 0 ||
             removedCareer.length > 0 ||
             addedOrEditedSkills.length > 0 ||
-            removedSkills.length > 0
+            removedSkills.length > 0 ||
+            isResumeChanged
         );
-    }, [watchedValues, userContext]);
+    }, [watchedValues, userContext, isResumeChanged]);
 
     const onSubmit = async (data: FormSchema) => {
         if (!userContext?.id) return;
@@ -184,6 +192,8 @@ export const ProfilePage: FC = () => {
                         .concat(newOrUpdatedSkills),
                 });
 
+                setIsResumeChanged(false);
+                setIsSaved(true);
                 form.reset(data);
             } else {
                 toast.error('Failed to update profile');
@@ -194,7 +204,15 @@ export const ProfilePage: FC = () => {
     };
 
     return (
-        <Container>
+        <Container
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                mt: 2,
+                flexDirection: 'column',
+            }}
+        >
             <FormProvider {...form}>
                 <Box
                     component="form"
@@ -206,16 +224,27 @@ export const ProfilePage: FC = () => {
                     <Button type="submit" style={{ display: 'none' }} />
                 </Box>
             </FormProvider>
-
             <Button
                 disabled={!hasChanges}
                 onClick={form.handleSubmit(onSubmit)}
                 variant="outlined"
                 startIcon={<SaveIcon />}
-                sx={{ mt: 2 }}
             >
                 Save
             </Button>
+
+            <Box sx={{ flex: 1, mt: 3 }}>
+                <FieldLabel icon={<ArticleOutlined />} label="Resume" />
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
+                    <ResumeUploadButton
+                        isSaved={isSaved}
+                        onUploadSuccess={() => {
+                            setIsResumeChanged(true);
+                            setIsSaved(false);
+                        }}
+                    />
+                </Box>
+            </Box>
         </Container>
     );
 };
