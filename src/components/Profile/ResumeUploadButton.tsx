@@ -11,6 +11,7 @@ interface ResumeUploadButtonProps {
     onUploadSuccess?: () => void;
     buttonLabel?: string;
     isSaved?: boolean;
+    setIsResumeChanged?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const VisuallyHiddenInput = styled('input')({
@@ -25,12 +26,19 @@ export const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({ onUploadSuccess, buttonLabel, isSaved }) => {
+const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
+    onUploadSuccess,
+    buttonLabel,
+    isSaved,
+    setIsResumeChanged,
+}) => {
     const { userContext } = useUserContext();
     const [fileName, setFileName] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [typeResume, setTypeResume] = useState<boolean>(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const uploadDirectly = isSaved === undefined;
 
     const checkAndLoadResume = async () => {
         if (userContext?.id) {
@@ -49,7 +57,7 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({ onUploadSuccess
 
     useEffect(() => {
         checkAndLoadResume();
-    }, [userContext?.id]);
+    }, []);
 
     const uploadFileToServer = async (file: File) => {
         if (!userContext?.id) {
@@ -67,11 +75,13 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({ onUploadSuccess
                 throw new Error('Failed to upload file');
             }
 
-            toast.success('Resume uploaded successfully');
-            setSelectedFile(null);
-            setFileName(null);
+            if (uploadDirectly) {
+                toast.success('Resume uploaded successfully');
+            }
 
+            setSelectedFile(null);
             onUploadSuccess?.();
+            setIsResumeChanged?.(false);
         } catch (error) {
             toast.error('Failed to upload file');
             throw error;
@@ -85,16 +95,25 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({ onUploadSuccess
     }, [userContext?.id]);
 
     useEffect(() => {
-        if (isSaved && selectedFile) {
+        const uplodadOnSaved = isSaved && selectedFile;
+
+        if (uplodadOnSaved) {
             uploadFileToServer(selectedFile);
         }
     }, [isSaved]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
+
         if (!file) return;
+
         setSelectedFile(file);
         setFileName(file.name);
+        setIsResumeChanged?.(true);
+
+        if (uploadDirectly) {
+            uploadFileToServer(file);
+        }
     };
 
     return (

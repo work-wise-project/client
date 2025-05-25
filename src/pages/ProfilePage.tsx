@@ -192,7 +192,6 @@ export const ProfilePage: FC = () => {
                         .concat(newOrUpdatedSkills),
                 });
 
-                setIsResumeChanged(false);
                 setIsSaved(true);
                 form.reset(data);
             } else {
@@ -224,7 +223,20 @@ export const ProfilePage: FC = () => {
                     <Button type="submit" style={{ display: 'none' }} />
                 </Box>
             </FormProvider>
+            <Box>
+                <FieldLabel icon={<ArticleOutlined />} label="Resume" />
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
+                    <ResumeUploadButton
+                        isSaved={isSaved}
+                        setIsResumeChanged={setIsResumeChanged}
+                        onUploadSuccess={() => {
+                            setIsSaved(false);
+                        }}
+                    />
+                </Box>
+            </Box>
             <Button
+                sx={{ flex: 1, mt: 3 }}
                 disabled={!hasChanges}
                 onClick={form.handleSubmit(onSubmit)}
                 variant="outlined"
@@ -232,19 +244,6 @@ export const ProfilePage: FC = () => {
             >
                 Save
             </Button>
-
-            <Box sx={{ flex: 1, mt: 3 }}>
-                <FieldLabel icon={<ArticleOutlined />} label="Resume" />
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
-                    <ResumeUploadButton
-                        isSaved={isSaved}
-                        onUploadSuccess={() => {
-                            setIsResumeChanged(true);
-                            setIsSaved(false);
-                        }}
-                    />
-                </Box>
-            </Box>
         </Container>
     );
 };
