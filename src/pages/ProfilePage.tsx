@@ -66,8 +66,8 @@ export const ProfilePage: FC = () => {
     const isSameCareer = (a: UserCareer, b: UserCareer) => a.company === b.company && a.years === b.years;
     const isSameSkill = (a: UserSkill, b: UserSkill) => a.id === b.id && a.name === b.name;
 
-    const [isResumeChanged, setIsResumeChanged] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
+    const [hasResumeChanged, setHasResumeChanged] = useState(false);
+    const [shouldUploadNow, setShouldUploadNow] = useState(false);
 
     const watchedValues = useWatch({ control: form.control }) as FormSchema;
 
@@ -111,9 +111,9 @@ export const ProfilePage: FC = () => {
             removedCareer.length > 0 ||
             addedOrEditedSkills.length > 0 ||
             removedSkills.length > 0 ||
-            isResumeChanged
+            hasResumeChanged
         );
-    }, [watchedValues, userContext, isResumeChanged]);
+    }, [watchedValues, userContext, hasResumeChanged]);
 
     const onSubmit = async (data: FormSchema) => {
         if (!userContext?.id) return;
@@ -192,7 +192,7 @@ export const ProfilePage: FC = () => {
                         .concat(newOrUpdatedSkills),
                 });
 
-                setIsSaved(true);
+                setShouldUploadNow(true);
                 form.reset(data);
             } else {
                 toast.error('Failed to update profile');
@@ -227,10 +227,10 @@ export const ProfilePage: FC = () => {
                 <FieldLabel icon={<ArticleOutlined />} label="Resume" />
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
                     <ResumeUploadButton
-                        isSaved={isSaved}
-                        setIsResumeChanged={setIsResumeChanged}
+                        shouldUploadNow={shouldUploadNow}
+                        setHasResumeChanged={setHasResumeChanged}
                         onUploadSuccess={() => {
-                            setIsSaved(false);
+                            setShouldUploadNow(false);
                         }}
                     />
                 </Box>

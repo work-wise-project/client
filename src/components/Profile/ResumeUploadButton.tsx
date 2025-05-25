@@ -10,8 +10,8 @@ import resumeService from '../../services/resumeService';
 interface ResumeUploadButtonProps {
     onUploadSuccess?: () => void;
     buttonLabel?: string;
-    isSaved?: boolean;
-    setIsResumeChanged?: React.Dispatch<React.SetStateAction<boolean>>;
+    shouldUploadNow?: boolean;
+    setHasResumeChanged?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const VisuallyHiddenInput = styled('input')({
@@ -29,35 +29,35 @@ export const VisuallyHiddenInput = styled('input')({
 const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
     onUploadSuccess,
     buttonLabel,
-    isSaved,
-    setIsResumeChanged,
+    shouldUploadNow,
+    setHasResumeChanged,
 }) => {
     const { userContext } = useUserContext();
-    const [fileName, setFileName] = useState<string | null>(null);
+    const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [typeResume, setTypeResume] = useState<boolean>(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [existingResumeType, setExistingResumeType] = useState<string | null>(null);
+    const [pendingUploadFile, setPendingUploadFile] = useState<File | null>(null);
 
-    const uploadDirectly = isSaved === undefined;
-
-    const checkAndLoadResume = async () => {
-        if (userContext?.id) {
-            try {
-                const { response } = await resumeService.getResumeIfExist(userContext.id);
-                if (response.data) {
-                    setTypeResume(response.data.contentType);
-                } else {
-                    console.log('No resume found for user');
-                }
-            } catch (error) {
-                console.error('Error loading existing resume:', error);
-            }
-        }
-    };
+    // If `isSaved` prop is undefined, upload immediately on file select
+    const shouldUploadImmediately = shouldUploadNow === undefined;
 
     useEffect(() => {
+        const checkAndLoadResume = async () => {
+            if (userContext?.id) {
+                try {
+                    const { response } = await resumeService.getResumeIfExist(userContext.id);
+                    if (response.data) {
+                        setExistingResumeType(response.data.contentType);
+                    } else {
+                        console.log('No resume found for user');
+                    }
+                } catch (error) {
+                    console.error('Error loading existing resume:', error);
+                }
+            }
+        };
         checkAndLoadResume();
-    }, []);
+    }, [userContext?.id]);
 
     const uploadFileToServer = async (file: File) => {
         if (!userContext?.id) {
@@ -75,13 +75,13 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
                 throw new Error('Failed to upload file');
             }
 
-            if (uploadDirectly) {
+            if (shouldUploadImmediately) {
                 toast.success('Resume uploaded successfully');
             }
 
-            setSelectedFile(null);
+            setPendingUploadFile(null);
             onUploadSuccess?.();
-            setIsResumeChanged?.(false);
+            setHasResumeChanged?.(false);
         } catch (error) {
             toast.error('Failed to upload file');
             throw error;
@@ -91,29 +91,26 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
     };
 
     useEffect(() => {
-        checkAndLoadResume();
-    }, [userContext?.id]);
-
-    useEffect(() => {
-        const uplodadOnSaved = isSaved && selectedFile;
+        const uplodadOnSaved = shouldUploadNow && pendingUploadFile;
 
         if (uplodadOnSaved) {
-            uploadFileToServer(selectedFile);
+            uploadFileToServer(pendingUploadFile);
         }
-    }, [isSaved]);
+    }, [shouldUploadNow, pendingUploadFile]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
 
         if (!file) return;
 
-        setSelectedFile(file);
-        setFileName(file.name);
-        setIsResumeChanged?.(true);
+        setPendingUploadFile(file);
+        setUploadedFileName(file.name);
+        setHasResumeChanged?.(true);
 
-        if (uploadDirectly) {
+        if (shouldUploadImmediately) {
             uploadFileToServer(file);
         }
+        event.target.value = '';
     };
 
     return (
@@ -135,12 +132,18 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
             <Box
                 style={{
                     color:
-                        (buttonLabel && fileName !== buttonLabel) || (!buttonLabel && fileName) || typeResume
+                        (buttonLabel && uploadedFileName !== buttonLabel) ||
+                        (!buttonLabel && uploadedFileName) ||
+                        existingResumeType
                             ? 'blue'
                             : '#4574DC',
                 }}
             >
-                {!fileName && !typeResume ? 'Upload Your Resume' : fileName ? fileName : `resume.${typeResume}`}
+                {!uploadedFileName && !existingResumeType
+                    ? 'Upload Your Resume'
+                    : uploadedFileName
+                    ? uploadedFileName
+                    : `resume.${existingResumeType}`}
             </Box>
             <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
         </Button>
