@@ -4,14 +4,17 @@ import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 
 import { Send } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../../context/UserContext';
 import ResumeUploadButton from '../Profile/ResumeUploadButton';
 import { primaryIconButton } from './styles';
 
 const ResumeUpload = () => {
     const navigate = useNavigate();
+    const { setIsUserConncted } = useUserContext();
 
     const handleNext = () => {
         navigate('/');
+        setIsUserConncted(true);
     };
 
     return (

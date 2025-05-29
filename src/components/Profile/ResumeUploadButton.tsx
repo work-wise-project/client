@@ -28,7 +28,6 @@ export const VisuallyHiddenInput = styled('input')({
 
 const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
     onUploadSuccess,
-    buttonLabel,
     shouldUploadNow,
     setHasResumeChanged,
 }) => {
@@ -127,16 +126,12 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
                 justifyContent: 'space-between',
                 backgroundColor: 'white',
                 width: '250px',
+                color: '#9CA3AF',
             }}
         >
             <Box
                 style={{
-                    color:
-                        (buttonLabel && uploadedFileName !== buttonLabel) ||
-                        (!buttonLabel && uploadedFileName) ||
-                        existingResumeType
-                            ? 'blue'
-                            : '#4574DC',
+                    color: !uploadedFileName && !existingResumeType ? '' : 'blue',
                 }}
             >
                 {!uploadedFileName && !existingResumeType

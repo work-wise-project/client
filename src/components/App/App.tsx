@@ -2,6 +2,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { InterviewsProvider } from '../../context/InterviewsContext';
 import { useUserContext } from '../../context/UserContext';
 import {
     HomePage,
@@ -12,22 +13,22 @@ import {
     SignUp,
     WelcomePage,
 } from '../../pages';
+import { ProfilePage } from '../../pages/ProfilePage';
 import userService from '../../services/userService';
+import { IUser } from '../../types';
+import InterviewChooser from '../Interview/InterviewChooser';
 import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
-import { IUser } from '../../types';
-import { InterviewsProvider } from '../../context/InterviewsContext';
-import InterviewChooser from '../Interview/InterviewChooser';
-import { ProfilePage } from '../../pages/ProfilePage';
 
 export const App = () => {
-    const { setUserContext, storeUserSession } = useUserContext();
+    const { setUserContext, storeUserSession, setIsUserConncted } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
 
     const handleLoginSuccess = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {
         storeUserSession(userData);
+        setIsUserConncted(true);
         navigate('/');
     };
 
@@ -48,6 +49,8 @@ export const App = () => {
                 if (response.status === HttpStatusCode.Ok) {
                     const { data: user } = response;
                     setUserContext(user);
+                    setIsUserConncted(true);
+
                     setIsLoading(false);
                 }
             } catch (error) {
