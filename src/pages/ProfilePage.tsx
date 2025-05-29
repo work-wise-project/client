@@ -45,6 +45,7 @@ const formSchema = z.object({
     education: z.array(educationEntrySchema),
     career: z.array(careerEntrySchema),
     skills: z.array(skillEntrySchema),
+    newSkills: z.array(z.string()),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -59,6 +60,7 @@ export const ProfilePage: FC = () => {
             education: userContext?.education?.length ? userContext.education : [{ institute: '', years: 0 }],
             career: userContext?.career?.length ? userContext.career : [{ company: '', years: 0 }],
             skills: userContext?.skills ?? [],
+            newSkills: [],
         },
     });
 
@@ -104,6 +106,8 @@ export const ProfilePage: FC = () => {
             (s) => !watchedValues.skills.some((skill) => isSameSkill(s, skill))
         );
 
+        const hasNewSkills = watchedValues.newSkills.some((name) => name.trim() !== '');
+
         return (
             addedOrEditedEducation.length > 0 ||
             removedEducation.length > 0 ||
@@ -111,6 +115,7 @@ export const ProfilePage: FC = () => {
             removedCareer.length > 0 ||
             addedOrEditedSkills.length > 0 ||
             removedSkills.length > 0 ||
+            hasNewSkills ||
             hasResumeChanged
         );
     }, [watchedValues, userContext, hasResumeChanged]);
@@ -152,6 +157,9 @@ export const ProfilePage: FC = () => {
         const removedSkills = (userContext.skills ?? []).filter(
             (s) => !data.skills.some((skill) => isSameSkill(s, skill))
         );
+        const newSkillNames = data.newSkills.filter((name) => name.trim() !== '');
+
+        console.log(newSkillNames);
 
         try {
             const { response } = await userService.updateUser(userContext.id, {

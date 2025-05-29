@@ -40,6 +40,7 @@ const formSchema = z.object({
     education: z.array(educationEntrySchema),
     career: z.array(careerEntrySchema),
     skills: z.array(skillEntrySchema),
+    newSkills: z.array(z.string()),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -54,6 +55,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
             education: [{ institute: '', years: 0 }],
             career: [{ company: '', years: 0 }],
             skills: [],
+            newSkills: [],
         },
     });
 
@@ -71,6 +73,10 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
                 ...skill,
                 skill_id: skill.id,
             }));
+
+            const newSkillNames = data.newSkills.filter((name) => name.trim() !== '');
+
+            console.log(newSkillNames);
 
             try {
                 const { response } = await userService.updateUser(userContext.id, {

@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import SchoolIcon from '@mui/icons-material/School';
+import WorkIcon from '@mui/icons-material/Work';
 import {
     Autocomplete,
     AutocompleteProps,
@@ -12,20 +15,17 @@ import {
     TextFieldProps,
     Typography,
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
+import { HttpStatusCode } from 'axios';
+import { useEffect, useState } from 'react';
+import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form';
 import skillService from '../../services/skillService';
 import { ISkill } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
 import { primaryIconButton } from '../SignUp/styles';
-import { HttpStatusCode } from 'axios';
 
 const UserQualificationsForm = () => {
-    const { control } = useFormContext();
+    const { control, watch, setValue } = useFormContext();
 
     const {
         fields: education,
@@ -36,26 +36,6 @@ const UserQualificationsForm = () => {
     const { fields: career, append: appendCareer, remove: removeCareer } = useFieldArray({ control, name: 'career' });
 
     const [skillsTypeOptions, setSkillsTypeOptions] = useState<Array<ISkill>>([]);
-
-    const skillTextFieldProps = (params: AutocompleteRenderInputParams, error?: FieldError): TextFieldProps => ({
-        ...params,
-        autoComplete: 'off',
-        InputProps: { style: { borderRadius: '10px', backgroundColor: 'white' }, ...params.InputProps },
-        error: !!error,
-        helperText: error?.message,
-    });
-
-    const skillProps = (error?: FieldError): AutocompleteProps<ISkill, true, false, false> => ({
-        options: skillsTypeOptions,
-        getOptionLabel: ({ name }) => name,
-        getOptionKey: ({ id }) => id,
-        isOptionEqualToValue: (option, value) => option.id === value.id,
-        renderInput: (params) => <TextField {...skillTextFieldProps(params, error)} label="select your skills" />,
-        autoComplete: false,
-        size: 'medium',
-        multiple: true,
-        slotProps: { clearIndicator: { sx: fieldActionStyle }, popupIndicator: { sx: fieldActionStyle } },
-    });
 
     useEffect(() => {
         const fetchSkills = async () => {
@@ -72,6 +52,32 @@ const UserQualificationsForm = () => {
         fetchSkills();
     }, []);
 
+    const skills = watch('skills') || [];
+    const newSkills = watch('newSkills') || [];
+
+    const skillTextFieldProps = (params: AutocompleteRenderInputParams, error?: FieldError): TextFieldProps => ({
+        ...params,
+        autoComplete: 'off',
+        InputProps: { style: { borderRadius: '10px', backgroundColor: 'white' }, ...params.InputProps },
+        error: !!error,
+        helperText: error?.message,
+    });
+
+    const skillProps = (error?: FieldError): AutocompleteProps<ISkill | string, true, false, true> => ({
+        options: skillsTypeOptions,
+        getOptionLabel: (option) => (typeof option === 'string' ? option : option.name),
+        getOptionKey: (option) => (typeof option === 'string' ? option : option.id),
+        isOptionEqualToValue: (option, value) =>
+            (typeof option === 'string' && typeof value === 'string' && option === value) ||
+            (typeof option !== 'string' && typeof value !== 'string' && option.id === value.id),
+        renderInput: (params) => <TextField {...skillTextFieldProps(params, error)} label="Select your skills" />,
+        autoComplete: false,
+        size: 'medium',
+        multiple: true,
+        freeSolo: true,
+        slotProps: { clearIndicator: { sx: fieldActionStyle }, popupIndicator: { sx: fieldActionStyle } },
+    });
+
     return (
         <>
             <Box
@@ -83,14 +89,21 @@ const UserQualificationsForm = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <Autocomplete
-                            {...field}
+                            freeSolo
                             {...skillProps(error)}
-                            value={Array.isArray(field.value) ? field.value : []}
-                            onChange={(_, newValue) => field.onChange(newValue)}
+                            value={[...skills, ...newSkills]}
+                            onChange={(_, newValue) => {
+                                const existingSkills = newValue.filter((item) => typeof item !== 'string') as ISkill[];
+                                const createdSkills = newValue.filter((item) => typeof item === 'string') as string[];
+
+                                field.onChange(existingSkills);
+                                setValue('newSkills', createdSkills, { shouldValidate: true, shouldDirty: true });
+                            }}
                         />
                     )}
                 />
             </Box>
+
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2, mt: 3 }}>
                 <Box sx={{ flex: 1, minWidth: '400px' }}>
                     <FieldLabel icon={<SchoolIcon />} label="Education" />
