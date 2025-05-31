@@ -6,16 +6,18 @@ import { AxiosError, HttpStatusCode } from 'axios';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
 import ResumeUpload from '../components/SignUp/ResumeUpload';
 import { useUserContext } from '../context/UserContext';
+import { theme } from '../style';
 
 const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
-    const bgColor = active || completed ? '#1976d2' : '#ccc'; // Blue if active/completed
-    const textColor = active || completed ? '#fff' : '#000'; // White number or black if inactive
+    const bgColor =
+        active || completed ? (active ? theme.palette.secondary.main : theme.palette.secondary.light) : '#ccc';
+    const textColor = active || completed ? '#fff' : '#000';
 
     return (
         <div
             style={{
-                width: 48,
-                height: 48,
+                width: 60,
+                height: 60,
                 borderRadius: '50%',
                 backgroundColor: bgColor,
                 display: 'flex',
@@ -23,7 +25,7 @@ const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) =>
                 justifyContent: 'center',
                 color: textColor,
                 fontWeight: 'bold',
-                fontSize: '1.3rem',
+                fontSize: '1.5rem',
             }}
         >
             {icon}
@@ -81,17 +83,19 @@ export const SignUp = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                height: '85vh',
+                height: 'calc(100vh - var(--toolbar-height))',
                 alignItems: 'center',
+                pt: 5,
             }}
         >
-            <Box sx={{ textAlign: 'center' }}>
+            <Box sx={{ textAlign: 'center', gap: 7, display: 'flex', flexDirection: 'column' }}>
                 <Box
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
                         width: '100%',
                         mb: 2,
+                        mt: 5,
                     }}
                 >
                     <Stepper activeStep={activeStep} sx={{ width: 500 }}>
@@ -115,6 +119,8 @@ export const SignUp = () => {
                     <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
                         {getStepTitle()}
                     </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
                     {activeStep === 0 ? (
                         <Box
                             sx={{
@@ -122,17 +128,16 @@ export const SignUp = () => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 flexDirection: 'column',
+                                width: 220,
                             }}
                         >
-                            <Box sx={{ width: 220, mt: 5 }}>
-                                <GoogleLogin
-                                    onSuccess={googleResponseMessage}
-                                    onError={() => setErrorMessage('Google login failed.')}
-                                    theme="outline"
-                                    size="large"
-                                    shape="pill"
-                                />
-                            </Box>
+                            <GoogleLogin
+                                onSuccess={googleResponseMessage}
+                                onError={() => setErrorMessage('Google login failed.')}
+                                theme="outline"
+                                size="large"
+                                shape="pill"
+                            />
                         </Box>
                     ) : activeStep === 1 ? (
                         currentUserId && (
@@ -148,7 +153,7 @@ export const SignUp = () => {
                     </Typography>
                 )}
             </Box>
-            <Box sx={{ width: '100%', textAlign: 'center', mb: 3 }}>
+            <Box sx={{ width: '100%', textAlign: 'left', mb: 15 }}>
                 <Link href="/login" variant="body1" sx={{ fontWeight: 'bold' }}>
                     Already have an account?
                 </Link>

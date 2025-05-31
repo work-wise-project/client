@@ -29,11 +29,25 @@ export const theme = createTheme({
         MuiToolbar: {
             styleOverrides: {
                 root: {
-                    height: '8vh',
+                    height: 'var(--toolbar-height)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     width: '100%',
+                },
+            },
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '10px',
+                },
+            },
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '10px',
                 },
             },
         },

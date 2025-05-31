@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Skeleton, Typography } from '@mui/material';
+import { Box, Skeleton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -50,6 +50,7 @@ export const InterviewAnalysisPage = () => {
             setAnalysis(result.analysis);
             setFileUrl(URL.createObjectURL(file));
         } catch (error) {
+            console.error('Error analyzing interview:', error);
             toast.error('Error analyzing interview. Please try again later.');
         }
     };

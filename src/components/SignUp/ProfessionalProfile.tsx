@@ -28,7 +28,6 @@ import userService from '../../services/userService';
 import { ISkill, UserCareer, UserEducation, UserSkill } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
-import { primaryIconButton } from './styles';
 
 const yearSchema = z.coerce
     .number({
@@ -36,17 +35,37 @@ const yearSchema = z.coerce
         invalid_type_error: 'Must be a number',
     })
     .min(0, { message: 'Years of experience cannot be negative' })
-    .max(50, { message: 'Years of experience seems too high' });
+    .max(50, { message: 'Years of experience seems to high' });
 
-const educationEntrySchema = z.object({
-    institute: z.string().min(1, { message: 'Institute is required' }),
-    years: yearSchema,
-});
+const educationEntrySchema = z
+    .object({
+        institute: z.string(),
+        years: yearSchema,
+    })
+    .superRefine((data, ctx) => {
+        if (data.years > 0 && data.institute.trim().length === 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Institute is required with years of experience',
+                path: ['institute'],
+            });
+        }
+    });
 
-const careerEntrySchema = z.object({
-    company: z.string().min(1, { message: 'Company is required' }),
-    years: yearSchema,
-});
+const careerEntrySchema = z
+    .object({
+        company: z.string(),
+        years: yearSchema,
+    })
+    .superRefine((data, ctx) => {
+        if (data.years > 0 && data.company.trim().length === 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Company is required with years of experience',
+                path: ['company'],
+            });
+        }
+    });
 
 const skillEntrySchema = z.object({
     id: z.number(),
@@ -102,7 +121,7 @@ const ProfessionalProfile = ({
     const skillTextFieldProps = (params: AutocompleteRenderInputParams, error?: FieldError): TextFieldProps => ({
         ...params,
         autoComplete: 'off',
-        InputProps: { style: { borderRadius: '10px', backgroundColor: 'white' }, ...params.InputProps },
+        InputProps: { style: { borderRadius: '10px' }, ...params.InputProps },
         error: !!error,
         helperText: error?.message,
     });
@@ -187,7 +206,7 @@ const ProfessionalProfile = ({
                         )}
                     />
                 </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2, mt: 3 }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2, mt: 5 }}>
                     <Box sx={{ flex: 1, minWidth: '400px' }}>
                         <FieldLabel icon={<SchoolIcon />} label="Education" />
                         {education.map((field, index) => (
@@ -201,7 +220,7 @@ const ProfessionalProfile = ({
                                                 {...field}
                                                 placeholder="Institute"
                                                 error={!!error}
-                                                sx={{ borderRadius: '10px', backgroundColor: 'white' }}
+                                                sx={{ borderRadius: '10px' }}
                                             />
                                             {error && (
                                                 <Typography variant="body2" color="error">
@@ -215,13 +234,13 @@ const ProfessionalProfile = ({
                                     name={`education.${index}.years`}
                                     control={control}
                                     render={({ field, fieldState: { error } }) => (
-                                        <FormControl sx={{ minWidth: 50 }} variant="outlined">
-                                            <OutlinedInput
+                                        <FormControl sx={{ minWidth: 50 }}>
+                                            <TextField
                                                 {...field}
                                                 type="number"
+                                                label="Years of experience"
                                                 placeholder="Years of experience"
                                                 error={!!error}
-                                                sx={{ borderRadius: '10px', backgroundColor: 'white' }}
                                                 onChange={(e) => field.onChange(Number(e.target.value))}
                                             />
                                             {error && (
@@ -234,14 +253,14 @@ const ProfessionalProfile = ({
                                 />
                                 <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
                                     {education.length !== 1 && (
-                                        <IconButton onClick={() => removeEducation(index)} sx={primaryIconButton}>
+                                        <IconButton onClick={() => removeEducation(index)} color="primary">
                                             <RemoveCircleOutlineIcon />
                                         </IconButton>
                                     )}
                                     {index === education.length - 1 && (
                                         <IconButton
                                             onClick={() => appendEducation({ institute: '', years: 0 })}
-                                            sx={primaryIconButton}
+                                            color="primary"
                                         >
                                             <AddCircleOutlineIcon />
                                         </IconButton>
@@ -250,7 +269,7 @@ const ProfessionalProfile = ({
                             </Box>
                         ))}
                     </Box>
-                    <Box sx={{ flex: 1, minWidth: '400px' }}>
+                    <Box sx={{ flex: 1, minWidth: '400px', paddingInlineStart: 5 }}>
                         <FieldLabel icon={<WorkIcon />} label="Career" />
                         {career.map((field, index) => (
                             <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
@@ -279,12 +298,12 @@ const ProfessionalProfile = ({
                                     control={control}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormControl sx={{ minWidth: 50 }} variant="outlined">
-                                            <OutlinedInput
+                                            <TextField
                                                 {...field}
                                                 type="number"
+                                                label="Years of experience"
                                                 placeholder="Years of experience"
                                                 error={!!error}
-                                                sx={{ borderRadius: '10px', backgroundColor: 'white' }}
                                                 onChange={(e) => field.onChange(Number(e.target.value))}
                                             />
                                             {error && (
@@ -297,14 +316,14 @@ const ProfessionalProfile = ({
                                 />
                                 <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
                                     {career.length !== 1 && (
-                                        <IconButton onClick={() => removeCareer(index)} sx={primaryIconButton}>
+                                        <IconButton onClick={() => removeCareer(index)} color="primary">
                                             <RemoveCircleOutlineIcon />
                                         </IconButton>
                                     )}
                                     {index === career.length - 1 && (
                                         <IconButton
+                                            color="primary"
                                             onClick={() => appendCareer({ company: '', years: 0 })}
-                                            sx={primaryIconButton}
                                         >
                                             <AddCircleOutlineIcon />
                                         </IconButton>
@@ -314,22 +333,23 @@ const ProfessionalProfile = ({
                         ))}
                     </Box>
                 </Box>
-            </Box>
-            <Box
-                sx={{
-                    position: 'fixed',
-                    bottom: 20,
-                    right: 20,
-                    zIndex: 1000,
-                }}
-            >
-                <IconButton
-                    aria-label="next step"
-                    sx={{ fontSize: 40, ...primaryIconButton }}
-                    onClick={saveUserProfessionalProfile}
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        bottom: 50,
+                        right: 50,
+                        zIndex: 1000,
+                    }}
                 >
-                    <ArrowForwardIcon sx={{ fontSize: 40 }} />
-                </IconButton>
+                    <IconButton
+                        aria-label="next step"
+                        onClick={saveUserProfessionalProfile}
+                        size="large"
+                        color="primary"
+                    >
+                        <ArrowForwardIcon sx={{ fontSize: 40 }} />
+                    </IconButton>
+                </Box>
             </Box>
         </Container>
     );

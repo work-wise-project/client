@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 
 export const HomePage = () => {
     return (
-        <Box sx={{ justifyContent: 'center', mt: { md: 2, lg: 5 } }}>
+        <Box sx={{ justifyContent: 'center', mt: { md: 4, lg: 8 } }}>
             <CalendarComponent />
         </Box>
     );

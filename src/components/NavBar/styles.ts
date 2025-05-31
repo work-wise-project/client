@@ -1,7 +1,7 @@
 import { Palette, SxProps } from '@mui/material';
 import { CSSProperties } from 'react';
 
-const topBarHeight = '8vh';
+const topBarHeight = 'var(--toolbar-height)';
 
 export const logoTypographyStyle: SxProps = {
     marginRight: 2,
@@ -59,7 +59,6 @@ export const drawerControlStyle = (palette: Palette): SxProps => ({
 export const mainContentStyle = (drawerWidth: string, isNavVisible: boolean): SxProps => ({
     marginTop: topBarHeight,
     marginLeft: isNavVisible ? drawerWidth : 0,
-    padding: 2,
     transition: 'margin-left 0.3s',
     height: `calc(100vh - ${topBarHeight})`,
 });
