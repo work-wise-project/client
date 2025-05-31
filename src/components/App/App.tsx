@@ -60,37 +60,36 @@ export const App = () => {
     }, []);
 
     return (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <NavBar>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    {isLoading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <CircularProgress />
-                        </Box>
-                    ) : (
-                        <InterviewsProvider>
-                            <Routes>
+                {isLoading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <InterviewsProvider>
+                        <Routes>
+                            <Route
+                                path="/login"
+                                element={<PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />}
+                            />
+                            <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
+                            <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
+                            <Route element={<ProtectedRoute />}>
+                                <Route path="/resume" element={<ResumePage />} />
+                                <Route path="/" element={<HomePage />} />
+                                <Route path="/resume" element={<ResumePage />} />
+                                <Route path="/interviewAnalysis" element={<InterviewChooser />} />
+                                <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
                                 <Route
-                                    path="/login"
-                                    element={
-                                        <PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />
-                                    }
+                                    path="/interviewAnalysis/:interviewId/:interviewTitle"
+                                    element={<InterviewAnalysisPage />}
                                 />
-                                <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
-                                <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
-                                <Route element={<ProtectedRoute />}>
-                                    <Route path="/resume" element={<ResumePage />} />
-                                    <Route path="/" element={<HomePage />} />
-                                    <Route path="/resume" element={<ResumePage />} />
-                                    <Route path="/interviewAnalysis" element={<InterviewChooser />} />
-                                    <Route path="/interviewAnalysis/:interviewId" element={<InterviewAnalysisPage />} />
-                                    <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
-                                </Route>
-                            </Routes>
-                        </InterviewsProvider>
-                    )}
-                </Box>
+                            </Route>
+                        </Routes>
+                    </InterviewsProvider>
+                )}
             </NavBar>
-        </>
+        </Box>
     );
 };

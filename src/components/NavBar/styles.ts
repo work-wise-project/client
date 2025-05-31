@@ -1,14 +1,7 @@
 import { Palette, SxProps } from '@mui/material';
 import { CSSProperties } from 'react';
 
-export const toolbarStyle: SxProps = {
-    height: '8vh',
-    color: 'black',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-};
+const topBarHeight = 'var(--toolbar-height)';
 
 export const logoTypographyStyle: SxProps = {
     marginRight: 2,
@@ -19,8 +12,8 @@ export const logoTypographyStyle: SxProps = {
 
 const drawerBasicStyle = (drawerWidth: string): CSSProperties => ({
     width: drawerWidth,
-    top: '8vh',
-    height: '92vh',
+    top: topBarHeight,
+    height: `calc(100vh - ${topBarHeight})`,
 });
 
 export const drawerStyle = (drawerWidth: string): SxProps => ({
@@ -28,7 +21,6 @@ export const drawerStyle = (drawerWidth: string): SxProps => ({
     position: 'fixed',
     ...drawerBasicStyle(drawerWidth),
     '& .MuiDrawer-paper': {
-        border: 'none',
         transition: 'width 0.3s',
         overflowX: 'hidden',
         ...drawerBasicStyle(drawerWidth),
@@ -41,6 +33,7 @@ export const pagesListStyle: SxProps = {
 };
 
 export const listItemButtonStyle = (palette: Palette, isActive: boolean): SxProps => ({
+    marginY: 2,
     height: '6vh',
     display: 'flex',
     paddingX: 2.5,
@@ -64,8 +57,8 @@ export const drawerControlStyle = (palette: Palette): SxProps => ({
 });
 
 export const mainContentStyle = (drawerWidth: string, isNavVisible: boolean): SxProps => ({
+    marginTop: topBarHeight,
     marginLeft: isNavVisible ? drawerWidth : 0,
-    padding: 2,
     transition: 'margin-left 0.3s',
-    height: '90vh',
+    height: `calc(100vh - ${topBarHeight})`,
 });

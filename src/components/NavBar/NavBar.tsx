@@ -23,7 +23,7 @@ export const NavBar = ({ children }: { children?: ReactNode }) => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useLocalStorage('isNavbarOpen', false);
 
-    const drawerWidth = isOpen ? '10vw' : '3.5vw';
+    const drawerWidth = isOpen ? '11vw' : '3.5vw';
     const isNavbarVisible = !PUBLIC_ROUTES.includes(pathname);
 
     return (

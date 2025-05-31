@@ -7,7 +7,6 @@ import { HttpStatusCode } from 'axios';
 import resumeService from '../../services/resumeService';
 import { useNavigate } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
-import { primaryIconButton } from './styles';
 import { useUserContext } from '../../context/UserContext';
 import { VisuallyHiddenInput } from '../../pages/ResumePage';
 
@@ -55,32 +54,39 @@ const ResumeUpload = ({ currentUserId }: { currentUserId: string }) => {
     };
 
     return (
-        <Box sx={{ flex: 1, mt: 3 }}>
-            <FieldLabel icon={<ArticleOutlined />} label="Resume" />
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
-                <Button
-                    component="label"
-                    variant="outlined"
-                    tabIndex={-1}
-                    endIcon={<CloudUploadIcon />}
-                    sx={{
-                        borderRadius: '10px',
-                        borderColor: '#E5E7EB',
-                        textTransform: 'none',
-                        justifyContent: 'space-between',
-                        color: '#9CA3AF',
-                        backgroundColor: 'white',
-                        width: '250px',
-                    }}
-                >
-                    {fileName ?? 'upload your resume'}
-                    <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
-                </Button>
+        <Box sx={{ flex: 1, mt: 3, gap: 15, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                }}
+            >
+                <FieldLabel icon={<ArticleOutlined />} label="Resume" />
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
+                    <Button
+                        component="label"
+                        variant="outlined"
+                        tabIndex={-1}
+                        endIcon={<CloudUploadIcon />}
+                        sx={{
+                            borderRadius: '10px',
+                            textTransform: 'none',
+                            justifyContent: 'space-between',
+                            width: '250px',
+                        }}
+                    >
+                        {fileName ?? 'upload your resume'}
+                        <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
+                    </Button>
+                </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-                <IconButton onClick={handleNext}>
-                    <Send sx={{ fontSize: 40, ...primaryIconButton }} />
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <IconButton onClick={handleNext} color="primary">
+                    <Send sx={{ fontSize: 40 }} />
                 </IconButton>
             </Box>
         </Box>

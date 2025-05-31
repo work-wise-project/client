@@ -9,7 +9,7 @@ export const CalendarGlobalStyles = () => (
                 maxWidth: '70vw',
                 backgroundColor: 'white',
                 borderRadius: '16px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
                 lineHeight: '1.8',
                 padding: '20px',
                 margin: 'auto',
