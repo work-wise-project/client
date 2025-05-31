@@ -167,7 +167,7 @@ export const ResumePage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', mt: { lg: 2 } }}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', mt: { xs: 1, lg: 7 } }}>
             <Box display="flex" justifyContent="flex-start" mb={3}>
                 <Button
                     component="label"
