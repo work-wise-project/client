@@ -33,8 +33,7 @@ const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) =>
 
 export const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-    const { setLocalStorage } = useUserContext();
+    const { storeUserSession } = useUserContext();
 
     const [activeStep, setActiveStep] = useState<number>(0);
     const googleResponseMessage = async (credentialResponse: CredentialResponse) => {
@@ -46,8 +45,7 @@ export const SignUp = () => {
         try {
             const { response } = await userService.googleRegister(credentialResponse);
             if (response.status === HttpStatusCode.Ok) {
-                setLocalStorage(response.data);
-                setCurrentUserId(response.data.user.id);
+                storeUserSession(response.data);
                 setActiveStep((prev) => prev + 1);
                 setErrorMessage(null);
             } else {
@@ -135,11 +133,9 @@ export const SignUp = () => {
                             </Box>
                         </Box>
                     ) : activeStep === 1 ? (
-                        currentUserId && (
-                            <ProfessionalProfile setActiveStep={setActiveStep} currentUserId={currentUserId} />
-                        )
+                        <ProfessionalProfile setActiveStep={setActiveStep} />
                     ) : (
-                        currentUserId && <ResumeUpload currentUserId={currentUserId} />
+                        <ResumeUpload />
                     )}
                 </Box>
                 {errorMessage && (

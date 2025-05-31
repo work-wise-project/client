@@ -43,7 +43,7 @@ const getUserById = async (userId: string) => {
     return { response, abort: () => abortController.abort() };
 };
 
-const updateUser = async (userId: string, userUpdates: Omit<IUser, 'email' | 'id'>) => {
+const updateUser = async (userId: string, userUpdates: Omit<IUser, 'email' | 'id' | 'name'>) => {
     const abortController = new AbortController();
 
     const response = await apiClient.put(`/users/${userId}`, userUpdates, {
