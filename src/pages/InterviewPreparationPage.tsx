@@ -177,10 +177,12 @@ export const InterviewPreparationPage = () => {
                     </Typography>
                 </Box>
             </Box>
+
             <Box mt={1} pt={1} borderTop="1px solid #ccc">
                 <Typography variant="h6" fontWeight="bold" mb={2}>
                     Materials Suggestions
                 </Typography>
+
                 <Box display="flex" alignItems="center">
                     <IconButton
                         onClick={handlePrev}
@@ -203,36 +205,64 @@ export const InterviewPreparationPage = () => {
                                     sx={{
                                         width: '45%',
                                         borderRadius: '20px',
-                                        maxHeight: '140px',
+                                        height: '170px',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        justifyContent: 'space-between',
                                         mx: 1.5,
                                     }}
                                 >
-                                    <CardContent>
+                                    <CardContent
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            flexGrow: 1,
+                                        }}
+                                    >
                                         <Box display="flex" alignItems="center" mb={1}>
                                             {getMaterialIcon(item)}
                                             <Typography
                                                 fontWeight="bold"
-                                                sx={{ ml: 1, fontSize: '1.1rem' }}
-                                                color="text.primary"
+                                                sx={{
+                                                    ml: 1,
+                                                    fontSize: '1.1rem',
+                                                    color: 'text.primary',
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                }}
                                             >
                                                 {item.title}
                                             </Typography>
                                         </Box>
-                                        <Typography variant="body2" mb={1}>
+
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                pl: 6, // aligns with the start of title text
+                                                mb: 1,
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                            }}
+                                        >
                                             {item.description}
                                         </Typography>
-                                        <Button
-                                            size="small"
-                                            href={item.link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            variant="text"
-                                        >
-                                            {getButtonText(item)}
-                                        </Button>
+
+                                        <Box sx={{ mt: 'auto', pl: 4 }}>
+                                            <Button
+                                                size="small"
+                                                href={item.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                variant="text"
+                                            >
+                                                {getButtonText(item)}
+                                            </Button>
+                                        </Box>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -250,6 +280,7 @@ export const InterviewPreparationPage = () => {
                     </IconButton>
                 </Box>
             </Box>
+
             <Box position="fixed" bottom={0} left={0} width="100%" py={1.5} textAlign="center">
                 {[...Array(Math.ceil(materialLinks.length / itemsPerPage) || 1)].map((_, i) => (
                     <Button
