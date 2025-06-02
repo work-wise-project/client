@@ -240,7 +240,7 @@ export const InterviewPreparationPage = () => {
                                         <Typography
                                             variant="body2"
                                             sx={{
-                                                pl: 6, // aligns with the start of title text
+                                                pl: 6,
                                                 mb: 1,
                                                 display: '-webkit-box',
                                                 WebkitLineClamp: 2,
