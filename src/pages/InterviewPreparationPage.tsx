@@ -157,7 +157,15 @@ export const InterviewPreparationPage = () => {
     }
 
     return (
-        <Box paddingInline={4} display="flex" flexDirection="column">
+        <Box
+            paddingInline={4}
+            display="flex"
+            flexDirection="column"
+            sx={{
+                overflowY: 'auto',
+                paddingBottom: '60px',
+            }}
+        >
             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4}>
                 <Box flex={1}>
                     <Typography variant="h6" fontWeight="bold">
