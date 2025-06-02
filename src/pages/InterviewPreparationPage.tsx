@@ -6,13 +6,11 @@ import {
     MenuBookOutlined,
     OndemandVideoOutlined,
 } from '@mui/icons-material';
+import LinkIcon from '@mui/icons-material/Link';
 import { Box, Button, Card, CardContent, CircularProgress, IconButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getInterviewPreparation } from '../services/interviewService';
-
-// Import specific icons based on the image and common use cases
-import LinkIcon from '@mui/icons-material/Link'; // Default or generic link icon
 
 type MaterialType = 'tutorial' | 'documentation' | 'exercises' | 'course' | 'video' | 'article' | 'other';
 
