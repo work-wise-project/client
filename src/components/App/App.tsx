@@ -85,7 +85,11 @@ export const App = () => {
                                     <Route path="/resume" element={<ResumePage />} />
                                     <Route path="/interviewAnalysis" element={<InterviewChooser />} />
                                     <Route path="/interviewAnalysis/:interviewId" element={<InterviewAnalysisPage />} />
-                                    <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
+                                    <Route path="/interviewPreparation" element={<InterviewChooser />} />
+                                    <Route
+                                        path="/interviewPreparation/:interviewId"
+                                        element={<InterviewPreparationPage />}
+                                    />
                                     <Route path="/profile" element={<ProfilePage />} />
                                 </Route>
                             </Routes>

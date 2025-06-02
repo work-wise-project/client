@@ -32,6 +32,21 @@ export const getInterviewAnalysis = async (interviewId: string) => {
     return { analysis, file, abort };
 };
 
+export const getInterviewPreparation = async (interviewId: string) => {
+    const { abort, signal } = new AbortController();
+
+    const {
+        data: { interview_id, company_info, job_info, material_links },
+    } = await apiClient.get<{
+        interview_id: string;
+        company_info: string;
+        job_info: string;
+        material_links: { title: string; description: string; link: string }[];
+    }>(`/interviews/preparation/${interviewId}`, { signal });
+
+    return { interview_id, company_info, job_info, material_links, abort };
+};
+
 export const createInterview = async (interview: InterviewData): Promise<Interview> => {
     const { data } = await apiClient.post('/datamanager/proxy/interviews', interview);
 

@@ -17,16 +17,17 @@ const createFileUrl = ({ fileBuffer, mimeType = 'audio/wav' }: InterviewAudioFil
 export const InterviewAnalysisPage = () => {
     const navigate = useNavigate();
     const { interviewId } = useParams();
-    if (!interviewId) {
-        navigate('/interviewAnalysis');
-        return <></>;
-    }
 
     const [analysis, setAnalysis] = useState<InterviewAnalysis | null>(null);
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        if (!interviewId) {
+            navigate('/interviewAnalysis');
+            return;
+        }
+
         const fetchAnalysis = async () => {
             try {
                 setIsLoading(true);
@@ -41,9 +42,15 @@ export const InterviewAnalysisPage = () => {
         };
 
         fetchAnalysis();
+
+        return () => {
+            if (fileUrl) URL.revokeObjectURL(fileUrl);
+        };
     }, [interviewId, setAnalysis]);
 
     const onSubmit = async (fileType: InterviewAnalysis['file_type'], file: File) => {
+        if (!interviewId) return;
+
         try {
             setAnalysis((await analyzeInterview(interviewId, file, fileType)).analysis);
             setFileUrl(URL.createObjectURL(file));
