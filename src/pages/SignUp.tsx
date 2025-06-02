@@ -6,30 +6,39 @@ import { AxiosError, HttpStatusCode } from 'axios';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
 import ResumeUpload from '../components/SignUp/ResumeUpload';
 import { useUserContext } from '../context/UserContext';
-import { theme } from '../style';
+import { styled } from '@mui/material/styles';
+
+const StepIconContainer = styled('div')(
+    ({ theme, active, completed }: { theme: any; active: boolean; completed: boolean }) => ({
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        backgroundColor:
+            active || completed ? (active ? theme.palette.secondary.main : theme.palette.secondary.light) : '#ccc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: active || completed ? '#fff' : '#000',
+        fontWeight: 'bold',
+        fontSize: '1.5rem',
+        [theme.breakpoints.up('lg')]: {
+            width: 50,
+            height: 50,
+            fontSize: '1.75rem',
+        },
+        [theme.breakpoints.up('xl')]: {
+            width: 60,
+            height: 60,
+            fontSize: '2rem',
+        },
+    })
+);
 
 const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
-    const bgColor =
-        active || completed ? (active ? theme.palette.secondary.main : theme.palette.secondary.light) : '#ccc';
-    const textColor = active || completed ? '#fff' : '#000';
-
     return (
-        <div
-            style={{
-                width: 60,
-                height: 60,
-                borderRadius: '50%',
-                backgroundColor: bgColor,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: textColor,
-                fontWeight: 'bold',
-                fontSize: '1.5rem',
-            }}
-        >
+        <StepIconContainer active={active || false} completed={completed || false} theme={undefined}>
             {icon}
-        </div>
+        </StepIconContainer>
     );
 };
 
@@ -83,10 +92,10 @@ export const SignUp = () => {
                 justifyContent: 'space-between',
                 height: 'calc(100vh - var(--toolbar-height))',
                 alignItems: 'center',
-                pt: 5,
+                pt: { lg: 2, xl: 5 },
             }}
         >
-            <Box sx={{ textAlign: 'center', gap: 7, display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ textAlign: 'center', gap: { lg: 2, xl: 7 }, display: 'flex', flexDirection: 'column' }}>
                 <Box
                     sx={{
                         display: 'flex',
@@ -96,7 +105,15 @@ export const SignUp = () => {
                         mt: 5,
                     }}
                 >
-                    <Stepper activeStep={activeStep} sx={{ width: 500 }}>
+                    <Stepper
+                        activeStep={activeStep}
+                        sx={{
+                            width: { xs: 300, sm: 400, md: 500, lg: 600, xl: 700 },
+                            '& .MuiStepConnector-line': {
+                                borderTopWidth: { xs: 1, lg: 2, xl: 3 },
+                            },
+                        }}
+                    >
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel StepIconComponent={CustomStepIcon} />
@@ -110,11 +127,15 @@ export const SignUp = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        mt: 2,
+
                         flexDirection: 'column',
                     }}
                 >
-                    <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
+                    <Typography
+                        variant="h4"
+                        gutterBottom
+                        sx={{ fontWeight: 'bold', fontSize: { xs: '1.5rem', lg: '2rem', xl: '3rem' } }}
+                    >
                         {getStepTitle()}
                     </Typography>
                 </Box>
@@ -149,7 +170,7 @@ export const SignUp = () => {
                     </Typography>
                 )}
             </Box>
-            <Box sx={{ width: '100%', textAlign: 'left', mb: 15 }}>
+            <Box sx={{ width: '100%', textAlign: 'left', mb: { lg: 5, xl: 15 } }}>
                 <Link href="/login" variant="body1" sx={{ fontWeight: 'bold' }}>
                     Already have an account?
                 </Link>

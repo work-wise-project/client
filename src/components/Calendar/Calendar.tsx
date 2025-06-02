@@ -34,7 +34,7 @@ export const CalendarComponent = () => {
                 variant="h3"
                 sx={{
                     textAlign: 'center',
-                    fontSize: { lg: '1.5rem', xl: '3rem' },
+                    fontSize: { lg: '2rem', xl: '3rem' },
                     color: theme.palette.secondary.main,
                 }}
             >

@@ -29,7 +29,7 @@ const InterviewChooser = () => {
                     </Typography>
 
                     <Swiper
-                        slidesPerView="auto"
+                        slidesPerView={3}
                         spaceBetween={10}
                         navigation
                         pagination={{ clickable: true }}
@@ -61,7 +61,7 @@ const InterviewChooser = () => {
                                         >
                                             <Box
                                                 sx={{
-                                                    height: '7vh',
+                                                    height: { lg: '12vh', xl: '8vh' },
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',

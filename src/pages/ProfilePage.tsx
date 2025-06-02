@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArticleOutlined } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
-import { Box, Button, Container } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { FC, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
@@ -208,10 +208,20 @@ export const ProfilePage: FC = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                mt: 2,
+                mt: { lg: 6, xl: 15 },
                 flexDirection: 'column',
+                gap: { lg: 4, xl: 15 },
             }}
         >
+            <Typography
+                variant="h4"
+                gutterBottom
+                color="secondary"
+                sx={{ fontWeight: 'bold', fontSize: { xs: '1.5rem', lg: '2rem', xl: '3rem' } }}
+            >
+                Professional Profile
+            </Typography>
+
             <FormProvider {...form}>
                 <Box
                     component="form"
@@ -239,8 +249,9 @@ export const ProfilePage: FC = () => {
                 sx={{ flex: 1, mt: 3 }}
                 disabled={!hasChanges}
                 onClick={form.handleSubmit(onSubmit)}
-                variant="outlined"
                 startIcon={<SaveIcon />}
+                color="primary"
+                variant="contained"
             >
                 Save
             </Button>

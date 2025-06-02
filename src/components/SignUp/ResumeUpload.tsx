@@ -17,10 +17,29 @@ const ResumeUpload = () => {
     };
 
     return (
-        <Box sx={{ flex: 1, mt: 3 }}>
-            <FieldLabel icon={<ArticleOutlined />} label="Resume" />
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
-                <ResumeUploadButton />
+        <Box
+            sx={{
+                flex: 1,
+                mt: 3,
+                gap: { lg: 5, xl: 15 },
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                }}
+            >
+                <FieldLabel icon={<ArticleOutlined />} label="Resume" />
+                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                    <ResumeUploadButton />
+                </Box>
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>

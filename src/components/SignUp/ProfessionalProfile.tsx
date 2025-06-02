@@ -118,12 +118,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
     return (
         <Container>
             <FormProvider {...form}>
-                <Box
-                    component="form"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    noValidate
-                    sx={{ display: 'flex', flexDirection: 'column' }}
-                >
+                <Box component="form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
                     <UserQualificationsForm />
                     <Button type="submit" style={{ display: 'none' }} />
                 </Box>
@@ -132,8 +127,8 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
             <Box
                 sx={{
                     position: 'fixed',
-                    bottom: 20,
-                    right: 20,
+                    bottom: 50,
+                    right: 50,
                     zIndex: 1000,
                 }}
             >

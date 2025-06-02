@@ -121,18 +121,15 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
             disabled={loading}
             sx={{
                 borderRadius: '10px',
-                borderColor: '#E5E7EB',
                 textTransform: 'none',
                 justifyContent: 'space-between',
-                backgroundColor: 'white',
                 width: '250px',
-                color: '#9CA3AF',
             }}
         >
             <Box
-                style={{
-                    color: !uploadedFileName && !existingResumeType ? '' : 'blue',
-                }}
+            // style={{
+            //     color: !uploadedFileName && !existingResumeType ? '' : 'blue',
+            // }}
             >
                 {!uploadedFileName && !existingResumeType
                     ? 'Upload Your Resume'
