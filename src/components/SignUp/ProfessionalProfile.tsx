@@ -10,7 +10,6 @@ import { useUserContext } from '../../context/UserContext';
 import userService from '../../services/userService';
 import { UserCareer, UserEducation, UserSkill } from '../../types';
 import UserQualificationsForm from '../Profile/UserQualificationsForm';
-import { primaryIconButton } from './styles';
 
 const yearSchema = z.coerce
     .number({
@@ -18,17 +17,37 @@ const yearSchema = z.coerce
         invalid_type_error: 'Must be a number',
     })
     .min(0, { message: 'Years of experience cannot be negative' })
-    .max(50, { message: 'Years of experience seems too high' });
+    .max(50, { message: 'Years of experience seems to high' });
 
-const educationEntrySchema = z.object({
-    institute: z.string(),
-    years: yearSchema,
-});
+const educationEntrySchema = z
+    .object({
+        institute: z.string(),
+        years: yearSchema,
+    })
+    .superRefine((data, ctx) => {
+        if (data.years > 0 && data.institute.trim().length === 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Institute is required with years of experience',
+                path: ['institute'],
+            });
+        }
+    });
 
-const careerEntrySchema = z.object({
-    company: z.string(),
-    years: yearSchema,
-});
+const careerEntrySchema = z
+    .object({
+        company: z.string(),
+        years: yearSchema,
+    })
+    .superRefine((data, ctx) => {
+        if (data.years > 0 && data.company.trim().length === 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Company is required with years of experience',
+                path: ['company'],
+            });
+        }
+    });
 
 const skillEntrySchema = z.object({
     id: z.number(),
@@ -99,12 +118,7 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
     return (
         <Container>
             <FormProvider {...form}>
-                <Box
-                    component="form"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    noValidate
-                    sx={{ display: 'flex', flexDirection: 'column' }}
-                >
+                <Box component="form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
                     <UserQualificationsForm />
                     <Button type="submit" style={{ display: 'none' }} />
                 </Box>
@@ -113,16 +127,12 @@ const ProfessionalProfile = ({ setActiveStep }: { setActiveStep: React.Dispatch<
             <Box
                 sx={{
                     position: 'fixed',
-                    bottom: 20,
-                    right: 20,
+                    bottom: 50,
+                    right: 50,
                     zIndex: 1000,
                 }}
             >
-                <IconButton
-                    aria-label="next step"
-                    sx={{ fontSize: 40, ...primaryIconButton }}
-                    onClick={form.handleSubmit(onSubmit)}
-                >
+                <IconButton aria-label="next step" onClick={form.handleSubmit(onSubmit)} size="large" color="primary">
                     <ArrowForwardIcon sx={{ fontSize: 40 }} />
                 </IconButton>
             </Box>

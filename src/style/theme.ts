@@ -5,14 +5,11 @@ import '@fontsource/rubik';
 export const theme = createTheme({
     typography: { fontFamily: 'Rubik' },
     palette: {
-        background: {
-            default: '#EEEFF1',
-        },
         primary: {
-            main: '#4574DC',
+            main: '#003049',
         },
         secondary: {
-            main: '#C5C8D6',
+            main: '#DDA853',
         },
         info: {
             main: '#000000',
@@ -32,10 +29,29 @@ export const theme = createTheme({
         MuiToolbar: {
             styleOverrides: {
                 root: {
-                    backgroundColor: '#FFFFFF',
+                    height: 'var(--toolbar-height)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
                 },
             },
         },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '10px',
+                },
+            },
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    borderRadius: '10px',
+                },
+            },
+        },
+
         MuiButton: {
             styleOverrides: {
                 root: {

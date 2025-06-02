@@ -21,14 +21,14 @@ import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
 
 export const App = () => {
-    const { setUserContext, storeUserSession, setIsUserConncted } = useUserContext();
+    const { setUserContext, storeUserSession, setIsUserConnoted } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
 
     const handleLoginSuccess = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {
         storeUserSession(userData);
-        setIsUserConncted(true);
+        setIsUserConnoted(true);
         navigate('/');
     };
 
@@ -49,7 +49,7 @@ export const App = () => {
                 if (response.status === HttpStatusCode.Ok) {
                     const { data: user } = response;
                     setUserContext(user);
-                    setIsUserConncted(true);
+                    setIsUserConnoted(true);
 
                     setIsLoading(false);
                 }
@@ -62,37 +62,38 @@ export const App = () => {
     }, []);
 
     return (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <NavBar>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    {isLoading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <CircularProgress />
-                        </Box>
-                    ) : (
-                        <InterviewsProvider>
-                            <Routes>
+                {isLoading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <InterviewsProvider>
+                        <Routes>
+                            <Route
+                                path="/login"
+                                element={<PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />}
+                            />
+                            <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
+                            <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
+                            <Route element={<ProtectedRoute />}>
+                                <Route path="/resume" element={<ResumePage />} />
+                                <Route path="/" element={<HomePage />} />
+                                <Route path="/resume" element={<ResumePage />} />
+                                <Route path="/interviewAnalysis" element={<InterviewChooser />} />
+                                <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
                                 <Route
-                                    path="/login"
-                                    element={
-                                        <PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />
-                                    }
+                                    path="/interviewAnalysis/:interviewId/:interviewTitle"
+                                    element={<InterviewAnalysisPage />}
                                 />
-                                <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
-                                <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
-                                <Route element={<ProtectedRoute />}>
-                                    <Route path="/" element={<HomePage />} />
-                                    <Route path="/resume" element={<ResumePage />} />
-                                    <Route path="/interviewAnalysis" element={<InterviewChooser />} />
-                                    <Route path="/interviewAnalysis/:interviewId" element={<InterviewAnalysisPage />} />
-                                    <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
-                                    <Route path="/profile" element={<ProfilePage />} />
-                                </Route>
-                            </Routes>
-                        </InterviewsProvider>
-                    )}
-                </Box>
+
+                                <Route path="/profile" element={<ProfilePage />} />
+                            </Route>
+                        </Routes>
+                    </InterviewsProvider>
+                )}
             </NavBar>
-        </>
+        </Box>
     );
 };

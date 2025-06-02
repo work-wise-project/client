@@ -117,29 +117,20 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
             component="label"
             variant="outlined"
             tabIndex={-1}
-            endIcon={<CloudUploadIcon />}
+            startIcon={<CloudUploadIcon />}
             disabled={loading}
             sx={{
                 borderRadius: '10px',
-                borderColor: '#E5E7EB',
                 textTransform: 'none',
                 justifyContent: 'space-between',
-                backgroundColor: 'white',
-                width: '250px',
-                color: '#9CA3AF',
             }}
         >
-            <Box
-                style={{
-                    color: !uploadedFileName && !existingResumeType ? '' : 'blue',
-                }}
-            >
-                {!uploadedFileName && !existingResumeType
-                    ? 'Upload Your Resume'
-                    : uploadedFileName
-                    ? uploadedFileName
-                    : `resume.${existingResumeType}`}
-            </Box>
+            {!uploadedFileName && !existingResumeType
+                ? 'Upload Your Resume'
+                : uploadedFileName
+                ? uploadedFileName
+                : `resume.${existingResumeType}`}
+
             <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
         </Button>
     );

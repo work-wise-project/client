@@ -4,7 +4,7 @@ import { ResumeViewTypes } from './types';
 export const ResumeView = ({ resumeText, loading }: ResumeViewTypes) => {
     return (
         <Paper
-            elevation={0}
+            elevation={4}
             sx={{
                 p: 1,
                 minHeight: '70vh',
