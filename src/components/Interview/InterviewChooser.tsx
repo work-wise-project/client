@@ -1,7 +1,4 @@
-import { Box, Typography, Card, CardContent, Divider } from '@mui/material';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Box, Typography, Card, CardContent, Divider, Grid } from '@mui/material';
 import { useInterviewsContext } from '../../context/InterviewsContext';
 import { formatTime } from '../Calendar/types';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +12,7 @@ const InterviewChooser = () => {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" py={12}>
             {scheduledInterviews && scheduledInterviews.size > 0 ? (
-                <Box>
+                <Box sx={{ width: '100%', maxWidth: '1200px', px: 2 }}>
                     <Typography
                         variant="h3"
                         gutterBottom
@@ -23,74 +20,100 @@ const InterviewChooser = () => {
                             textAlign: 'center',
                             fontSize: { lg: '2.5rem', xl: '3rem' },
                             color: theme.palette.secondary.main,
+                            mb: 4,
                         }}
                     >
                         Select an interview
                     </Typography>
 
-                    <Swiper
-                        slidesPerView={3}
-                        spaceBetween={10}
-                        navigation
-                        pagination={{ clickable: true }}
-                        modules={[Navigation, Pagination]}
-                        style={{ padding: '40px', width: '100%', maxWidth: '1000px' }}
-                    >
-                        {Array.from(scheduledInterviews?.entries() || []).flatMap(([date, interviews]) =>
-                            interviews.map((interview) => (
-                                <SwiperSlide key={interview.id}>
-                                    <Card
+                    <Box sx={{ p: 2 }}>
+                        <Grid
+                            container
+                            spacing={3}
+                            sx={{
+                                justifyContent: 'center', // Center the grid items
+                            }}
+                        >
+                            {Array.from(scheduledInterviews?.entries() || []).flatMap(([date, interviews]) =>
+                                interviews.map((interview) => (
+                                    <Grid
+                                        // item
+                                        key={interview.id}
+                                        size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 4 }}
                                         sx={{
-                                            p: 1,
-                                            minWidth: 140,
-                                            height: 250,
-                                            borderRadius: 2,
-                                            boxShadow: 3,
-                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            justifyContent: 'center',
                                         }}
-                                        onClick={() => navigate(`${interview.id}/${interview.title}`)}
                                     >
-                                        <CardContent
+                                        <Card
                                             sx={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                textAlign: 'center',
-                                                gap: 2,
-                                                height: '100%',
+                                                width: { xs: 280, sm: 300, md: 320, lg: 350, xl: 400 },
+                                                height: 250,
+                                                borderRadius: 2,
+                                                boxShadow: 4,
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                '&:hover': {
+                                                    transform: 'translateY(-4px)',
+                                                    boxShadow: 6,
+                                                },
                                             }}
+                                            onClick={() => navigate(`${interview.id}/${interview.title}`)}
                                         >
-                                            <Box
+                                            <CardContent
                                                 sx={{
-                                                    height: { lg: '12vh', xl: '8vh' },
                                                     display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
+                                                    flexDirection: 'column',
+                                                    textAlign: 'center',
+                                                    gap: 2,
+                                                    height: '100%',
+                                                    p: 2,
                                                 }}
                                             >
-                                                <Typography
-                                                    variant="h6"
-                                                    component="div"
+                                                <Box
                                                     sx={{
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 3,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        lineHeight: 1.4,
+                                                        height: '100px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
                                                     }}
                                                 >
-                                                    {interview.title}
+                                                    <Typography
+                                                        variant="h6"
+                                                        component="div"
+                                                        sx={{
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            lineHeight: 1.3,
+                                                            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+                                                        }}
+                                                    >
+                                                        {interview.title}
+                                                    </Typography>
+                                                </Box>
+                                                <Divider />
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+                                                >
+                                                    {formatTime(interview.date)}
                                                 </Typography>
-                                            </Box>
-                                            <Divider />
-                                            <Typography variant="subtitle1">{formatTime(interview.date)}</Typography>
-                                            <Typography variant="subtitle1">{date}</Typography>
-                                        </CardContent>
-                                    </Card>
-                                </SwiperSlide>
-                            ))
-                        )}
-                    </Swiper>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+                                                >
+                                                    {date}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                ))
+                            )}
+                        </Grid>
+                    </Box>
                 </Box>
             ) : (
                 <Box display="flex" flexDirection="column" alignItems="center" sx={{ mt: 6, px: 3 }}>
