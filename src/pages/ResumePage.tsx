@@ -1,27 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import SpellcheckIcon from '@mui/icons-material/Spellcheck';
 import InsightsIcon from '@mui/icons-material/Insights';
-import { styled } from '@mui/material/styles';
-import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
+import SpellcheckIcon from '@mui/icons-material/Spellcheck';
+import { Box, Button, Grid } from '@mui/material';
 import { HttpStatusCode } from 'axios';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { ResumeView } from '../components/ResumeView/ResumeView';
+import ResumeUploadButton from '../components/Profile/ResumeUploadButton';
 import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
+import { ResumeView } from '../components/ResumeView/ResumeView';
 import { useUserContext } from '../context/UserContext';
-
-export const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
+import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
 
 export const ResumePage: React.FC = () => {
     const [resumeText, setResumeText] = useState<string | null>(null);
@@ -40,7 +27,7 @@ export const ResumePage: React.FC = () => {
                 setLoadingResume(true);
                 const { response } = await resumeService.getResumeIfExist(userContext.id);
                 if (response.data) {
-                    setResumeText(response.data);
+                    setResumeText(response.data.textContent);
                 } else {
                     console.log('No resume found for user');
                 }
@@ -70,43 +57,6 @@ export const ResumePage: React.FC = () => {
         setShowAnalyzeResult(false);
         setShowGrammarCheckResult(false);
     }, [resumeText]);
-
-    const uploadFileToServer = async (selectedFile: File) => {
-        try {
-            if (userContext?.id) {
-                const formData = new FormData();
-                formData.append('resume', selectedFile);
-
-                const { response } = await resumeService.uploadResume(userContext.id, formData);
-
-                if (response.status != HttpStatusCode.Ok) {
-                    throw new Error('Failed to upload file');
-                }
-
-                return response.data;
-            } else {
-                toast.error('No user conected');
-            }
-        } catch (error) {
-            toast.error('Failed to upload file');
-
-            throw error;
-        }
-    };
-
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = event.target.files?.[0];
-        if (!selectedFile) return;
-
-        try {
-            await uploadFileToServer(selectedFile);
-            event.target.value = '';
-            await checkAndLoadResume();
-        } catch (error) {
-            console.error('Error handling file change:', error);
-            setResumeText(null);
-        }
-    };
 
     const onAnalyzeClick = async () => {
         if (!resumeText) {
@@ -168,17 +118,12 @@ export const ResumePage: React.FC = () => {
 
     return (
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', mt: { xs: 1, lg: 7 } }}>
-            <Box display="flex" justifyContent="flex-start" mb={3}>
-                <Button
-                    component="label"
-                    role={undefined}
-                    variant="outlined"
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                >
-                    Upload Your Resume
-                    <VisuallyHiddenInput accept=".pdf,.doc,.docx,.txt" type="file" onChange={handleFileChange} />
-                </Button>
+            <Box display="flex" justifyContent="flex-start" mb={2}>
+                <ResumeUploadButton
+                    onUploadSuccess={async () => {
+                        await checkAndLoadResume();
+                    }}
+                />
             </Box>
 
             <Grid container spacing={3}>

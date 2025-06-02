@@ -5,5 +5,5 @@ import { useUserContext } from '../../context/UserContext';
 export const PublicRoute = ({ component }: { component: ReactNode }) => {
     const { userContext } = useUserContext();
 
-    return userContext?.id ? <Navigate to="/" replace /> : component;
+    return userContext?.isUserConnected ? <Navigate to="/" replace /> : component;
 };

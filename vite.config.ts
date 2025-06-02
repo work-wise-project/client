@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [react(), svgr()],
     preview: {
-        port: 80,
+        port: process.env.PORT || 443,
         host: '0.0.0.0',
         allowedHosts: ['workwise.cs.colman.ac.il', 'localhost', '0.0.0.0'],
         https:

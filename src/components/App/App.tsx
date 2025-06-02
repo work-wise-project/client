@@ -2,6 +2,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { InterviewsProvider } from '../../context/InterviewsContext';
 import { useUserContext } from '../../context/UserContext';
 import {
     HomePage,
@@ -12,21 +13,22 @@ import {
     SignUp,
     WelcomePage,
 } from '../../pages';
+import { ProfilePage } from '../../pages/ProfilePage';
 import userService from '../../services/userService';
+import { IUser } from '../../types';
+import InterviewChooser from '../Interview/InterviewChooser';
 import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
-import { IUser } from '../../types';
-import { InterviewsProvider } from '../../context/InterviewsContext';
-import InterviewChooser from '../Interview/InterviewChooser';
 
 export const App = () => {
-    const { setUserContext, storeUserSession } = useUserContext();
+    const { setUserContext, storeUserSession, setIsUserConnoted } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
 
     const handleLoginSuccess = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {
         storeUserSession(userData);
+        setIsUserConnoted(true);
         navigate('/');
     };
 
@@ -45,10 +47,10 @@ export const App = () => {
                 const { response } = await userService.getUserById(storedUserId);
 
                 if (response.status === HttpStatusCode.Ok) {
-                    const {
-                        data: { id },
-                    } = response;
-                    setUserContext({ id });
+                    const { data: user } = response;
+                    setUserContext(user);
+                    setIsUserConnoted(true);
+
                     setIsLoading(false);
                 }
             } catch (error) {
@@ -85,6 +87,8 @@ export const App = () => {
                                     path="/interviewAnalysis/:interviewId/:interviewTitle"
                                     element={<InterviewAnalysisPage />}
                                 />
+
+                                <Route path="/profile" element={<ProfilePage />} />
                             </Route>
                         </Routes>
                     </InterviewsProvider>
