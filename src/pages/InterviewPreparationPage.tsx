@@ -280,7 +280,7 @@ export const InterviewPreparationPage = () => {
                                                 sx={{
                                                     position: 'absolute',
                                                     bottom: 8,
-                                                    pl: 5,
+                                                    pl: 4,
                                                 }}
                                             >
                                                 <Button
