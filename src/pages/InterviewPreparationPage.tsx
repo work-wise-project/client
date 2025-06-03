@@ -16,7 +16,7 @@ type MaterialType = 'tutorial' | 'documentation' | 'exercises' | 'course' | 'vid
 
 export const InterviewPreparationPage = () => {
     const navigate = useNavigate();
-    const { interviewId } = useParams();
+    const { interviewId, interviewTitle } = useParams();
     const [materialLinks, setMaterialLinks] = useState<Array<{ title: string; description: string; link: string }>>([]);
     const [companyInfo, setCompanyInfo] = useState<string>('');
     const [jobInfo, setJobInfo] = useState<string>('');
@@ -157,150 +157,179 @@ export const InterviewPreparationPage = () => {
     }
 
     return (
-        <Box
-            paddingInline={4}
-            display="flex"
-            flexDirection="column"
-            sx={{
-                overflowY: 'auto',
-                paddingBottom: '60px',
-            }}
-        >
-            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4}>
-                <Box flex={1}>
-                    <Typography variant="h6" fontWeight="bold">
-                        Company Info
-                    </Typography>
-                    <Typography fontSize="0.95rem" mt={1}>
-                        {companyInfo}
-                    </Typography>
-                </Box>
+        <Box display="flex" flexDirection="column" paddingInline={4}>
+            <Typography
+                variant="h6"
+                sx={{
+                    textAlign: 'start',
+                    marginBlock: 4,
+                    fontSize: { lg: '1.5rem', xl: '2rem' },
+                }}
+                color="secondary"
+            >
+                {interviewTitle || 'Interview Analysis'}
+            </Typography>
 
-                <Box flex={1}>
-                    <Typography variant="h6" fontWeight="bold">
-                        Job Info
-                    </Typography>
-                    <Typography fontSize="0.95rem" mt={1}>
-                        {jobInfo}
-                    </Typography>
-                </Box>
-            </Box>
-
-            <Box mt={1} pt={1} borderTop="1px solid #ccc">
-                <Typography variant="h6" fontWeight="bold" mb={2}>
-                    Materials Suggestions
-                </Typography>
-
-                <Box display="flex" alignItems="center">
-                    <IconButton
-                        onClick={handlePrev}
-                        disabled={page === 0}
-                        sx={{
-                            color: page === 0 ? '#ccc' : 'gray',
-                            '& svg': { fontSize: '3rem' },
-                        }}
-                    >
-                        <ArrowBack />
-                    </IconButton>
-
-                    <Box display="flex" flexWrap="wrap" gap={2} flex={1} justifyContent="center">
-                        {materialLinks
-                            .slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)
-                            .map((item, index) => (
-                                <Card
-                                    key={index}
-                                    variant="outlined"
-                                    sx={{
-                                        width: '45%',
-                                        borderRadius: '20px',
-                                        height: '170px',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        mx: 1.5,
-                                    }}
-                                >
-                                    <CardContent
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            flexGrow: 1,
-                                        }}
-                                    >
-                                        <Box display="flex" alignItems="center" mb={1}>
-                                            {getMaterialIcon(item)}
-                                            <Typography
-                                                fontWeight="bold"
-                                                sx={{
-                                                    ml: 1,
-                                                    fontSize: '1.1rem',
-                                                    color: 'text.primary',
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                }}
-                                            >
-                                                {item.title}
-                                            </Typography>
-                                        </Box>
-
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                pl: 6,
-                                                mb: 1,
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 2,
-                                                WebkitBoxOrient: 'vertical',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                            }}
-                                        >
-                                            {item.description}
-                                        </Typography>
-
-                                        <Box sx={{ mt: 'auto', pl: 4 }}>
-                                            <Button
-                                                size="small"
-                                                href={item.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                variant="text"
-                                            >
-                                                {getButtonText(item)}
-                                            </Button>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            ))}
+            <Box
+                display="flex"
+                flexDirection="column"
+                sx={{
+                    overflowY: 'auto',
+                    paddingBottom: '60px',
+                }}
+            >
+                <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={4}>
+                    <Box flex={1}>
+                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: { lg: '1.1rem', xl: '1.3rem' } }}>
+                            Company Info
+                        </Typography>
+                        <Typography sx={{ fontSize: { lg: '0.95rem', xl: '1.1rem' } }} mt={1}>
+                            {companyInfo}
+                        </Typography>
                     </Box>
 
-                    <IconButton
-                        onClick={handleNext}
-                        disabled={page >= Math.ceil(materialLinks.length / itemsPerPage) - 1}
+                    <Box flex={1}>
+                        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: { lg: '1.1rem', xl: '1.3rem' } }}>
+                            Job Info
+                        </Typography>
+                        <Typography sx={{ fontSize: { lg: '0.95rem', xl: '1.1rem' } }} mt={1}>
+                            {jobInfo}
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <Box mt={1} pt={1} borderTop="1px solid #ccc">
+                    <Typography variant="h6" fontWeight="bold" mb={2} sx={{ fontSize: { lg: '1.1rem', xl: '1.3rem' } }}>
+                        Materials Suggestions
+                    </Typography>
+
+                    <Box display="flex" alignItems="center">
+                        <IconButton
+                            onClick={handlePrev}
+                            disabled={page === 0}
+                            sx={{
+                                color: page === 0 ? '#ccc' : 'gray',
+                                '& svg': { fontSize: '3rem' },
+                            }}
+                        >
+                            <ArrowBack />
+                        </IconButton>
+
+                        <Box display="flex" flexWrap="wrap" gap={2} flex={1} justifyContent="center" height={350}>
+                            {materialLinks
+                                .slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)
+                                .map((item, index) => (
+                                    <Card
+                                        key={index}
+                                        variant="outlined"
+                                        sx={{
+                                            width: '45%',
+                                            borderRadius: '20px',
+                                            height: '170px',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            mx: 1.5,
+                                        }}
+                                    >
+                                        <CardContent
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'space-between',
+                                                height: '100%',
+                                                position: 'relative',
+                                            }}
+                                        >
+                                            <Box>
+                                                <Box display="flex" alignItems="center" mb={1}>
+                                                    {getMaterialIcon(item)}
+                                                    <Typography
+                                                        fontWeight="bold"
+                                                        sx={{
+                                                            ml: 1,
+                                                            fontSize: '1.1rem',
+                                                            color: 'text.primary',
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                        }}
+                                                    >
+                                                        {item.title}
+                                                    </Typography>
+                                                </Box>
+
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        pl: 6,
+                                                        mb: 1,
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 2,
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                    }}
+                                                >
+                                                    {item.description}
+                                                </Typography>
+                                            </Box>
+
+                                            <Box
+                                                sx={{
+                                                    position: 'absolute',
+                                                    bottom: 8,
+                                                    pl: 5,
+                                                }}
+                                            >
+                                                <Button
+                                                    size="small"
+                                                    href={item.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    variant="text"
+                                                    sx={{ color: 'blue' }}
+                                                >
+                                                    {getButtonText(item)}
+                                                </Button>
+                                            </Box>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                        </Box>
+
+                        <IconButton
+                            onClick={handleNext}
+                            disabled={page >= Math.ceil(materialLinks.length / itemsPerPage) - 1}
+                            sx={{
+                                color: page >= Math.ceil(materialLinks.length / itemsPerPage) - 1 ? '#ccc' : 'gray',
+                                '& svg': { fontSize: '3rem' },
+                            }}
+                        >
+                            <ArrowForward />
+                        </IconButton>
+                    </Box>
+                    <Box
                         sx={{
-                            color: page >= Math.ceil(materialLinks.length / itemsPerPage) - 1 ? '#ccc' : 'gray',
-                            '& svg': { fontSize: '3rem' },
+                            display: 'flex',
+                            justifyContent: 'center',
+                            mt: 4,
                         }}
                     >
-                        <ArrowForward />
-                    </IconButton>
+                        {[...Array(Math.ceil(materialLinks.length / itemsPerPage) || 1)].map((_, i) => (
+                            <Button
+                                key={i}
+                                size="small"
+                                onClick={() => setPage(i)}
+                                variant={page === i ? 'contained' : 'text'}
+                                sx={{ mx: 0.5, minWidth: 32 }}
+                            >
+                                {i + 1}
+                            </Button>
+                        ))}
+                    </Box>
                 </Box>
-            </Box>
-
-            <Box position="fixed" bottom={0} left={0} width="100%" py={1.5} textAlign="center">
-                {[...Array(Math.ceil(materialLinks.length / itemsPerPage) || 1)].map((_, i) => (
-                    <Button
-                        key={i}
-                        size="small"
-                        onClick={() => setPage(i)}
-                        variant={page === i ? 'contained' : 'text'}
-                        sx={{ mx: 0.5, minWidth: 32 }}
-                    >
-                        {i + 1}
-                    </Button>
-                ))}
             </Box>
         </Box>
     );

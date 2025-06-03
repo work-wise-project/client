@@ -1,9 +1,9 @@
-import { Box, Typography, Card, CardContent, Divider, Grid } from '@mui/material';
-import { useInterviewsContext } from '../../context/InterviewsContext';
-import { formatTime } from '../Calendar/types';
+import { Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { theme } from '../../style';
 import InterviewSelectSVG from '../../assets/PeopleInterviewSelect.svg?react';
+import { useInterviewsContext } from '../../context/InterviewsContext';
+import { theme } from '../../style';
+import { formatTime } from '../Calendar/types';
 
 const InterviewChooser = () => {
     const { scheduledInterviews } = useInterviewsContext();
@@ -31,13 +31,12 @@ const InterviewChooser = () => {
                             container
                             spacing={3}
                             sx={{
-                                justifyContent: 'center', // Center the grid items
+                                justifyContent: 'center',
                             }}
                         >
                             {Array.from(scheduledInterviews?.entries() || []).flatMap(([date, interviews]) =>
                                 interviews.map((interview) => (
                                     <Grid
-                                        // item
                                         key={interview.id}
                                         size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 4 }}
                                         sx={{
