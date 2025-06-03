@@ -13,10 +13,11 @@ import {
     Typography,
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
+import { InterviewAnalysisPoint } from '../../../types';
 import { CollapsableCard } from '../../CollapsableCard';
 import { InterviewAnalysisViewProps } from './types';
 
-const PointList = ({ points, icon, text }: { points: string[]; icon: ReactNode; text: string }) => (
+const PointList = ({ points, icon, text }: { points: InterviewAnalysisPoint[]; icon: ReactNode; text: string }) => (
     <Card variant="outlined">
         <CardHeader
             title={
@@ -28,10 +29,10 @@ const PointList = ({ points, icon, text }: { points: string[]; icon: ReactNode; 
         />
         <CardContent>
             <List>
-                {points.map((point, index) => (
+                {points.map(({ text, timestamp, trend }, index) => (
                     <ListItem key={index}>
                         <ListItemIcon>{icon}</ListItemIcon>
-                        <ListItemText primary={point} />
+                        <ListItemText primary={text} secondary={`Timestamp: ${timestamp} | Trend: ${trend}`} />
                     </ListItem>
                 ))}
             </List>
