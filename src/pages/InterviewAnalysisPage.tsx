@@ -2,10 +2,10 @@ import { Box, Skeleton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import AudioAnalyzeCSV from '../assets/AudioAnalyze.svg?react';
 import { InterviewAnalysisForm, InterviewAnalysisView } from '../components/InterviewAnalysis';
 import { analyzeInterview, getInterviewAnalysis } from '../services/interviewService';
 import { InterviewAnalysis, InterviewAudioFile } from '../types';
-import AudioAnalyzeCSV from '../assets/AudioAnalyze.svg?react';
 
 const createFileUrl = ({ fileBuffer, mimeType = 'audio/wav' }: InterviewAudioFile) => {
     const binary = atob(fileBuffer);
@@ -44,6 +44,8 @@ export const InterviewAnalysisPage = () => {
     }, [interviewId, navigate, setAnalysis]);
 
     const onSubmit = async (fileType: InterviewAnalysis['file_type'], file: File) => {
+        if (!interviewId) return;
+
         try {
             if (!interviewId) return;
             const result = await analyzeInterview(interviewId, file, fileType);

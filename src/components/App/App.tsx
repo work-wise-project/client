@@ -75,19 +75,22 @@ export const App = () => {
                                 path="/login"
                                 element={<PublicRoute component={<Login handleLoginSuccess={handleLoginSuccess} />} />}
                             />
+
                             <Route path="/signup" element={<PublicRoute component={<SignUp />} />} />
                             <Route path="/welcome" element={<PublicRoute component={<WelcomePage />} />} />
                             <Route element={<ProtectedRoute />}>
-                                <Route path="/resume" element={<ResumePage />} />
                                 <Route path="/" element={<HomePage />} />
                                 <Route path="/resume" element={<ResumePage />} />
                                 <Route path="/interviewAnalysis" element={<InterviewChooser />} />
-                                <Route path="/interviewPreparation" element={<InterviewPreparationPage />} />
                                 <Route
                                     path="/interviewAnalysis/:interviewId/:interviewTitle"
                                     element={<InterviewAnalysisPage />}
                                 />
-
+                                <Route path="/interviewPreparation" element={<InterviewChooser />} />
+                                <Route
+                                    path="/interviewPreparation/:interviewId/:interviewTitle"
+                                    element={<InterviewPreparationPage />}
+                                />
                                 <Route path="/profile" element={<ProfilePage />} />
                             </Route>
                         </Routes>
