@@ -117,7 +117,7 @@ export const ResumePage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', mt: { xs: 1, lg: 7 } }}>
             <Box display="flex" justifyContent="flex-start" mb={2}>
                 <ResumeUploadButton
                     onUploadSuccess={async () => {
@@ -149,7 +149,7 @@ export const ResumePage: React.FC = () => {
                         loadingPosition="start"
                         startIcon={<InsightsIcon />}
                         onClick={onAnalyzeClick}
-                        disabled={loadingGrammarCheck}
+                        disabled={loadingGrammarCheck || !resumeText}
                     >
                         Analyze
                     </Button>
@@ -158,7 +158,7 @@ export const ResumePage: React.FC = () => {
                         fullWidth
                         color="primary"
                         startIcon={<SpellcheckIcon />}
-                        disabled={loadingAnalyze}
+                        disabled={loadingAnalyze || !resumeText}
                         onClick={onGrammarCheckClicked}
                         loading={loadingGrammarCheck}
                         loadingPosition="start"

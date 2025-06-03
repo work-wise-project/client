@@ -10,7 +10,7 @@ interface UserContextType {
     storeUserSession: (userData: { accessToken: string; refreshToken: string; user: IUserContext }) => void;
     clearUserSession: () => void;
     setLocalStorage: (userData: { accessToken: string; refreshToken: string; user: IUserContext }) => void;
-    setIsUserConncted: (isUserConnected: boolean) => void;
+    setIsUserConnoted: (isUserConnected: boolean) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -27,7 +27,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('refreshToken', refreshToken);
     };
 
-    const setIsUserConncted = (isUserConnected: boolean) => {
+    const setIsUserConnoted = (isUserConnected: boolean) => {
         setUserContext((user) => ({ ...user, isUserConnected }));
     };
 
@@ -53,7 +53,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 storeUserSession,
                 clearUserSession,
                 setLocalStorage,
-                setIsUserConncted,
+                setIsUserConnoted,
             }}
         >
             {children}

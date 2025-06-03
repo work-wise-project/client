@@ -20,13 +20,13 @@ export const pages: PageConfig[] = [
         path: '/resume',
     },
     {
-        text: 'Interview analysis',
-        getIcon: (color) => <AutoAwesome color={color} />,
-        path: '/interviewAnalysis',
-    },
-    {
         text: 'Interview preparation',
         getIcon: (color) => <AssistantOutlined color={color} />,
         path: '/interviewPreparation',
+    },
+    {
+        text: 'Interview analysis',
+        getIcon: (color) => <AutoAwesome color={color} />,
+        path: '/interviewAnalysis',
     },
 ];

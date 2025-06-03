@@ -21,7 +21,6 @@ import skillService from '../../services/skillService';
 import { ISkill } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
-import { primaryIconButton } from '../SignUp/styles';
 import { HttpStatusCode } from 'axios';
 
 const UserQualificationsForm = () => {
@@ -40,7 +39,7 @@ const UserQualificationsForm = () => {
     const skillTextFieldProps = (params: AutocompleteRenderInputParams, error?: FieldError): TextFieldProps => ({
         ...params,
         autoComplete: 'off',
-        InputProps: { style: { borderRadius: '10px', backgroundColor: 'white' }, ...params.InputProps },
+        InputProps: { style: { borderRadius: '10px' }, ...params.InputProps },
         error: !!error,
         helperText: error?.message,
     });
@@ -73,9 +72,24 @@ const UserQualificationsForm = () => {
     }, []);
 
     return (
-        <>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
+                gap: { lg: 2, xl: 7 },
+            }}
+        >
+            {/* Title section */}
+            {/* Skills section - make it wider on larger screens */}
             <Box
-                sx={{ display: 'flex', justifyContent: 'center', width: '50%', margin: '0 auto', ...fieldStyle('60%') }}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+
+                    ...fieldStyle('60%'),
+                }}
             >
                 <FieldLabel icon={<PsychologyIcon />} label="Skills" />
                 <Controller
@@ -91,16 +105,49 @@ const UserQualificationsForm = () => {
                     )}
                 />
             </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2, mt: 3 }}>
-                <Box sx={{ flex: 1, minWidth: '400px' }}>
+
+            {/* Education and Career sections - make them wider and more responsive */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: { xs: 2, lg: 4, xl: 10 },
+                    mb: 2,
+                    mt: 5,
+                    px: { xs: 1, sm: 2, md: 3 },
+                }}
+            >
+                {/* Education section */}
+                <Box
+                    sx={{
+                        flex: 1,
+                        minWidth: { xs: '100%', lg: '400px', xl: '700px' },
+                    }}
+                >
                     <FieldLabel icon={<SchoolIcon />} label="Education" />
                     {education.map((field, index) => (
-                        <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
+                        <Box
+                            key={field.id}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                mb: 1,
+                                flexGrow: 1,
+                                gap: { xs: 0.5, sm: 1 },
+                            }}
+                        >
                             <Controller
                                 name={`education.${index}.institute`}
                                 control={control}
                                 render={({ field, fieldState: { error } }) => (
-                                    <FormControl sx={{ mr: 1, flexGrow: 1 }} variant="outlined">
+                                    <FormControl
+                                        sx={{
+                                            mr: { xs: 0.5, sm: 1 },
+                                            flexGrow: 1,
+                                            minWidth: { xs: '150px', sm: '200px', lg: '250px', xl: '300px' },
+                                        }}
+                                        variant="outlined"
+                                    >
                                         <OutlinedInput
                                             {...field}
                                             placeholder="Institute"
@@ -119,13 +166,13 @@ const UserQualificationsForm = () => {
                                 name={`education.${index}.years`}
                                 control={control}
                                 render={({ field, fieldState: { error } }) => (
-                                    <FormControl sx={{ minWidth: 50 }} variant="outlined">
-                                        <OutlinedInput
+                                    <FormControl sx={{ minWidth: 50 }}>
+                                        <TextField
                                             {...field}
                                             type="number"
                                             placeholder="Years"
+                                            label="Years"
                                             error={!!error}
-                                            sx={{ borderRadius: '10px', backgroundColor: 'white' }}
                                             onChange={(e) => field.onChange(Number(e.target.value))}
                                         />
                                         {error && (
@@ -136,16 +183,16 @@ const UserQualificationsForm = () => {
                                     </FormControl>
                                 )}
                             />
-                            <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', ml: { xs: 0.5, sm: 1 } }}>
                                 {education.length !== 1 && (
-                                    <IconButton onClick={() => removeEducation(index)} sx={primaryIconButton}>
+                                    <IconButton onClick={() => removeEducation(index)} color="primary" size="small">
                                         <RemoveCircleOutlineIcon />
                                     </IconButton>
                                 )}
                                 {index === education.length - 1 && (
                                     <IconButton
                                         onClick={() => appendEducation({ institute: '', years: 0 })}
-                                        sx={primaryIconButton}
+                                        color="primary"
                                     >
                                         <AddCircleOutlineIcon />
                                     </IconButton>
@@ -155,20 +202,43 @@ const UserQualificationsForm = () => {
                     ))}
                 </Box>
 
-                <Box sx={{ flex: 1, minWidth: '400px' }}>
+                {/* Career section */}
+                <Box
+                    sx={{
+                        flex: 1,
+                        minWidth: { xs: '100%', lg: '400px', xl: '700px' },
+                        paddingInlineStart: { xs: 0, lg: 2, xl: 3 },
+                    }}
+                >
                     <FieldLabel icon={<WorkIcon />} label="Career" />
                     {career.map((field, index) => (
-                        <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1, flexGrow: 1 }}>
+                        <Box
+                            key={field.id}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                mb: 1,
+                                flexGrow: 1,
+                                gap: { xs: 0.5, sm: 1 },
+                            }}
+                        >
                             <Controller
                                 name={`career.${index}.company`}
                                 control={control}
                                 render={({ field, fieldState: { error } }) => (
-                                    <FormControl sx={{ mr: 1, flexGrow: 1 }} variant="outlined">
+                                    <FormControl
+                                        sx={{
+                                            mr: { xs: 0.5, sm: 1 },
+                                            flexGrow: 1,
+                                            minWidth: { xs: '150px', sm: '200px', lg: '250px', xl: '300px' },
+                                        }}
+                                        variant="outlined"
+                                    >
                                         <OutlinedInput
                                             {...field}
                                             placeholder="Company"
                                             error={!!error}
-                                            sx={{ borderRadius: '10px', backgroundColor: 'white' }}
+                                            sx={{ borderRadius: '10px' }}
                                         />
                                         {error && (
                                             <Typography variant="body2" color="error">
@@ -182,13 +252,13 @@ const UserQualificationsForm = () => {
                                 name={`career.${index}.years`}
                                 control={control}
                                 render={({ field, fieldState: { error } }) => (
-                                    <FormControl sx={{ minWidth: 50 }} variant="outlined">
-                                        <OutlinedInput
+                                    <FormControl variant="outlined">
+                                        <TextField
                                             {...field}
                                             type="number"
                                             placeholder="Years"
+                                            label="Years"
                                             error={!!error}
-                                            sx={{ borderRadius: '10px', backgroundColor: 'white' }}
                                             onChange={(e) => field.onChange(Number(e.target.value))}
                                         />
                                         {error && (
@@ -199,16 +269,17 @@ const UserQualificationsForm = () => {
                                     </FormControl>
                                 )}
                             />
-                            <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', ml: { xs: 0.5, sm: 1 } }}>
                                 {career.length !== 1 && (
-                                    <IconButton onClick={() => removeCareer(index)} sx={primaryIconButton}>
+                                    <IconButton onClick={() => removeCareer(index)} color="primary" size="small">
                                         <RemoveCircleOutlineIcon />
                                     </IconButton>
                                 )}
                                 {index === career.length - 1 && (
                                     <IconButton
                                         onClick={() => appendCareer({ company: '', years: 0 })}
-                                        sx={primaryIconButton}
+                                        color="primary"
+                                        size="small"
                                     >
                                         <AddCircleOutlineIcon />
                                     </IconButton>
@@ -218,7 +289,7 @@ const UserQualificationsForm = () => {
                     ))}
                 </Box>
             </Box>
-        </>
+        </Box>
     );
 };
 
