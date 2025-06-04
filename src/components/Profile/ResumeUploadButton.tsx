@@ -1,5 +1,5 @@
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { HttpStatusCode } from 'axios';
 import React, { useEffect, useState } from 'react';
