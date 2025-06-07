@@ -71,14 +71,13 @@ export const ResumePage: React.FC = () => {
                     if (responseResume.status !== HttpStatusCode.Ok) {
                         throw new Error('Failed to analyze file');
                     }
-                    const parsedData = JSON.parse(responseResume.data);
 
-                    setResumeAnalysisResult(parsedData);
+                    setResumeAnalysisResult(responseResume.data);
                 }
                 setShowAnalyzeResult(true);
                 setShowGrammarCheckResult(false);
             } else {
-                toast.error('No user conected');
+                toast.error('No user connected');
             }
         } catch (error) {
             console.error('Error analyzing file:', error);
@@ -106,7 +105,7 @@ export const ResumePage: React.FC = () => {
                 setShowAnalyzeResult(false);
                 setShowGrammarCheckResult(true);
             } else {
-                toast.error('No user conected');
+                toast.error('No user connected');
             }
         } catch (error) {
             console.error('Error checking grammar:', error);
