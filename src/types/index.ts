@@ -1,5 +1,5 @@
-export type { Interview, InterviewsSchedule } from './interview';
-export type { InterviewAnalysis, InterviewAudioFile, InterviewAnalysisPoint } from './interviewAnalysis';
+export type { Interview, InterviewProgress, InterviewsSchedule } from './interview';
+export type { InterviewAnalysis, InterviewAnalysisPoint, InterviewAudioFile } from './interviewAnalysis';
 export type { ISkill } from './ISkill';
 export type { IUser } from './IUser';
 export type { UserCareer } from './UserCareer';

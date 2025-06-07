@@ -7,3 +7,5 @@ export type Interview = {
 };
 
 export type InterviewsSchedule = Map<string, Interview[]>;
+
+export type InterviewProgress = Interview & { hasAnalysis: boolean; hasPreparation: boolean };

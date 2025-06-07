@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import InterviewSelectSVG from '../../assets/PeopleInterviewSelect.svg?react';
-import { useInterviewsContext } from '../../context/InterviewsContext';
+import { useInterviewsContext } from '../../context';
 import { theme } from '../../style';
 import { formatTime } from '../Calendar/types';
 
@@ -148,7 +148,7 @@ const InterviewChooser = () => {
                     bottom: 0,
                     right: 0,
                     width: '35vw',
-                    zIndex: 0,
+                    zIndex: -100,
                     display: { xs: 'none', md: 'none', lg: 'none', xl: 'block' },
                 }}
             >

@@ -1,5 +1,5 @@
 import { InterviewData } from '../components/Interview/types';
-import { Interview, InterviewAnalysis, InterviewAudioFile, InterviewsSchedule } from '../types';
+import { Interview, InterviewAnalysis, InterviewAudioFile, InterviewProgress, InterviewsSchedule } from '../types';
 import { apiClient } from './apiClient';
 
 export const analyzeInterview = async (interviewId: string, file: File, fileType: 'audio' | 'text') => {
@@ -62,3 +62,6 @@ export const getScheduledInterviews = async (userId: string): Promise<Interviews
 export const deleteInterview = async (interviewId: string) => {
     await apiClient.delete(`/datamanager/proxy/interviews/${interviewId}`);
 };
+
+export const getInterviewsByUser = async (userId: string): Promise<InterviewProgress[]> =>
+    (await apiClient.get(`/datamanager/proxy/interviews/${userId}`)).data;

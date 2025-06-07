@@ -6,7 +6,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
-import { useUserContext } from '../../context/UserContext';
+import { useUserContext } from '../../context';
 import userService from '../../services/userService';
 import { UserCareer, UserEducation, UserSkill } from '../../types';
 import UserQualificationsForm from '../Profile/UserQualificationsForm';

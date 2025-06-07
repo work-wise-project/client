@@ -1,14 +1,14 @@
+import { Box, Typography } from '@mui/material';
 import { useState } from 'react';
 import Calendar from 'react-calendar';
-import { CalendarGlobalStyles, Dot } from './styledComponents';
-import { InterviewDialog } from './InterviewDialog';
-import { formatDate } from './types';
 import 'react-calendar/dist/Calendar.css';
-import { AddInterviewButton } from '../Interview/AddInterviewButton';
-import { Box, Typography } from '@mui/material';
-import { AddInterviewModal } from '../Interview/AddInterviewModal';
-import { useInterviewsContext } from '../../context/InterviewsContext';
+import { useInterviewsContext } from '../../context';
 import { theme } from '../../style';
+import { AddInterviewButton } from '../Interview/AddInterviewButton';
+import { AddInterviewModal } from '../Interview/AddInterviewModal';
+import { InterviewDialog } from './InterviewDialog';
+import { CalendarGlobalStyles, Dot } from './styledComponents';
+import { formatDate } from './types';
 
 export const CalendarComponent = () => {
     const { scheduledInterviews } = useInterviewsContext();

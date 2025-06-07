@@ -1,10 +1,10 @@
 import { Box, Button, Modal, SxProps, TextField, Typography } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { useInterviewsContext } from '../../context/InterviewsContext';
+import { useState } from 'react';
+import { useInterviewsContext } from '../../context';
 
 interface AddInterviewModalProps {
     onClose: () => void;

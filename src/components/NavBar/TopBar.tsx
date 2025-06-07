@@ -1,11 +1,11 @@
 import { AccountCircle, ExitToApp } from '@mui/icons-material';
-import { Box, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar } from '@mui/material';
+import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import logo from '../../assets/logo.png';
-import { useUserContext } from '../../context/UserContext';
+import { useUserContext } from '../../context';
 import userService from '../../services/userService';
 import { logoTypographyStyle } from './styles';
 

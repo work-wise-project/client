@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
-import { Dialog, DialogTitle, List, ListItem, IconButton, Box, ListItemText, Menu, MenuItem } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Box, Dialog, DialogTitle, IconButton, List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
+import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useInterviewsContext } from '../../context';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, formatDate, formatTime } from './types';
-import { useNavigate } from 'react-router-dom';
-import { useInterviewsContext } from '../../context/InterviewsContext';
 
 export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDialogProps) => {
     const { scheduledInterviews, removeInterview } = useInterviewsContext();

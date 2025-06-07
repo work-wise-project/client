@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Typography, Link, Box, Container, Stepper, Step, StepLabel, StepIconProps } from '@mui/material';
+import { Box, Container, Link, Step, StepIconProps, StepLabel, Stepper, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import userService from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
+import { useState } from 'react';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
 import ResumeUpload from '../components/SignUp/ResumeUpload';
-import { useUserContext } from '../context/UserContext';
-import { styled } from '@mui/material/styles';
+import { useUserContext } from '../context';
+import userService from '../services/userService';
 
 const StepIconContainer = styled('div')(
     ({ theme, active, completed }: { theme: any; active: boolean; completed: boolean }) => ({

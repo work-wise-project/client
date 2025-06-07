@@ -2,9 +2,9 @@ import { Box, CircularProgress } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { InterviewsProvider } from '../../context/InterviewsContext';
-import { useUserContext } from '../../context/UserContext';
+import { InterviewsProvider, useUserContext } from '../../context';
 import {
+    CalendarPage,
     HomePage,
     InterviewAnalysisPage,
     InterviewPreparationPage,
@@ -92,6 +92,7 @@ export const App = () => {
                                     element={<InterviewPreparationPage />}
                                 />
                                 <Route path="/profile" element={<ProfilePage />} />
+                                <Route path="/calendar" element={<CalendarPage />} />
                             </Route>
                         </Routes>
                     </InterviewsProvider>

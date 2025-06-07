@@ -1,4 +1,4 @@
-import { ArticleOutlined, AssistantOutlined, AutoAwesome, HomeOutlined } from '@mui/icons-material';
+import { ArticleOutlined, AssistantOutlined, AutoAwesome, CalendarMonth, HomeOutlined } from '@mui/icons-material';
 import { IconProps } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -15,17 +15,22 @@ export const pages: PageConfig[] = [
         path: '/',
     },
     {
+        text: 'Calendar',
+        getIcon: (color) => <CalendarMonth color={color} />,
+        path: '/calendar',
+    },
+    {
         text: 'Resume',
         getIcon: (color) => <ArticleOutlined color={color} />,
         path: '/resume',
     },
     {
-        text: 'Interview preparation',
+        text: 'Interview Preparation',
         getIcon: (color) => <AssistantOutlined color={color} />,
         path: '/interviewPreparation',
     },
     {
-        text: 'Interview analysis',
+        text: 'Interview Analysis',
         getIcon: (color) => <AutoAwesome color={color} />,
         path: '/interviewAnalysis',
     },
