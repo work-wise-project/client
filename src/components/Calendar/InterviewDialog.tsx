@@ -1,8 +1,9 @@
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Box, Dialog, DialogTitle, IconButton, List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInterviewsContext } from '../../context';
+import { Interview } from '../../types';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, formatDate, formatTime } from './types';
 
@@ -10,17 +11,28 @@ export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDi
     const { scheduledInterviews, removeInterview } = useInterviewsContext();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedInterview, setSelectedInterview] = useState<string | null>(null);
+    const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
     const navigate = useNavigate();
-    const handleExpandClick = (event: React.MouseEvent<HTMLButtonElement>, interviewId: string) => {
+
+    useEffect(() => {
+        if (open) {
+            const activeEl = document.activeElement as HTMLElement | null;
+            if (activeEl && typeof activeEl.blur === 'function') {
+                activeEl.blur();
+            }
+        }
+    }, [open]);
+
+    const handleExpandClick = (event: React.MouseEvent<HTMLButtonElement>, interview: Interview) => {
         setAnchorEl(event.currentTarget);
-        setSelectedInterview(interviewId);
+        setSelectedInterview(interview);
     };
 
-    const handleCloseMenu = () => {
+    const handleCloseMenu = useCallback(() => {
         setAnchorEl(null);
         setSelectedInterview(null);
-    };
+        handleClose();
+    }, [handleClose]);
 
     const handleAction = useCallback(
         async (action: string) => {
@@ -30,20 +42,20 @@ export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDi
             }
             switch (action) {
                 case 'Analysis':
-                    navigate(`interviewAnalysis/${selectedInterview}`);
+                    navigate(`interviewAnalysis/${selectedInterview.id}/${selectedInterview.title}`);
                     break;
                 case 'Preparation':
-                    // Handle preparation action
+                    navigate(`interviewPreparation/${selectedInterview.id}/${selectedInterview.title}`);
                     break;
                 case 'Delete':
-                    await removeInterview(selectedInterview);
+                    await removeInterview(selectedInterview.id);
                     break;
                 default:
                     alert('Invalid action');
             }
             handleCloseMenu();
         },
-        [selectedInterview]
+        [handleCloseMenu, navigate, removeInterview, selectedInterview]
     );
 
     return (
@@ -65,7 +77,7 @@ export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDi
                                     secondaryAction={
                                         <IconButton
                                             edge="end"
-                                            onClick={(e) => handleExpandClick(e, event.id)}
+                                            onClick={(e) => handleExpandClick(e, event)}
                                             aria-label="more"
                                         >
                                             <ArrowForwardIosIcon color="secondary" />
