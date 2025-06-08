@@ -1,4 +1,4 @@
-export type { Interview, InterviewProgress, InterviewsSchedule } from './interview';
+export type { Interview, InterviewData, InterviewProgress, InterviewsSchedule } from './interview';
 export type { InterviewAnalysis, InterviewAnalysisPoint, InterviewAudioFile } from './interviewAnalysis';
 export type { ISkill } from './ISkill';
 export type { IUser } from './IUser';

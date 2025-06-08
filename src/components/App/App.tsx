@@ -16,7 +16,7 @@ import {
 import { ProfilePage } from '../../pages/ProfilePage';
 import userService from '../../services/userService';
 import { IUser } from '../../types';
-import InterviewChooser from '../Interview/InterviewChooser';
+import { InterviewChooser } from '../Interview';
 import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
 

@@ -1,11 +1,11 @@
 import { Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import InterviewSelectSVG from '../../assets/PeopleInterviewSelect.svg?react';
-import { useInterviewsContext } from '../../context';
-import { theme } from '../../style';
-import { formatTime } from '../Calendar/types';
+import InterviewSelectSVG from '../../../assets/PeopleInterviewSelect.svg?react';
+import { useInterviewsContext } from '../../../context';
+import { theme } from '../../../style';
+import { formatTime } from '../../Calendar/types';
 
-const InterviewChooser = () => {
+export const InterviewChooser = () => {
     const { scheduledInterviews } = useInterviewsContext();
     const navigate = useNavigate();
 
@@ -157,5 +157,3 @@ const InterviewChooser = () => {
         </Box>
     );
 };
-
-export default InterviewChooser;

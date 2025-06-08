@@ -1,5 +1,11 @@
-import { InterviewData } from '../components/Interview/types';
-import { Interview, InterviewAnalysis, InterviewAudioFile, InterviewProgress, InterviewsSchedule } from '../types';
+import {
+    Interview,
+    InterviewAnalysis,
+    InterviewAudioFile,
+    InterviewData,
+    InterviewProgress,
+    InterviewsSchedule,
+} from '../types';
 import { apiClient } from './apiClient';
 
 export const analyzeInterview = async (interviewId: string, file: File, fileType: 'audio' | 'text') => {

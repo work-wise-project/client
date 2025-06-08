@@ -1,13 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { formatDate } from '../components/Calendar/types';
-import { InterviewData } from '../components/Interview/types';
 import {
     createInterview,
     deleteInterview,
     getInterviewsByUser,
     getScheduledInterviews,
 } from '../services/interviewService';
-import { InterviewProgress, InterviewsSchedule } from '../types';
+import { InterviewData, InterviewProgress, InterviewsSchedule } from '../types';
 import { useUserContext } from './UserContext';
 
 type InterviewsContextType = {
