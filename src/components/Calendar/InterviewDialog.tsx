@@ -42,10 +42,10 @@ export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDi
             }
             switch (action) {
                 case 'Analysis':
-                    navigate(`interviewAnalysis/${selectedInterview.id}/${selectedInterview.title}`);
+                    navigate(`/interviewAnalysis/${selectedInterview.id}/${selectedInterview.title}`);
                     break;
                 case 'Preparation':
-                    navigate(`interviewPreparation/${selectedInterview.id}/${selectedInterview.title}`);
+                    navigate(`/interviewPreparation/${selectedInterview.id}/${selectedInterview.title}`);
                     break;
                 case 'Delete':
                     await removeInterview(selectedInterview.id);

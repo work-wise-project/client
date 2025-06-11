@@ -1,45 +1,60 @@
 import { Box, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import moment from 'moment';
 import { InterviewProgress as InterviewProgressType } from '../../../types';
-import { InterviewProgressProps } from './types';
-
-/*
-    TODO:
-    - Fix the completion problems
-    - mark steps with V and X
-*/
+import { CustomStepIconProps, InterviewProgressProps, InterviewProgressStep } from './types';
+import { Connector, CustomStepIcon } from './utils';
 
 const steps: {
+    step: InterviewProgressStep;
     label: (interview: InterviewProgressType) => string;
     isCompleted: (interview: InterviewProgressType) => boolean;
 }[] = [
     {
+        step: InterviewProgressStep.PREPARATION,
         label: () => 'Prepared for interview',
         isCompleted: ({ hasPreparation }) => hasPreparation,
     },
     {
+        step: InterviewProgressStep.INTERVIEW_DAY,
         label: ({ date }) => `Interview day: ${moment(date).format('DD/MM/YYYY')}`,
-        isCompleted: ({ date }) => moment.utc(date).isSameOrAfter(moment.utc(), 'day'),
+        isCompleted: ({ date }) => moment().isSameOrAfter(moment(date), 'day'),
     },
     {
+        step: InterviewProgressStep.ANALYSIS,
         label: () => 'Analyzed interview',
         isCompleted: ({ hasAnalysis }) => hasAnalysis,
     },
 ];
 
-const getActiveStep = (interview: InterviewProgressType) => {
-    const firstIncomplete = steps.findIndex(({ isCompleted }) => !isCompleted(interview));
+const getActiveStep = ({ date }: InterviewProgressType) => {
+    const now = moment();
+    const interviewDate = moment(date);
 
-    return firstIncomplete === -1 ? steps.length : firstIncomplete;
+    if (now.isBefore(interviewDate, 'day')) {
+        return InterviewProgressStep.PREPARATION;
+    }
+    if (now.isSame(interviewDate, 'day')) {
+        return InterviewProgressStep.INTERVIEW_DAY;
+    }
+    if (now.isAfter(interviewDate, 'day')) {
+        return InterviewProgressStep.ANALYSIS;
+    }
+
+    return InterviewProgressStep.UNDEFINED;
 };
 
 export const InterviewProgress = ({ interview }: InterviewProgressProps) => (
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', paddingLeft: 10 }}>
-        <Typography variant="h6">{interview.title}</Typography>
-        <Stepper activeStep={getActiveStep(interview)} alternativeLabel sx={{ width: '95%' }}>
-            {steps.map(({ label, isCompleted }, index) => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+        <Typography variant="h5">{interview.title}</Typography>
+        <Stepper activeStep={getActiveStep(interview)} alternativeLabel sx={{ width: '95%' }} connector={<Connector />}>
+            {steps.map(({ label, isCompleted, step }, index) => (
                 <Step key={index} completed={isCompleted(interview)}>
-                    <StepLabel>{label(interview)}</StepLabel>
+                    <StepLabel
+                        slots={{ stepIcon: CustomStepIcon }}
+                        slotProps={{ stepIcon: { interview, step } as CustomStepIconProps }}
+                    >
+                        {label(interview)}
+                    </StepLabel>
                 </Step>
             ))}
         </Stepper>

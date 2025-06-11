@@ -19,7 +19,7 @@ type FormSchema = z.infer<typeof formSchema>;
 export const InterviewForm = ({ onSubmit: outerOnSubmit }: InterviewFormProps) => {
     const { addInterview } = useInterviewsContext();
 
-    const { control, handleSubmit, formState } = useForm<FormSchema>({
+    const { control, handleSubmit, formState, reset } = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: { title: '', jobLink: '', date: new Date() },
         mode: 'onChange',
@@ -27,6 +27,7 @@ export const InterviewForm = ({ onSubmit: outerOnSubmit }: InterviewFormProps) =
 
     const onSubmit = ({ title, jobLink, date }: FormSchema) => {
         addInterview({ title, jobLink, date: date.toISOString() });
+        reset();
         outerOnSubmit && outerOnSubmit();
     };
 
