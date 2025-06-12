@@ -26,22 +26,12 @@ const steps: {
     },
 ];
 
-const getActiveStep = ({ date }: InterviewProgressType) => {
-    const now = moment();
-    const interviewDate = moment(date);
-
-    if (now.isBefore(interviewDate, 'day')) {
-        return InterviewProgressStep.PREPARATION;
-    }
-    if (now.isSame(interviewDate, 'day')) {
-        return InterviewProgressStep.INTERVIEW_DAY;
-    }
-    if (now.isAfter(interviewDate, 'day')) {
-        return InterviewProgressStep.ANALYSIS;
-    }
-
-    return InterviewProgressStep.UNDEFINED;
-};
+const getActiveStep = ({ date }: InterviewProgressType) =>
+    moment().isBefore(moment(date), 'day')
+        ? InterviewProgressStep.PREPARATION
+        : moment().isAfter(moment(date), 'day')
+        ? InterviewProgressStep.ANALYSIS
+        : InterviewProgressStep.INTERVIEW_DAY;
 
 export const InterviewProgress = ({ interview }: InterviewProgressProps) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>

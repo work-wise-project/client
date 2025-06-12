@@ -1,9 +1,14 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { InterviewForm, InterviewProgressList } from '../components/Interview';
 import { useInterviewsContext } from '../context';
+import { useEffect } from 'react';
 
 export const HomePage = () => {
-    const { interviewsProgress } = useInterviewsContext();
+    const { interviewsProgress, refreshInterviews } = useInterviewsContext();
+
+    useEffect(() => {
+        refreshInterviews();
+    }, [refreshInterviews]);
 
     return (
         <Box sx={{ display: 'flex', marginTop: 2 }}>

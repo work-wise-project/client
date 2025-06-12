@@ -8,7 +8,6 @@ export type InterviewProgressProps = {
 export type CustomStepIconProps = StepIconProps & { interview: InterviewProgress; step: InterviewProgressStep };
 
 export enum InterviewProgressStep {
-    UNDEFINED = -1,
     PREPARATION = 0,
     INTERVIEW_DAY = 1,
     ANALYSIS = 2,
