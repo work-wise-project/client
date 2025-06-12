@@ -36,11 +36,9 @@ const ResumeUpload = ({
                 setShouldUploadNow(true);
             }
         } catch (error) {
-            console.error('Error uploading resume:', error);
+            console.error('Error during registration:', error);
             clearUserSession();
             navigate('/welcome', { replace: true });
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -73,7 +71,6 @@ const ResumeUpload = ({
             <Box
                 sx={{
                     display: loading ? 'none' : 'flex',
-                    justifyContent: 'center',
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: 2,
@@ -87,7 +84,6 @@ const ResumeUpload = ({
                         onUploadSuccess={handleUploadSuccess}
                     />
                 </Box>
-
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <IconButton onClick={handleNext} color="primary">
                         <Send sx={{ fontSize: 40 }} />

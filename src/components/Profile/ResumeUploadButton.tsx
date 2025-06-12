@@ -13,7 +13,6 @@ interface ResumeUploadButtonProps {
     shouldUploadNow?: boolean;
     userId?: string;
     setHasResumeChanged?: React.Dispatch<React.SetStateAction<boolean>>;
-    disabled?: boolean;
 }
 
 export const VisuallyHiddenInput = styled('input')({
@@ -33,7 +32,6 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
     shouldUploadNow,
     setHasResumeChanged,
     userId,
-    disabled,
 }) => {
     const { userContext } = useUserContext();
     const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -100,6 +98,8 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
 
         if (uplodadOnSaved) {
             uploadFileToServer(pendingUploadFile);
+        } else if (shouldUploadNow && !pendingUploadFile) {
+            onUploadSuccess?.();
         }
     }, [shouldUploadNow, pendingUploadFile]);
 
@@ -124,7 +124,7 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
             variant="outlined"
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
-            disabled={loading || disabled}
+            disabled={loading}
             sx={{
                 borderRadius: '10px',
                 textTransform: 'none',
