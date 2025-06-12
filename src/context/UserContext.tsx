@@ -2,21 +2,18 @@ import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IUser } from '../types';
 
-type IUserContext = IUser & { isUserConnected?: boolean };
-
 interface UserContextType {
-    userContext: Partial<IUserContext> | null;
-    setUserContext: React.Dispatch<React.SetStateAction<Partial<IUserContext> | null>>;
-    storeUserSession: (userData: { accessToken: string; refreshToken: string; user: IUserContext }) => void;
+    userContext: Partial<IUser> | null;
+    setUserContext: React.Dispatch<React.SetStateAction<Partial<IUser> | null>>;
+    storeUserSession: (userData: { accessToken: string; refreshToken: string; user: IUser }) => void;
     clearUserSession: () => void;
-    setLocalStorage: (userData: { accessToken: string; refreshToken: string; user: IUserContext }) => void;
-    setIsUserConnoted: (isUserConnected: boolean) => void;
+    setLocalStorage: (userData: { accessToken: string; refreshToken: string; user: IUser }) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [userContext, setUserContext] = useState<Partial<IUserContext> | null>(null);
+    const [userContext, setUserContext] = useState<Partial<IUser> | null>(null);
     const navigate = useNavigate();
 
     const setLocalStorage = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {
@@ -25,10 +22,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('userId', user.id);
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-    };
-
-    const setIsUserConnoted = (isUserConnected: boolean) => {
-        setUserContext((user) => ({ ...user, isUserConnected }));
     };
 
     const storeUserSession = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {
@@ -53,7 +46,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 storeUserSession,
                 clearUserSession,
                 setLocalStorage,
-                setIsUserConnoted,
             }}
         >
             {children}

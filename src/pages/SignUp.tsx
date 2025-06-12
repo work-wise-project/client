@@ -1,38 +1,39 @@
-import { useState } from 'react';
-import { Typography, Link, Box, Container, Stepper, Step, StepLabel, StepIconProps } from '@mui/material';
+import { Box, Container, Link, Step, StepIconProps, StepLabel, Stepper, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import userService from '../services/userService';
 import { AxiosError, HttpStatusCode } from 'axios';
+import { useState } from 'react';
 import ProfessionalProfile from '../components/SignUp/ProfessionalProfile';
 import ResumeUpload from '../components/SignUp/ResumeUpload';
-import { useUserContext } from '../context/UserContext';
-import { styled } from '@mui/material/styles';
+import userService from '../services/userService';
+import { IUser } from '../types';
 
-const StepIconContainer = styled('div')(
-    ({ theme, active, completed }: { theme: any; active: boolean; completed: boolean }) => ({
-        width: 40,
-        height: 40,
-        borderRadius: '50%',
-        backgroundColor:
-            active || completed ? (active ? theme.palette.secondary.main : theme.palette.secondary.light) : '#ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: active || completed ? '#fff' : '#000',
-        fontWeight: 'bold',
-        fontSize: '1.5rem',
-        [theme.breakpoints.up('lg')]: {
-            width: 50,
-            height: 50,
-            fontSize: '1.75rem',
-        },
-        [theme.breakpoints.up('xl')]: {
-            width: 60,
-            height: 60,
-            fontSize: '2rem',
-        },
-    })
-);
+const StepIconContainer = styled('div')<{
+    active?: boolean;
+    completed?: boolean;
+}>(({ theme, active = false, completed = false }) => ({
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    backgroundColor:
+        active || completed ? (active ? theme.palette.secondary.main : theme.palette.secondary.light) : '#ccc',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: active || completed ? '#fff' : '#000',
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    [theme.breakpoints.up('lg')]: {
+        width: 50,
+        height: 50,
+        fontSize: '1.75rem',
+    },
+    [theme.breakpoints.up('xl')]: {
+        width: 60,
+        height: 60,
+        fontSize: '2rem',
+    },
+}));
 
 const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) => {
     return (
@@ -44,9 +45,11 @@ const CustomStepIcon: React.FC<StepIconProps> = ({ active, completed, icon }) =>
 
 export const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const { storeUserSession } = useUserContext();
+    const [googleCredential, setGoogleCredential] = useState<CredentialResponse | null>(null);
+    const [userData, setUserData] = useState<Partial<IUser> | null>(null);
 
     const [activeStep, setActiveStep] = useState<number>(0);
+
     const googleResponseMessage = async (credentialResponse: CredentialResponse) => {
         setErrorMessage(null);
         if (!credentialResponse?.credential) {
@@ -54,9 +57,9 @@ export const SignUp = () => {
             return;
         }
         try {
-            const { response } = await userService.googleRegister(credentialResponse);
+            const { response } = await userService.getAndVerifyGoogleCredential(credentialResponse);
             if (response.status === HttpStatusCode.Ok) {
-                storeUserSession(response.data);
+                setGoogleCredential(credentialResponse);
                 setActiveStep((prev) => prev + 1);
                 setErrorMessage(null);
             } else {
@@ -158,10 +161,12 @@ export const SignUp = () => {
                                 shape="pill"
                             />
                         </Box>
-                    ) : activeStep === 1 ? (
-                        <ProfessionalProfile setActiveStep={setActiveStep} />
+                    ) : activeStep === 1 && googleCredential ? (
+                        <ProfessionalProfile setActiveStep={setActiveStep} setUserData={setUserData} />
                     ) : (
-                        <ResumeUpload />
+                        googleCredential?.credential && (
+                            <ResumeUpload userData={userData} googleCredential={googleCredential.credential} />
+                        )
                     )}
                 </Box>
                 {errorMessage && (
