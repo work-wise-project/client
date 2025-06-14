@@ -52,7 +52,7 @@ const InterviewChooser = () => {
                                         .map((interview) => (
                                             <Grid
                                                 key={interview.id}
-                                                size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 4 }}
+                                                size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}
                                                 sx={{
                                                     display: 'flex',
                                                     justifyContent: 'center',
@@ -60,7 +60,7 @@ const InterviewChooser = () => {
                                             >
                                                 <Card
                                                     sx={{
-                                                        width: { xs: 280, sm: 300, md: 320, lg: 350, xl: 400 },
+                                                        width: { xs: 280, sm: 300, md: 320, lg: 320, xl: 400 },
                                                         height: 250,
                                                         borderRadius: 2,
                                                         boxShadow: 4,
@@ -138,7 +138,7 @@ const InterviewChooser = () => {
                         variant="h4"
                         sx={{
                             textAlign: 'center',
-                            fontSize: { xs: '1.5rem', lg: '2.5rem', xl: '3rem' },
+                            fontSize: { lg: '1.5rem', xl: '3rem' },
                             color: theme.palette.secondary.main,
                             mb: 2,
                         }}
@@ -152,7 +152,7 @@ const InterviewChooser = () => {
                             textAlign: 'center',
                             maxWidth: '500px',
                             lineHeight: 1.6,
-                            fontSize: { xs: '0.9rem', xl: '1.5rem' },
+                            fontSize: { lg: '0.9rem', xl: '1.5rem' },
                         }}
                     >
                         You can schedule interviews in the calendar section. Once scheduled, they will appear here for
