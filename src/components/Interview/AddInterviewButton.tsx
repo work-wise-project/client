@@ -5,7 +5,7 @@ export const AddInterviewButton = ({ onClick }: { onClick: React.MouseEventHandl
     return (
         <Button
             component="label"
-            size="large"
+            sx={{ size: { md: 'small', lg: 'medium', xl: 'large' } }}
             tabIndex={-1}
             startIcon={<Event />}
             color="primary"

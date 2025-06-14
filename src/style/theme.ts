@@ -4,6 +4,15 @@ import '@fontsource/rubik';
 
 export const theme = createTheme({
     typography: { fontFamily: 'Rubik' },
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 900,
+            lg: 1500,
+            xl: 1900,
+        },
+    },
     palette: {
         primary: {
             main: '#003049',
