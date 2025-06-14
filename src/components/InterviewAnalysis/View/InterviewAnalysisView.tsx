@@ -49,7 +49,7 @@ export const InterviewAnalysisView = ({
     const [showPoints, setShowPoints] = useState(true);
 
     return (
-        <Box sx={{ maxHeight: '75vh', overflowY: 'auto' }}>
+        <Box>
             <CollapsableCard
                 isExpanded={showAudio}
                 setIsExpanded={setShowAudio}

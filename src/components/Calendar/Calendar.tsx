@@ -34,13 +34,18 @@ export const CalendarComponent = () => {
         <>
             <Typography
                 variant="h3"
-                sx={{ textAlign: 'center', fontSize: { lg: '2rem', xl: '3rem' }, color: 'secondary.main' }}
+                sx={{
+                    textAlign: 'center',
+                    fontSize: { md: '1.9rem', lg: '2rem', xl: '3rem' },
+                    mt: { md: 4, lg: 4, xl: 8 },
+                    color: 'secondary.main',
+                }}
             >
                 Scheduled Interviews
             </Typography>
             <Box sx={{ mb: 4, marginInlineStart: '10vw', mt: { lg: 5, xl: 10 } }}>
                 <Button
-                    size="large"
+                    sx={{ size: { md: 'small', lg: 'medium', xl: 'large' } }}
                     startIcon={<Event />}
                     onClick={() => setShowAddInterviewDialog(true)}
                     variant="contained"

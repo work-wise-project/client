@@ -39,23 +39,24 @@ export const ResumePage: React.FC = () => {
         }
     };
 
+    const resetResults = () => {
+        setGrammarCheckResult(null);
+        setResumeAnalysisResult(null);
+        setShowAnalyzeResult(false);
+        setShowGrammarCheckResult(false);
+    };
+
     useEffect(() => {
         checkAndLoadResume();
 
         return () => {
             setResumeText(null);
-            setResumeAnalysisResult(null);
-            setGrammarCheckResult(null);
-            setShowAnalyzeResult(false);
-            setShowGrammarCheckResult(false);
+            resetResults();
         };
     }, [userContext?.id]);
 
     useEffect(() => {
-        setGrammarCheckResult(null);
-        setResumeAnalysisResult(null);
-        setShowAnalyzeResult(false);
-        setShowGrammarCheckResult(false);
+        resetResults();
     }, [resumeText]);
 
     const onAnalyzeClick = async () => {
@@ -71,14 +72,13 @@ export const ResumePage: React.FC = () => {
                     if (responseResume.status !== HttpStatusCode.Ok) {
                         throw new Error('Failed to analyze file');
                     }
-                    const parsedData = JSON.parse(responseResume.data);
 
-                    setResumeAnalysisResult(parsedData);
+                    setResumeAnalysisResult(responseResume.data);
                 }
                 setShowAnalyzeResult(true);
                 setShowGrammarCheckResult(false);
             } else {
-                toast.error('No user conected');
+                toast.error('No user connected');
             }
         } catch (error) {
             console.error('Error analyzing file:', error);
@@ -106,7 +106,7 @@ export const ResumePage: React.FC = () => {
                 setShowAnalyzeResult(false);
                 setShowGrammarCheckResult(true);
             } else {
-                toast.error('No user conected');
+                toast.error('No user connected');
             }
         } catch (error) {
             console.error('Error checking grammar:', error);
@@ -121,6 +121,7 @@ export const ResumePage: React.FC = () => {
             <Box display="flex" justifyContent="flex-start" mb={2}>
                 <ResumeUploadButton
                     onUploadSuccess={async () => {
+                        resetResults();
                         await checkAndLoadResume();
                     }}
                 />

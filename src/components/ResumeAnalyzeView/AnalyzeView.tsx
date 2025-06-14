@@ -1,4 +1,4 @@
-import { Typography, Paper, Stack } from '@mui/material';
+import { Typography, Paper, Stack, Box } from '@mui/material';
 import { AnalyzeViewTypes } from './types';
 import ResumeAnalyzeSVG from '../../assets/WomanResumeAnalyze.svg?react';
 
@@ -17,14 +17,11 @@ export const AnalyzeView = ({
             >
                 {resumeAnalysisResult && showAnalyzeResult && (
                     <Stack spacing={1}>
-                        <Typography variant="h6" sx={{ fontSize: { xs: '1.25rem', lg: '1.4rem', xl: '1.8rem' } }}>
+                        <Typography variant="h6" sx={{ fontSize: { lg: '1.25rem', xl: '1.8rem' } }}>
                             Analyze Result
                         </Typography>
                         {resumeAnalysisResult.general_review && (
-                            <Typography
-                                variant="body2"
-                                sx={{ fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' } }}
-                            >
+                            <Typography variant="body2" sx={{ fontSize: { lg: '0.875rem', xl: '1.4rem' } }}>
                                 <strong>General Review:</strong> {resumeAnalysisResult.general_review}
                             </Typography>
                         )}
@@ -35,7 +32,7 @@ export const AnalyzeView = ({
                                     variant="subtitle2"
                                     sx={{
                                         mb: 0.5,
-                                        fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' },
+                                        fontSize: { lg: '0.875rem', xl: '1.4rem' },
                                     }}
                                 >
                                     <strong>Strengths:</strong>
@@ -45,7 +42,7 @@ export const AnalyzeView = ({
                                         <li key={index}>
                                             <Typography
                                                 variant="body2"
-                                                sx={{ fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' } }}
+                                                sx={{ fontSize: { lg: '0.875rem', xl: '1.4rem' } }}
                                             >
                                                 {strength}
                                             </Typography>
@@ -60,7 +57,7 @@ export const AnalyzeView = ({
                                     variant="subtitle2"
                                     sx={{
                                         mb: 0.5,
-                                        fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' },
+                                        fontSize: { lg: '0.875rem', xl: '1.4rem' },
                                     }}
                                 >
                                     <strong>Weaknesses:</strong>
@@ -70,7 +67,7 @@ export const AnalyzeView = ({
                                         <li key={index}>
                                             <Typography
                                                 variant="body2"
-                                                sx={{ fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' } }}
+                                                sx={{ fontSize: { lg: '0.875rem', xl: '1.4rem' } }}
                                             >
                                                 {weakness}
                                             </Typography>
@@ -83,14 +80,14 @@ export const AnalyzeView = ({
                 )}
                 {grammarCheckResult && showGrammarCheckResult && (
                     <Stack spacing={1}>
-                        <Typography variant="h6" sx={{ fontSize: { xs: '1.25rem', lg: '1.4rem', xl: '1.75rem' } }}>
+                        <Typography variant="h6" sx={{ fontSize: { lg: '1.25rem', xl: '1.75rem' } }}>
                             Grammar Check
                         </Typography>
                         <Typography
                             variant="body2"
                             sx={{
                                 whiteSpace: 'pre-line',
-                                fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' },
+                                fontSize: { lg: '0.875rem', xl: '1.4rem' },
                             }}
                         >
                             {grammarCheckResult}
@@ -105,11 +102,40 @@ export const AnalyzeView = ({
                         alignItems="center"
                         sx={{ height: '100%', marginTop: { lg: '0vh', xl: '10vh' } }}
                     >
-                        <ResumeAnalyzeSVG style={{ width: '100%', maxWidth: 500 }} />
+                        <Box
+                            sx={{
+                                width: {
+                                    xs: '80%',
+                                    sm: '70%',
+                                    md: '60%',
+                                    lg: '60%',
+                                    xl: '60%',
+                                },
+                                maxWidth: {
+                                    xs: 300,
+                                    sm: 400,
+                                    md: 500,
+                                    lg: 500,
+                                    xl: 600,
+                                },
+                                minWidth: {
+                                    xs: 200,
+                                    sm: 250,
+                                    md: 300,
+                                },
+                            }}
+                        >
+                            <ResumeAnalyzeSVG style={{ width: '100%', height: 'auto' }} />
+                        </Box>
                         <Typography
                             variant="body2"
                             color="textSecondary"
-                            sx={{ fontSize: { xs: '0.875rem', lg: '1.2rem', xl: '1.4rem' } }}
+                            sx={{
+                                fontSize: { xs: '0.75rem', sm: '0.825rem', md: '1rem', lg: '1.1rem', xl: '1.3rem' },
+                                mt: 2,
+                                textAlign: 'center',
+                                px: 1,
+                            }}
                         >
                             Click "Analyze" or "Grammar Check" to see the results
                         </Typography>

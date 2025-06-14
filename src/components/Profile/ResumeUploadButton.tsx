@@ -11,6 +11,7 @@ interface ResumeUploadButtonProps {
     onUploadSuccess?: () => void;
     buttonLabel?: string;
     shouldUploadNow?: boolean;
+    userId?: string;
     setHasResumeChanged?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -30,6 +31,7 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
     onUploadSuccess,
     shouldUploadNow,
     setHasResumeChanged,
+    userId,
 }) => {
     const { userContext } = useUserContext();
     const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -40,11 +42,13 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
     // If `isSaved` prop is undefined, upload immediately on file select
     const shouldUploadImmediately = shouldUploadNow === undefined;
 
+    const idToUse = userId || userContext?.id;
+
     useEffect(() => {
         const checkAndLoadResume = async () => {
-            if (userContext?.id) {
+            if (idToUse) {
                 try {
-                    const { response } = await resumeService.getResumeIfExist(userContext.id);
+                    const { response } = await resumeService.getResumeIfExist(idToUse);
                     if (response.data) {
                         setExistingResumeType(response.data.contentType);
                     } else {
@@ -56,10 +60,10 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
             }
         };
         checkAndLoadResume();
-    }, [userContext?.id]);
+    }, [idToUse]);
 
     const uploadFileToServer = async (file: File) => {
-        if (!userContext?.id) {
+        if (!idToUse) {
             toast.error('No user connected');
             return;
         }
@@ -68,7 +72,7 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
             const formData = new FormData();
             formData.append('resume', file);
 
-            const { response } = await resumeService.uploadResume(userContext.id, formData);
+            const { response } = await resumeService.uploadResume(idToUse, formData);
 
             if (response.status !== HttpStatusCode.Ok) {
                 throw new Error('Failed to upload file');
@@ -94,6 +98,8 @@ const ResumeUploadButton: React.FC<ResumeUploadButtonProps> = ({
 
         if (uplodadOnSaved) {
             uploadFileToServer(pendingUploadFile);
+        } else if (shouldUploadNow && !pendingUploadFile) {
+            onUploadSuccess?.();
         }
     }, [shouldUploadNow, pendingUploadFile]);
 

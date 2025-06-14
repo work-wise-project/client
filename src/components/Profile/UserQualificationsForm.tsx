@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import SchoolIcon from '@mui/icons-material/School';
+import WorkIcon from '@mui/icons-material/Work';
 import {
     Autocomplete,
     AutocompleteProps,
@@ -12,16 +15,13 @@ import {
     TextFieldProps,
     Typography,
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
+import { HttpStatusCode } from 'axios';
+import { useEffect, useState } from 'react';
+import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form';
 import skillService from '../../services/skillService';
 import { ISkill } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
-import { HttpStatusCode } from 'axios';
 
 const UserQualificationsForm = () => {
     const { control } = useFormContext();
@@ -78,11 +78,9 @@ const UserQualificationsForm = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 width: '100%',
-                gap: { lg: 2, xl: 7 },
+                gap: { md: 1, lg: 2, xl: 7 },
             }}
         >
-            {/* Title section */}
-            {/* Skills section - make it wider on larger screens */}
             <Box
                 sx={{
                     display: 'flex',
@@ -106,21 +104,18 @@ const UserQualificationsForm = () => {
                 />
             </Box>
 
-            {/* Education and Career sections - make them wider and more responsive */}
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',
-                    gap: { xs: 2, lg: 4, xl: 10 },
+                    gap: { md: 1, lg: 4, xl: 10 },
                     mb: 2,
                     mt: 5,
                     px: { xs: 1, sm: 2, md: 3 },
                 }}
             >
-                {/* Education section */}
                 <Box
                     sx={{
-                        flex: 1,
                         minWidth: { xs: '100%', lg: '400px', xl: '700px' },
                     }}
                 >
@@ -143,8 +138,14 @@ const UserQualificationsForm = () => {
                                     <FormControl
                                         sx={{
                                             mr: { xs: 0.5, sm: 1 },
-                                            flexGrow: 1,
-                                            minWidth: { xs: '150px', sm: '200px', lg: '250px', xl: '300px' },
+
+                                            minWidth: {
+                                                xs: '150px',
+                                                sm: '200px',
+
+                                                lg: '250px',
+                                                xl: '300px',
+                                            },
                                         }}
                                         variant="outlined"
                                     >
@@ -202,11 +203,9 @@ const UserQualificationsForm = () => {
                     ))}
                 </Box>
 
-                {/* Career section */}
                 <Box
                     sx={{
-                        flex: 1,
-                        minWidth: { xs: '100%', lg: '400px', xl: '700px' },
+                        minWidth: '50%',
                         paddingInlineStart: { xs: 0, lg: 2, xl: 3 },
                     }}
                 >
@@ -218,7 +217,7 @@ const UserQualificationsForm = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 mb: 1,
-                                flexGrow: 1,
+
                                 gap: { xs: 0.5, sm: 1 },
                             }}
                         >
@@ -229,7 +228,7 @@ const UserQualificationsForm = () => {
                                     <FormControl
                                         sx={{
                                             mr: { xs: 0.5, sm: 1 },
-                                            flexGrow: 1,
+
                                             minWidth: { xs: '150px', sm: '200px', lg: '250px', xl: '300px' },
                                         }}
                                         variant="outlined"
