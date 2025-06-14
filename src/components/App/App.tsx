@@ -21,14 +21,13 @@ import { NavBar } from '../NavBar';
 import { ProtectedRoute, PublicRoute } from '../Routes';
 
 export const App = () => {
-    const { setUserContext, storeUserSession, setIsUserConnoted } = useUserContext();
+    const { setUserContext, storeUserSession } = useUserContext();
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
 
     const handleLoginSuccess = (userData: { accessToken: string; refreshToken: string; user: IUser }) => {
         storeUserSession(userData);
-        setIsUserConnoted(true);
         navigate('/');
     };
 
@@ -49,7 +48,6 @@ export const App = () => {
                 if (response.status === HttpStatusCode.Ok) {
                     const { data: user } = response;
                     setUserContext(user);
-                    setIsUserConnoted(true);
 
                     setIsLoading(false);
                 }

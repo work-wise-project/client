@@ -1,20 +1,24 @@
 import { CredentialResponse } from '@react-oauth/google';
-import { apiClient } from './apiClient';
 import { IUser } from '../types';
+import { apiClient } from './apiClient';
 
-const googleLogin = async (credentialResponse: CredentialResponse) => {
+const googleLogin = async (googleCredential: CredentialResponse) => {
     const abortController = new AbortController();
-    const response = await apiClient.post('/auth/login', credentialResponse, {
+    const response = await apiClient.post('/auth/login', googleCredential, {
         signal: abortController.signal,
     });
     return { response, abort: () => abortController.abort() };
 };
 
-const googleRegister = async (credentialResponse: CredentialResponse) => {
+const googleRegister = async (googleCredential: string | undefined, userData: Partial<IUser> | null) => {
     const abortController = new AbortController();
-    const response = await apiClient.post('/auth/register', credentialResponse, {
-        signal: abortController.signal,
-    });
+    const response = await apiClient.post(
+        '/auth/register',
+        { googleCredential, userData },
+        {
+            signal: abortController.signal,
+        }
+    );
     return { response, abort: () => abortController.abort() };
 };
 
@@ -52,6 +56,15 @@ const updateUser = async (userId: string, userUpdates: Omit<IUser, 'email' | 'id
     return { response, abort: () => abortController.abort() };
 };
 
+const getAndVerifyGoogleCredential = async (credentialResponse: CredentialResponse) => {
+    const abortController = new AbortController();
+
+    const response = await apiClient.post('/auth/google/verify', credentialResponse, {
+        signal: abortController.signal,
+    });
+    return { response, abort: () => abortController.abort() };
+};
+
 export default {
     googleLogin,
     googleRegister,
@@ -59,4 +72,5 @@ export default {
     refresh,
     logout,
     updateUser,
+    getAndVerifyGoogleCredential,
 };

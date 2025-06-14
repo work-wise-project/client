@@ -1,5 +1,5 @@
 import { AccountCircle, ExitToApp } from '@mui/icons-material';
-import { Box, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar } from '@mui/material';
+import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +46,7 @@ export const TopBar = () => {
                     <Box component="img" src={logo} sx={{ height: '65px', marginRight: '8px' }} />
                     WorkWise
                 </Typography>
-                {userContext?.isUserConnected && (
+                {userContext?.id && (
                     <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography sx={{ marginRight: 1 }}>Hello {userContext.name}</Typography>
                         <IconButton onClick={handleMenuOpen} color="inherit">

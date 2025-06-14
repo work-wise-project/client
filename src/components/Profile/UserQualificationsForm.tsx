@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import SchoolIcon from '@mui/icons-material/School';
+import WorkIcon from '@mui/icons-material/Work';
 import {
     Autocomplete,
     AutocompleteProps,
@@ -12,16 +15,13 @@ import {
     TextFieldProps,
     Typography,
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
+import { HttpStatusCode } from 'axios';
+import { useEffect, useState } from 'react';
+import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form';
 import skillService from '../../services/skillService';
 import { ISkill } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';
 import { fieldActionStyle, fieldStyle } from '../InterviewAnalysis/Form/styles';
-import { HttpStatusCode } from 'axios';
 
 const UserQualificationsForm = () => {
     const { control } = useFormContext();
@@ -81,8 +81,6 @@ const UserQualificationsForm = () => {
                 gap: { lg: 2, xl: 7 },
             }}
         >
-            {/* Title section */}
-            {/* Skills section - make it wider on larger screens */}
             <Box
                 sx={{
                     display: 'flex',
@@ -106,7 +104,6 @@ const UserQualificationsForm = () => {
                 />
             </Box>
 
-            {/* Education and Career sections - make them wider and more responsive */}
             <Box
                 sx={{
                     display: 'flex',
@@ -117,7 +114,6 @@ const UserQualificationsForm = () => {
                     px: { xs: 1, sm: 2, md: 3 },
                 }}
             >
-                {/* Education section */}
                 <Box
                     sx={{
                         flex: 1,
@@ -202,7 +198,6 @@ const UserQualificationsForm = () => {
                     ))}
                 </Box>
 
-                {/* Career section */}
                 <Box
                     sx={{
                         flex: 1,
