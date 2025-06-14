@@ -9,6 +9,11 @@ const InterviewChooser = () => {
     const { scheduledInterviews } = useInterviewsContext();
     const navigate = useNavigate();
 
+    const dateFormat = (date: string) => {
+        const [day, month, year] = date.split('/');
+        return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    };
+
     return (
         <Box display="flex" flexDirection="column" alignItems="center" py={12}>
             {scheduledInterviews && scheduledInterviews.size > 0 ? (
@@ -34,83 +39,96 @@ const InterviewChooser = () => {
                                 justifyContent: 'center',
                             }}
                         >
-                            {Array.from(scheduledInterviews?.entries() || []).flatMap(([date, interviews]) =>
-                                interviews.map((interview) => (
-                                    <Grid
-                                        key={interview.id}
-                                        size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 4 }}
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        <Card
-                                            sx={{
-                                                width: { xs: 280, sm: 300, md: 320, lg: 350, xl: 400 },
-                                                height: 250,
-                                                borderRadius: 2,
-                                                boxShadow: 4,
-                                                cursor: 'pointer',
-                                                transition: 'all 0.3s ease',
-                                                '&:hover': {
-                                                    transform: 'translateY(-4px)',
-                                                    boxShadow: 6,
-                                                },
-                                            }}
-                                            onClick={() => navigate(`${interview.id}/${interview.title}`)}
-                                        >
-                                            <CardContent
+                            {Array.from(scheduledInterviews?.entries() || [])
+                                .sort(([dateA], [dateB]) => {
+                                    return dateFormat(dateB).getTime() - dateFormat(dateA).getTime();
+                                })
+                                .flatMap(([date, interviews]) =>
+                                    interviews
+                                        .sort((a, b) => {
+                                            // Sort interviews within same date by their specific datetime
+                                            return new Date(b.date).getTime() - new Date(a.date).getTime();
+                                        })
+                                        .map((interview) => (
+                                            <Grid
+                                                key={interview.id}
+                                                size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 4 }}
                                                 sx={{
                                                     display: 'flex',
-                                                    flexDirection: 'column',
-                                                    textAlign: 'center',
-                                                    gap: 2,
-                                                    height: '100%',
-                                                    p: 2,
+                                                    justifyContent: 'center',
                                                 }}
                                             >
-                                                <Box
+                                                <Card
                                                     sx={{
-                                                        height: '100px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
+                                                        width: { xs: 280, sm: 300, md: 320, lg: 350, xl: 400 },
+                                                        height: 250,
+                                                        borderRadius: 2,
+                                                        boxShadow: 4,
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.3s ease',
+                                                        '&:hover': {
+                                                            transform: 'translateY(-4px)',
+                                                            boxShadow: 6,
+                                                        },
                                                     }}
+                                                    onClick={() => navigate(`${interview.id}/${interview.title}`)}
                                                 >
-                                                    <Typography
-                                                        variant="h6"
-                                                        component="div"
+                                                    <CardContent
                                                         sx={{
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            display: '-webkit-box',
-                                                            WebkitLineClamp: 2,
-                                                            WebkitBoxOrient: 'vertical',
-                                                            lineHeight: 1.3,
-                                                            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            textAlign: 'center',
+                                                            gap: 2,
+                                                            height: '100%',
+                                                            p: 2,
                                                         }}
                                                     >
-                                                        {interview.title}
-                                                    </Typography>
-                                                </Box>
-                                                <Divider />
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
-                                                >
-                                                    {formatTime(interview.date)}
-                                                </Typography>
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
-                                                >
-                                                    {date}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </Grid>
-                                ))
-                            )}
+                                                        <Box
+                                                            sx={{
+                                                                height: '100px',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                            }}
+                                                        >
+                                                            <Typography
+                                                                variant="h6"
+                                                                component="div"
+                                                                sx={{
+                                                                    overflow: 'hidden',
+                                                                    textOverflow: 'ellipsis',
+                                                                    display: '-webkit-box',
+                                                                    WebkitLineClamp: 2,
+                                                                    WebkitBoxOrient: 'vertical',
+                                                                    lineHeight: 1.3,
+                                                                    fontSize: {
+                                                                        xs: '1rem',
+                                                                        sm: '1.1rem',
+                                                                        md: '1.25rem',
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {interview.title}
+                                                            </Typography>
+                                                        </Box>
+                                                        <Divider />
+                                                        <Typography
+                                                            variant="subtitle1"
+                                                            sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+                                                        >
+                                                            {formatTime(interview.date)}
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="subtitle1"
+                                                            sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+                                                        >
+                                                            {date}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </Grid>
+                                        ))
+                                )}
                         </Grid>
                     </Box>
                 </Box>
