@@ -167,7 +167,10 @@ const InterviewChooser = () => {
                     right: 0,
                     width: '35vw',
                     zIndex: 0,
-                    display: { xs: 'none', md: 'none', lg: 'none', xl: 'block' },
+                    display: 'none',
+                    '@media (min-width: 1600px)': {
+                        display: 'block',
+                    },
                 }}
             >
                 <InterviewSelectSVG style={{ width: '100%', height: 'auto' }} />
