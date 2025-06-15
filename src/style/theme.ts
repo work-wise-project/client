@@ -25,7 +25,7 @@ export const theme = createTheme({
         },
         text: {
             primary: '#000000',
-            secondary: '#C5C8D6',
+            secondary: '#8F92A1',
         },
         action: {
             disabledBackground: 'rgba(149, 176, 234, 0.2)',

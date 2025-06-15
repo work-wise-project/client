@@ -1,7 +1,8 @@
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Divider } from '@mui/material';
+import { useEffect } from 'react';
+import { GettingStarted } from '../components/GettingStarted';
 import { InterviewForm, InterviewProgressList } from '../components/Interview';
 import { useInterviewsContext } from '../context';
-import { useEffect } from 'react';
 
 export const HomePage = () => {
     const { interviewsProgress, refreshInterviews } = useInterviewsContext();
@@ -13,15 +14,8 @@ export const HomePage = () => {
     return (
         <Box sx={{ display: 'flex', marginTop: 2 }}>
             <Box sx={{ width: '70%' }}>
-                <Typography
-                    variant="h6"
-                    sx={{ textAlign: 'center', fontSize: { lg: '1.5rem', xl: '2rem' } }}
-                    color="secondary"
-                >
-                    Your interviews progress
-                </Typography>
                 {interviewsProgress.length === 0 ? (
-                    <Typography>No interviews</Typography>
+                    <GettingStarted />
                 ) : (
                     <InterviewProgressList interviews={interviewsProgress} />
                 )}

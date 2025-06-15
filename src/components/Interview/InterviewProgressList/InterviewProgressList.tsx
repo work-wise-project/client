@@ -1,5 +1,5 @@
 import { ArrowBackIosNew, ArrowForwardIos, Circle } from '@mui/icons-material';
-import { Box, IconButton, IconButtonProps } from '@mui/material';
+import { Box, IconButton, IconButtonProps, Typography } from '@mui/material';
 import { useState } from 'react';
 import { InterviewProgress } from '../InterviewProgress';
 import { InterviewProgressListProps } from './types';
@@ -21,6 +21,9 @@ export const InterviewProgressList = ({ interviews }: InterviewProgressListProps
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+            <Typography sx={{ fontSize: { lg: '2rem', xl: '2.5rem' }, marginBottom: 3 }} color="secondary">
+                Your interviews progress
+            </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-around' }}>
                 <IconButton {...iconButtonProps('prev')}>
                     <ArrowBackIosNew />

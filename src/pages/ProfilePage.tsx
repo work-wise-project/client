@@ -207,9 +207,9 @@ export const ProfilePage: FC = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                mt: { md: 6, xl: 15 },
+                mt: { md: 3, xl: 6 },
                 flexDirection: 'column',
-                gap: { md: 1, lg: 4, xl: 15 },
+                gap: { md: 1, lg: 4, xl: 6 },
             }}
         >
             <Typography

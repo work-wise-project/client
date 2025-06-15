@@ -49,7 +49,7 @@ export const TopBar = () => {
                 {userContext?.id && (
                     <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography sx={{ marginRight: 1 }}>Hello {userContext.name}</Typography>
-                        <IconButton onClick={handleMenuOpen} color="inherit">
+                        <IconButton onClick={handleMenuOpen} color="inherit" id="profile-page">
                             <AccountCircle />
                         </IconButton>
                         <Menu
