@@ -4,7 +4,7 @@ import { Box, CircularProgress, IconButton } from '@mui/material';
 import { HttpStatusCode } from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../../context/UserContext';
+import { useUserContext } from '../../context';
 import userService from '../../services/userService';
 import { IUser } from '../../types';
 import { FieldLabel } from '../InterviewAnalysis/Form/InterviewAnalysisForm';

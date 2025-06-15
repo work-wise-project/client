@@ -4,7 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { StrictMode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { UserProvider } from '../../context/UserContext';
+import { UserProvider } from '../../context';
 import { theme } from '../../style';
 import { App } from './App';
 

@@ -1,12 +1,17 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { InterviewsSchedule } from '../types';
-import { createInterview, deleteInterview, getScheduledInterviews } from '../services/interviewService';
-import { useUserContext } from './UserContext';
-import { InterviewData } from '../components/Interview/types';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { formatDate } from '../components/Calendar/types';
+import {
+    createInterview,
+    deleteInterview,
+    getInterviewsByUser,
+    getScheduledInterviews,
+} from '../services/interviewService';
+import { InterviewData, InterviewProgress, InterviewsSchedule } from '../types';
+import { useUserContext } from './UserContext';
 
 type InterviewsContextType = {
     scheduledInterviews: InterviewsSchedule | null;
+    interviewsProgress: InterviewProgress[];
     addInterview: (newInterview: InterviewData) => Promise<void>;
     removeInterview: (interviewId: string) => Promise<void>;
     refreshInterviews: () => Promise<void>;
@@ -17,11 +22,18 @@ const InterviewsContext = createContext<InterviewsContextType | undefined>(undef
 export const InterviewsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { userContext } = useUserContext();
     const [scheduledInterviews, setScheduledInterviews] = useState<InterviewsSchedule | null>(null);
+    const [interviewsProgress, setInterviewsProgress] = useState<InterviewProgress[]>([]);
 
     const refreshInterviews = useCallback(async () => {
         try {
-            const interviews = userContext?.id ? await getScheduledInterviews(userContext.id) : null;
-            setScheduledInterviews(interviews);
+            if (!userContext?.id) {
+                setScheduledInterviews(null);
+                setInterviewsProgress([]);
+                return;
+            }
+
+            setScheduledInterviews(await getScheduledInterviews(userContext.id));
+            setInterviewsProgress(await getInterviewsByUser(userContext.id));
         } catch (error) {
             console.error('Error fetching scheduled interviews:', error);
         }
@@ -46,6 +58,7 @@ export const InterviewsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             }
             return new Map([[key, [interviewResponse]]]);
         });
+        setInterviewsProgress((prev) => [...prev, { ...interviewResponse, hasAnalysis: false, hasPreparation: false }]);
     };
 
     const removeInterview = async (interviewId: string) => {
@@ -65,10 +78,13 @@ export const InterviewsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             }
             return null;
         });
+        setInterviewsProgress((prev) => prev.filter((interview) => interview.id !== interviewId));
     };
 
     return (
-        <InterviewsContext.Provider value={{ scheduledInterviews, addInterview, removeInterview, refreshInterviews }}>
+        <InterviewsContext.Provider
+            value={{ interviewsProgress, scheduledInterviews, addInterview, removeInterview, refreshInterviews }}
+        >
             {children}
         </InterviewsContext.Provider>
     );

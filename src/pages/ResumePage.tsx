@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import ResumeUploadButton from '../components/Profile/ResumeUploadButton';
 import { AnalyzeView } from '../components/ResumeAnalyzeView/AnalyzeView';
 import { ResumeView } from '../components/ResumeView/ResumeView';
-import { useUserContext } from '../context/UserContext';
+import { useUserContext } from '../context';
 import resumeService, { IResumeAnalysisResult } from '../services/resumeService';
 
 export const ResumePage: React.FC = () => {

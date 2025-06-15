@@ -7,11 +7,10 @@ import { FC, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
-
 import { FieldLabel } from '../components/InterviewAnalysis/Form/InterviewAnalysisForm';
 import ResumeUploadButton from '../components/Profile/ResumeUploadButton';
 import UserQualificationsForm from '../components/Profile/UserQualificationsForm';
-import { useUserContext } from '../context/UserContext';
+import { useUserContext } from '../context';
 import userService from '../services/userService';
 import { UserCareer, UserEducation, UserSkill } from '../types';
 
@@ -208,9 +207,9 @@ export const ProfilePage: FC = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                mt: { md: 6, xl: 15 },
+                mt: { md: 3, xl: 6 },
                 flexDirection: 'column',
-                gap: { md: 1, lg: 4, xl: 15 },
+                gap: { md: 1, lg: 4, xl: 6 },
             }}
         >
             <Typography

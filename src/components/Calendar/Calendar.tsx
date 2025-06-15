@@ -1,18 +1,17 @@
+import { Event } from '@mui/icons-material';
+import { Box, Button, Dialog, Typography } from '@mui/material';
 import { useState } from 'react';
 import Calendar from 'react-calendar';
-import { CalendarGlobalStyles, Dot } from './styledComponents';
-import { InterviewDialog } from './InterviewDialog';
-import { formatDate } from './types';
 import 'react-calendar/dist/Calendar.css';
-import { AddInterviewButton } from '../Interview/AddInterviewButton';
-import { Box, Typography } from '@mui/material';
-import { AddInterviewModal } from '../Interview/AddInterviewModal';
-import { useInterviewsContext } from '../../context/InterviewsContext';
-import { theme } from '../../style';
+import { useInterviewsContext } from '../../context';
+import { InterviewForm } from '../Interview';
+import { InterviewDialog } from './InterviewDialog';
+import { CalendarGlobalStyles, Dot } from './styledComponents';
+import { formatDate } from './types';
 
 export const CalendarComponent = () => {
     const { scheduledInterviews } = useInterviewsContext();
-    const [showModal, setShowModal] = useState<boolean>(false);
+    const [showAddInterviewDialog, setShowAddInterviewDialog] = useState<boolean>(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [isInterviewDialogVisible, setIsInterviewDialogVisible] = useState(false);
 
@@ -27,6 +26,9 @@ export const CalendarComponent = () => {
     const closeInterviewDialog = () => {
         setIsInterviewDialogVisible(false);
     };
+    const closeAddInterviewModal = () => {
+        setShowAddInterviewDialog(false);
+    };
 
     return (
         <>
@@ -36,32 +38,41 @@ export const CalendarComponent = () => {
                     textAlign: 'center',
                     fontSize: { md: '1.9rem', lg: '2rem', xl: '3rem' },
                     mt: { md: 4, lg: 4, xl: 8 },
-                    color: theme.palette.secondary.main,
+                    color: 'secondary.main',
                 }}
             >
                 Scheduled Interviews
             </Typography>
             <Box sx={{ mb: 4, marginInlineStart: '10vw', mt: { lg: 5, xl: 10 } }}>
-                <AddInterviewButton onClick={() => setShowModal(true)} />
+                <Button
+                    sx={{ size: { md: 'small', lg: 'medium', xl: 'large' } }}
+                    startIcon={<Event />}
+                    onClick={() => setShowAddInterviewDialog(true)}
+                    variant="contained"
+                >
+                    Add Interview
+                </Button>
             </Box>
             <CalendarGlobalStyles />
             <Calendar
                 locale="en-US"
                 onClickDay={handleDateClick}
-                tileContent={({ date }) => {
-                    const key = formatDate(date);
-                    return scheduledInterviews?.has(key) && <Dot />;
-                }}
+                tileContent={({ date }) => scheduledInterviews?.has(formatDate(date)) && <Dot />}
                 tileClassName={({ date }) => (date.toDateString() === new Date().toDateString() ? 'current-day' : '')}
                 value={null}
             />
-
             <InterviewDialog
                 open={isInterviewDialogVisible}
                 handleClose={closeInterviewDialog}
                 selectedDate={selectedDate}
             />
-            {showModal && <AddInterviewModal onClose={() => setShowModal(false)} />}
+            {showAddInterviewDialog && (
+                <Dialog open onClose={closeAddInterviewModal}>
+                    <Box sx={{ width: { xs: '90%', sm: 600 }, maxWidth: 600, bgcolor: 'background.paper', padding: 5 }}>
+                        <InterviewForm onSubmit={closeAddInterviewModal} />
+                    </Box>
+                </Dialog>
+            )}
         </>
     );
 };

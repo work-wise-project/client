@@ -32,11 +32,12 @@ export const NavBar = ({ children }: { children?: ReactNode }) => {
             {isNavbarVisible && (
                 <Drawer variant="permanent" sx={drawerStyle(drawerWidth)}>
                     <List sx={pagesListStyle}>
-                        {pages.map(({ text, getIcon, path }, index) => {
+                        {pages.map(({ text, getIcon, path, id }, index) => {
                             const isActive = path === '/' ? pathname === '/' : pathname.startsWith(path);
 
                             return (
                                 <ListItemButton
+                                    id={id}
                                     key={index}
                                     sx={listItemButtonStyle(palette, isActive)}
                                     onClick={() => navigate(path)}

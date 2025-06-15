@@ -1,3 +1,4 @@
+export { CalendarPage } from './CalendarPage';
 export { HomePage } from './HomePage';
 export { InterviewAnalysisPage } from './InterviewAnalysisPage';
 export { InterviewPreparationPage } from './InterviewPreparationPage';
