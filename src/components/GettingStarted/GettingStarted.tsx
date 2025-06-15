@@ -1,6 +1,6 @@
 import { AccountCircle, CalendarToday, Description, Insights, School } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, List, ListItemIcon, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 
 const SpotlightOverlay = ({ targetId, onClose }: { targetId: string; onClose: () => void }) => {
     const [rect, setRect] = useState<DOMRect | null>(null);
@@ -66,40 +66,35 @@ const SpotlightOverlay = ({ targetId, onClose }: { targetId: string; onClose: ()
     );
 };
 
-const steps = [
+const steps: { icon: JSX.Element; title: string; description: string; targetId: string }[] = [
     {
         icon: <CalendarToday color="primary" />,
         title: 'Step 1: Add an Interview',
         description: 'Go to the Calendar page or use the form on the home page to schedule an interview.',
-        buttonText: 'Go to Calendar',
         targetId: 'calendar-page',
     },
     {
         icon: <School color="primary" />,
         title: 'Step 2: Prepare for the Interview',
         description: 'View company and job info, and access study resources.',
-        buttonText: 'Go to Preparation',
         targetId: 'interview-preparation-page',
     },
     {
         icon: <Insights color="primary" />,
         title: 'Step 3: Analyze Your Interview',
         description: 'Upload a recording and receive AI-generated feedback.',
-        buttonText: 'Go to Analysis',
         targetId: 'interview-analysis-page',
     },
     {
         icon: <Description color="primary" />,
         title: 'Bonus: Resume Analysis',
         description: 'Upload your resume for grammar checks and insight suggestions.',
-        buttonText: 'Go to Resume Page',
         targetId: 'resume-page',
     },
     {
         icon: <AccountCircle color="primary" />,
         title: 'Optional: Complete Your Profile',
         description: 'Keep your profile up to date for more personalized feedback.',
-        buttonText: 'Go to Profile',
         targetId: 'profile-page',
     },
 ];
@@ -128,7 +123,7 @@ export const GettingStarted = () => {
                     Follow these steps to prepare, practice, and improve your interview performance.
                 </Typography>
                 <List>
-                    {steps.map(({ icon, title, description, buttonText, targetId }, index) => (
+                    {steps.map(({ icon, title, description, targetId }, index) => (
                         <Card key={index} sx={{ marginBottom: 3 }}>
                             <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
                                 <ListItemIcon sx={{ minWidth: 40 }}>{icon}</ListItemIcon>
@@ -146,7 +141,7 @@ export const GettingStarted = () => {
                                     sx={{ ml: 2 }}
                                     onClick={() => handleGoTo(targetId)}
                                 >
-                                    {buttonText}
+                                    Show me
                                 </Button>
                             </CardContent>
                         </Card>
