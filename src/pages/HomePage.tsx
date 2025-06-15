@@ -21,7 +21,7 @@ export const HomePage = () => {
                 )}
             </Box>
             <Divider orientation="vertical" flexItem sx={{ borderRightWidth: '2px' }} />
-            <Box sx={{ width: '30%', padding: 3 }}>
+            <Box sx={{ width: '30%', padding: 3 }} id="interview-form">
                 <InterviewForm />
             </Box>
         </Box>

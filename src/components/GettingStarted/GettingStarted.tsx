@@ -1,4 +1,4 @@
-import { AccountCircle, CalendarToday, Description, Insights, School } from '@mui/icons-material';
+import { AccountCircle, AddCircle, CalendarToday, Description, Insights, School } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, List, ListItemIcon, Typography } from '@mui/material';
 import { JSX, useEffect, useState } from 'react';
 
@@ -68,10 +68,10 @@ const SpotlightOverlay = ({ targetId, onClose }: { targetId: string; onClose: ()
 
 const steps: { icon: JSX.Element; title: string; description: string; targetId: string }[] = [
     {
-        icon: <CalendarToday color="primary" />,
+        icon: <AddCircle color="primary" />,
         title: 'Step 1: Add an Interview',
-        description: 'Go to the Calendar page or use the form on the home page to schedule an interview.',
-        targetId: 'calendar-page',
+        description: 'Use the form to schedule an interview.',
+        targetId: 'interview-form',
     },
     {
         icon: <School color="primary" />,
@@ -90,6 +90,12 @@ const steps: { icon: JSX.Element; title: string; description: string; targetId: 
         title: 'Bonus: Resume Analysis',
         description: 'Upload your resume for grammar checks and insight suggestions.',
         targetId: 'resume-page',
+    },
+    {
+        icon: <CalendarToday color="primary" />,
+        title: 'Bonus: Check your Calendar',
+        description: 'Go to the Calendar page to see your upcoming interviews.',
+        targetId: 'calendar-page',
     },
     {
         icon: <AccountCircle color="primary" />,
@@ -115,14 +121,14 @@ export const GettingStarted = () => {
             {highlightTarget && (
                 <SpotlightOverlay targetId={highlightTarget} onClose={() => setHighlightTarget(null)} />
             )}
-            <Box sx={{ width: '75%', marginX: 'auto', padding: 4 }}>
-                <Typography variant="h3" sx={{ fontWeight: 600, marginBottom: 2, textAlign: 'center' }}>
+            <Box sx={{ width: '75%', marginX: 'auto', padding: 3 }}>
+                <Typography variant="h3" sx={{ fontWeight: 600, marginBottom: 1, textAlign: 'center' }}>
                     Getting Started with WorkWise
                 </Typography>
-                <Typography variant="h6" sx={{ color: 'text.secondary', marginBottom: 4, textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ color: 'text.secondary', marginBottom: 3, textAlign: 'center' }}>
                     Follow these steps to prepare, practice, and improve your interview performance.
                 </Typography>
-                <List>
+                <List sx={{ overflowY: 'auto', maxHeight: '70vh', paddingRight: 3, width: '100%' }}>
                     {steps.map(({ icon, title, description, targetId }, index) => (
                         <Card key={index} sx={{ marginBottom: 3 }}>
                             <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
