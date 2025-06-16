@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { HttpStatusCode } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useUserContext } from '../../context/UserContext';
+import { useUserContext } from '../../context';
 import resumeService from '../../services/resumeService';
 
 interface ResumeUploadButtonProps {

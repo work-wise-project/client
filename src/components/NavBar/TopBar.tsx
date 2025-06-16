@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import logo from '../../assets/logo.png';
-import { useUserContext } from '../../context/UserContext';
+import { useUserContext } from '../../context';
 import userService from '../../services/userService';
 import { logoTypographyStyle } from './styles';
 
@@ -49,7 +49,7 @@ export const TopBar = () => {
                 {userContext?.id && (
                     <Box sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography sx={{ marginRight: 1 }}>Hello {userContext.name}</Typography>
-                        <IconButton onClick={handleMenuOpen} color="inherit">
+                        <IconButton onClick={handleMenuOpen} color="inherit" id="profile-page">
                             <AccountCircle />
                         </IconButton>
                         <Menu

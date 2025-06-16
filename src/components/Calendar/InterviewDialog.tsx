@@ -2,7 +2,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Box, Dialog, DialogTitle, IconButton, List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInterviewsContext } from '../../context/InterviewsContext';
+import { useInterviewsContext } from '../../context';
 import { Interview } from '../../types';
 import { listItemStyled, listItemTextStyled, menuStyled } from './styles';
 import { InterviewDialogProps, formatDate, formatTime } from './types';
@@ -42,10 +42,10 @@ export const InterviewDialog = ({ open, handleClose, selectedDate }: InterviewDi
             }
             switch (action) {
                 case 'Analysis':
-                    navigate(`interviewAnalysis/${selectedInterview.id}/${selectedInterview.title}`);
+                    navigate(`/interviewAnalysis/${selectedInterview.id}/${selectedInterview.title}`);
                     break;
                 case 'Preparation':
-                    navigate(`interviewPreparation/${selectedInterview.id}/${selectedInterview.title}`);
+                    navigate(`/interviewPreparation/${selectedInterview.id}/${selectedInterview.title}`);
                     break;
                 case 'Delete':
                     await removeInterview(selectedInterview.id);
