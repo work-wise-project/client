@@ -80,13 +80,10 @@ export const App = () => {
                                 <Route path="/" element={<HomePage />} />
                                 <Route path="/resume" element={<ResumePage />} />
                                 <Route path="/interviewAnalysis" element={<InterviewChooser />} />
-                                <Route
-                                    path="/interviewAnalysis/:interviewId/:interviewTitle"
-                                    element={<InterviewAnalysisPage />}
-                                />
+                                <Route path="/interviewAnalysis/:interviewId" element={<InterviewAnalysisPage />} />
                                 <Route path="/interviewPreparation" element={<InterviewChooser />} />
                                 <Route
-                                    path="/interviewPreparation/:interviewId/:interviewTitle"
+                                    path="/interviewPreparation/:interviewId"
                                     element={<InterviewPreparationPage />}
                                 />
                                 <Route path="/profile" element={<ProfilePage />} />

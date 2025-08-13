@@ -71,7 +71,11 @@ export const InterviewChooser = () => {
                                                             boxShadow: 6,
                                                         },
                                                     }}
-                                                    onClick={() => navigate(`${interview.id}/${interview.title}`)}
+                                                    onClick={() =>
+                                                        navigate(interview.id, {
+                                                            state: { title: interview.title },
+                                                        })
+                                                    }
                                                 >
                                                     <CardContent
                                                         sx={{

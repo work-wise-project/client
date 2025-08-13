@@ -9,14 +9,16 @@ import {
 import LinkIcon from '@mui/icons-material/Link';
 import { Box, Button, Card, CardContent, CircularProgress, IconButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { getInterviewPreparation } from '../services/interviewService';
 
 type MaterialType = 'tutorial' | 'documentation' | 'exercises' | 'course' | 'video' | 'article' | 'other';
 
 export const InterviewPreparationPage = () => {
     const navigate = useNavigate();
-    const { interviewId, interviewTitle } = useParams();
+    const { interviewId } = useParams();
+    const location = useLocation();
+    const { title: interviewTitle } = location.state || {};
     const [materialLinks, setMaterialLinks] = useState<Array<{ title: string; description: string; link: string }>>([]);
     const [companyInfo, setCompanyInfo] = useState<string>('');
     const [jobInfo, setJobInfo] = useState<string>('');
