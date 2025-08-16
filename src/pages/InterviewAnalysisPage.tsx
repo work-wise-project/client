@@ -1,6 +1,6 @@
 import { Box, Skeleton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AudioAnalyzeCSV from '../assets/AudioAnalyze.svg?react';
 import { InterviewAnalysisForm, InterviewAnalysisView } from '../components/InterviewAnalysis';
@@ -17,7 +17,9 @@ const createFileUrl = ({ fileBuffer, mimeType = 'audio/wav' }: InterviewAudioFil
 
 export const InterviewAnalysisPage = () => {
     const navigate = useNavigate();
-    const { interviewId, interviewTitle } = useParams();
+    const { interviewId } = useParams();
+    const location = useLocation();
+    const { title: interviewTitle } = location.state || {};
     const [analysis, setAnalysis] = useState<InterviewAnalysis | null>(null);
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);

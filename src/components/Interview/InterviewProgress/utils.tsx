@@ -54,7 +54,7 @@ export const CustomStepIcon = ({
         <Check />
     ) : (
         <Tooltip title={`Go to ${route.replace(/([A-Z])/g, ' $1').toLowerCase()}`} arrow disableInteractive>
-            <IconButton onClick={() => navigate(`/${route}/${id}/${title}`)} sx={iconButtonStyle(theme)}>
+            <IconButton onClick={() => navigate(`/${route}/${id}`, { state: { title } })} sx={iconButtonStyle(theme)}>
                 <Check />
             </IconButton>
         </Tooltip>
