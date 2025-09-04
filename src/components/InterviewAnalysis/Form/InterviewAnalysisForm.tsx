@@ -64,7 +64,7 @@ export const InterviewAnalysisForm = ({ onSubmit, analysis }: InterviewAnalysisF
 
     return (
         <Box sx={formContainerStyle}>
-            <Box sx={fieldStyle}>
+            <Box sx={fieldStyle('20%')}>
                 <FieldLabel icon={<AttachFile />} label="File" />
                 <Controller
                     name="file"

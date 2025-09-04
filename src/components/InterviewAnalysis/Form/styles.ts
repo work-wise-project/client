@@ -1,4 +1,4 @@
-import { SxProps } from '@mui/material';
+import { CSSProperties, SxProps } from '@mui/material';
 
 export const formContainerStyle: SxProps = {
     display: 'flex',
@@ -6,12 +6,13 @@ export const formContainerStyle: SxProps = {
     justifyContent: 'center',
     paddingY: 2,
 };
-export const fieldStyle: SxProps = {
-    width: '20%',
+
+export const fieldStyle = (width: CSSProperties['width']): SxProps => ({
+    width,
     display: 'flex',
     flexDirection: 'column',
     gap: 1,
-};
+});
 
 export const fieldLabelStyle: SxProps = {
     display: 'flex',
