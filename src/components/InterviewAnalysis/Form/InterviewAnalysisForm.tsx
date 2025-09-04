@@ -1,28 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-    AttachFile,
-    Close,
-    CloudUploadOutlined,
-    InsertDriveFileOutlined,
-    PlayArrowOutlined,
-} from '@mui/icons-material';
-import {
-    Autocomplete,
-    AutocompleteProps,
-    AutocompleteRenderInputParams,
-    Box,
-    Button,
-    ButtonProps,
-    IconButton,
-    OutlinedInput,
-    OutlinedInputProps,
-    TextField,
-    TextFieldProps,
-    Typography,
-} from '@mui/material';
+import { AttachFile, Close, CloudUploadOutlined, PlayArrowOutlined } from '@mui/icons-material';
+import { Box, Button, ButtonProps, IconButton, OutlinedInput, OutlinedInputProps, Typography } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { Controller, FieldError, useForm } from 'react-hook-form';
-import { FileType, fileTypeOptions } from '../../../constants';
 import { FormSchema, formSchema } from './formSchema';
 import { fieldActionStyle, fieldLabelStyle, fieldStyle, formContainerStyle, submitButtonStyle } from './styles';
 import { InterviewAnalysisFormProps } from './types';
@@ -35,48 +15,24 @@ export const FieldLabel = ({ icon, label }: { icon: ReactNode; label: string }) 
 );
 
 export const InterviewAnalysisForm = ({ onSubmit, analysis }: InterviewAnalysisFormProps) => {
-    const { control, formState, handleSubmit, reset, watch, resetField } = useForm<FormSchema>({
-        resolver: zodResolver(formSchema(analysis?.file_name, analysis?.file_type)),
+    const { control, formState, handleSubmit, reset } = useForm<FormSchema>({
+        resolver: zodResolver(formSchema(analysis?.file_name)),
         mode: 'onChange',
     });
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (analysis) {
-            const type = analysis.file_type === 'audio' ? 'audio/mp3' : 'text/plain';
-            reset({
-                fileType: fileTypeOptions.find(({ id }) => id === analysis.file_type) as FormSchema['fileType'],
-                file: analysis.file_name ? new File([], analysis.file_name, { type }) : undefined,
-            });
+            reset({ file: analysis.file_name ? new File([], analysis.file_name, { type: 'audio/mp3' }) : undefined });
         }
     }, [analysis, reset]);
-    useEffect(() => {
-        resetField('file');
-    }, [watch('fileType'), resetField]);
 
-    const onFormSubmit = async ({ fileType, file }: FormSchema) => {
+    const onFormSubmit = async ({ file }: FormSchema) => {
         setIsLoading(true);
-        await onSubmit(fileType.id, file);
+        await onSubmit('audio', file);
         setIsLoading(false);
     };
 
-    const fileTypeTextFieldProps = (params: AutocompleteRenderInputParams, error?: FieldError): TextFieldProps => ({
-        ...params,
-        autoComplete: 'off',
-        InputProps: { style: { borderRadius: '10px' }, ...params.InputProps },
-        error: !!error,
-        helperText: error?.message,
-    });
-    const fileTypeProps = (error?: FieldError): AutocompleteProps<FileType, false, false, false> => ({
-        options: fileTypeOptions.filter(({ id }) => id !== 'text'),
-        getOptionLabel: ({ name }) => name,
-        getOptionKey: ({ id }) => id,
-        isOptionEqualToValue: (option, value) => option.id === value.id,
-        renderInput: (params) => <TextField {...fileTypeTextFieldProps(params, error)} />,
-        autoComplete: false,
-        size: 'small',
-        slotProps: { clearIndicator: { sx: fieldActionStyle }, popupIndicator: { sx: fieldActionStyle } },
-    });
     const fileProps = (onChange: (...event: any[]) => void, value: File, error?: FieldError): OutlinedInputProps => ({
         value: value?.name || '',
         readOnly: true,
@@ -108,22 +64,7 @@ export const InterviewAnalysisForm = ({ onSubmit, analysis }: InterviewAnalysisF
 
     return (
         <Box sx={formContainerStyle}>
-            <Box sx={fieldStyle('12%')}>
-                <FieldLabel icon={<InsertDriveFileOutlined />} label="File Type" />
-                <Controller
-                    name="fileType"
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                        <Autocomplete
-                            {...field}
-                            {...fileTypeProps(error)}
-                            value={field.value ?? null}
-                            onChange={(_, newValue) => field.onChange(newValue)}
-                        />
-                    )}
-                />
-            </Box>
-            <Box sx={fieldStyle('20%')}>
+            <Box sx={fieldStyle}>
                 <FieldLabel icon={<AttachFile />} label="File" />
                 <Controller
                     name="file"

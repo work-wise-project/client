@@ -1,25 +1,22 @@
 import { z } from 'zod';
-import { ALLOWED_FILE_TYPES } from '../../../constants';
 
-export const formSchema = (currentFileName?: string, currentFileType?: string) =>
+const ALLOWED_FILE_TYPES = ['audio/mpeg', 'audio/wav'];
+
+export const formSchema = (currentFileName?: string) =>
     z
         .object({
-            fileType: z.union([
-                z.object({ id: z.literal('audio'), name: z.literal('Audio') }, { message: 'File type is required' }),
-                z.object({ id: z.literal('text'), name: z.literal('Text') }),
-            ]),
             file: z.instanceof(File, { message: 'File is required' }),
         })
-        .superRefine(({ file, fileType: { id: fileType } }, context) => {
-            if (!ALLOWED_FILE_TYPES[fileType].includes(file.type)) {
+        .superRefine(({ file }, context) => {
+            if (!ALLOWED_FILE_TYPES.includes(file.type)) {
                 context.addIssue({
                     path: ['file'],
-                    message: `Only ${fileType} files are allowed`,
+                    message: `Only audio files are allowed`,
                     code: z.ZodIssueCode.custom,
                 });
             }
 
-            if (currentFileName === file.name && currentFileType === fileType) {
+            if (currentFileName === file.name) {
                 context.addIssue({
                     path: ['file'],
                     message: 'File is already uploaded',
